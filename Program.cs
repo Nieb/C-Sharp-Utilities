@@ -1,10 +1,11 @@
-﻿using System;
-
+﻿
 namespace TEST;
 internal static partial class Program {
     static void Main(string[] args) {
-        Console.WriteLine($"~~~");
+        PRINT("\n~~~");
 
-        Console.WriteLine($"~~~");
+        Test__Integer();
+
+        PRINT("\n~~~");
     }
 }
