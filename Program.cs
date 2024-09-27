@@ -10,6 +10,8 @@ internal static partial class Program {
         Test__Vector_Generate();
         Test__Vector_Interpolation();
 
+        Test__String();
+
         PRINT("\n~~~");
     }
 }
