@@ -2,7 +2,7 @@
 namespace TEST;
 internal static partial class Program {
     static void Test__Vector_Color() {
-        PRINT("\n[Utility.Vector_Color]");
+        PRINT("\n[Utility.VEC -- Color]");
 
 
 

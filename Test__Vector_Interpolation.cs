@@ -2,7 +2,7 @@
 namespace TEST;
 internal static partial class Program {
     static void Test__Vector_Interpolation() {
-        PRINT("\n[Utility.Vector_Interpolation]");
+        PRINT("\n[Utility.VEC -- Interpolation]");
 
 
         RESULT("Mix()", true

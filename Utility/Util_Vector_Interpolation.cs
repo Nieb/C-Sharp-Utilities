@@ -146,7 +146,6 @@ public static partial class VEC {
     //
     //          https://registry.khronos.org/OpenGL-Refpages/gl4/html/smoothstep.xhtml
     //
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float SmoothStep(float V, float A, float B) {
         float LinStep = clamp((V - A) / (B - A), 0.0f, 1.0f);
         return LinStep*LinStep * (3.0f - 2.0f*LinStep);
