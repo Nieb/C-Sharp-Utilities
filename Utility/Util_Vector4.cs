@@ -7,10 +7,10 @@ namespace Utility;
 public struct vec4 : IFormattable {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public float x = 0.0f;
-    public float y = 0.0f;
-    public float z = 0.0f;
-    public float w = 0.0f;
+    public float x = 0f;
+    public float y = 0f;
+    public float z = 0f;
+    public float w = 0f;
 
     public float r {  get => this.x;  set => this.x = value;  }
     public float g {  get => this.y;  set => this.y = value;  }

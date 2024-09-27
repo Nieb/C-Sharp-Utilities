@@ -6,6 +6,8 @@ internal static partial class Program {
 
         Test__Integer();
 
+        Test__Vector_Color();
+
         PRINT("\n~~~");
     }
 }
