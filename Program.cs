@@ -7,6 +7,7 @@ internal static partial class Program {
         Test__Integer();
 
         Test__Vector_Color();
+        Test__Vector_Interpolation();
 
         PRINT("\n~~~");
     }
