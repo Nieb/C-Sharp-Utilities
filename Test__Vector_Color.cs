@@ -5,8 +5,6 @@ internal static partial class Program {
         PRINT("\n[Utility.VEC -- Color]");
 
 
-
-
         RESULT("ByteToUnit()", true
             && ByteToUnit(  0) == 0.0f             && ByteToUnit(  1) == 0.0039215686274f && ByteToUnit(  2) == 0.0078431372549f && ByteToUnit(  3) == 0.0117647058823f && ByteToUnit(  4) == 0.0156862745098f && ByteToUnit(  5) == 0.0196078431372f && ByteToUnit(  6) == 0.0235294117647f && ByteToUnit(  7) == 0.0274509803921f
             && ByteToUnit(  8) == 0.0313725490196f && ByteToUnit(  9) == 0.0352941176470f && ByteToUnit( 10) == 0.0392156862745f && ByteToUnit( 11) == 0.0431372549019f && ByteToUnit( 12) == 0.0470588235294f && ByteToUnit( 13) == 0.0509803921568f && ByteToUnit( 14) == 0.0549019607843f && ByteToUnit( 15) == 0.0588235294117f
@@ -149,8 +147,6 @@ internal static partial class Program {
             && round(FromHSV( 6.0f, 1f, 1f), 0.000001f) == new vec3(0.0f, 0.0f, 1.0f)  &&  round(FromHSV( 6.3f, 1f, 1f), 0.000001f) == new vec3(0.5f, 0.0f, 1.0f)
             && round(FromHSV( 6.6f, 1f, 1f), 0.000001f) == new vec3(1.0f, 0.0f, 1.0f)  &&  round(FromHSV( 6.9f, 1f, 1f), 0.000001f) == new vec3(1.0f, 0.0f, 0.5f)
         );
-
-
 
 
     }

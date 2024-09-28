@@ -8,14 +8,16 @@ internal static partial class Program {
 
         Test__Integer();
 
+        Test__Vector();
         Test__Vector_Color();
         Test__Vector_Generate();
         Test__Vector_Interpolation();
 
         Test__String();
 
-        Time.Update(); PRINT($"\n ** Time Elapsed: {Time.Seconds}");
-
         PRINT("\n~~~ FINISH ~~~\n");
+
+        Time.Update(); PRINT($" ** Time Elapsed: {Time.Seconds}\n");
+
     }
 }

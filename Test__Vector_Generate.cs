@@ -5,8 +5,6 @@ internal static partial class Program {
         PRINT("\n[Utility.VEC -- Generate]");
 
 
-
-
         RESULT("FromAng()", true
             && round(FromAng(0f  ), 0.000001f) == new vec2 ( 1f, 0f)
             && round(FromAng(PIH ), 0.000001f) == new vec2 ( 0f,-1f)
