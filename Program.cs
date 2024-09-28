@@ -2,7 +2,9 @@
 namespace TEST;
 internal static partial class Program {
     static void Main(string[] args) {
-        PRINT("\n~~~");
+        Time Time = new();
+
+        PRINT("\n~~~ START ~~~");
 
         Test__Integer();
 
@@ -12,6 +14,8 @@ internal static partial class Program {
 
         Test__String();
 
-        PRINT("\n~~~");
+        Time.Update(); PRINT($"\n ** Time Elapsed: {Time.Seconds}");
+
+        PRINT("\n~~~ FINISH ~~~\n");
     }
 }
