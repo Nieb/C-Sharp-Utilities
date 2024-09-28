@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 
 namespace Utility;
 public struct Time {
@@ -28,44 +27,42 @@ public struct Time {
     private Stopwatch Timer;
     private bool TimerReset = false;
 
-    //##########################################################################################################################################################
-    //##########################################################################################################################################################
+    //==========================================================================================================================================================
     public Time() {
         this.Timer = Stopwatch.StartNew(); //  https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.stopwatch?view=net-8.0
     }
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override string ToString() =>
-        $"Time( Dlt: {this.Delta,9:0.0000000}   Sec: {this.Seconds,9:0.0000000} )"
-      //$"Time( Dlt: {this.Delta,9:0.0000000}   Sec: {this.Seconds,9:0.0000000}   Cos: {this.Cos,9:0.000000}   Sin: {this.Sin,9:0.000000} )"
-        + (this.TimerReset ? " ***" : "");
+        $"Time( Delta: {Delta,9:0.0000000}   Seconds: {Seconds,9:0.0000000} )"
+      //$"Time( Delta: {Delta,9:0.0000000}   Seconds: {Seconds,9:0.0000000}   Cos: {Cos,9:0.000000}   Sin: {Sin,9:0.000000} )"
+        + (TimerReset ? " ***" : "");
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     public void Update(float Speed = 1.0f) {
-        this.ThisFrame = this.Timer.Elapsed.TotalSeconds;
-        if (this.ThisFrame >= 60.0) {   //  Maintain "Time.Delta" float-precision to: ~0.000_001 Seconds (1 MicroSecond).
-            this.Timer.Restart();       //  Reset timer as soon as possible.
-            this.TimerReset = true;
+        ThisFrame = Timer.Elapsed.TotalSeconds;
+        if (ThisFrame >= 60.0) {   //  Maintain "Time.Delta" float-precision to: ~0.000_001 Seconds (1 MicroSecond).
+            Timer.Restart();       //  Reset timer as soon as possible.
+            TimerReset = true;
         } else {
-            this.TimerReset = false;
+            TimerReset = false;
         }
 
-        this.Delta   = (float)(this.ThisFrame  - this.PrevFrame) * Speed;
-        this.Seconds = (float)(this.Minutes*60 + this.ThisFrame) * Speed;
+        Delta   = (float)(ThisFrame  - PrevFrame) * Speed;
+        Seconds = (float)(Minutes*60 + ThisFrame) * Speed;
 
-      //(this.Sin  , this.Cos  ) = ((float, float))Math.SinCos( this.ThisFrame * 0.10471975511965977462 ); //  1 hertz
-      //(this.Sin10, this.Cos10) = ((float, float))Math.SinCos( this.ThisFrame * 1.04719755119659774615 ); // 10 hertz
-      //(this.Sin30, this.Cos30) = ((float, float))Math.SinCos( this.ThisFrame * 3.14159265358979323846 ); // 30 hertz
-      //(this.Sin60, this.Cos60) = ((float, float))Math.SinCos( this.ThisFrame * 6.28318530717958647693 ); // 60 hertz
+      //(Sin  , Cos  ) = ((float, float))Math.SinCos( ThisFrame * 0.10471975511965977462 ); //  1 hertz
+      //(Sin10, Cos10) = ((float, float))Math.SinCos( ThisFrame * 1.04719755119659774615 ); // 10 hertz
+      //(Sin30, Cos30) = ((float, float))Math.SinCos( ThisFrame * 3.14159265358979323846 ); // 30 hertz
+      //(Sin60, Cos60) = ((float, float))Math.SinCos( ThisFrame * 6.28318530717958647693 ); // 60 hertz
 
-        if (this.TimerReset) {
-            this.PrevFrame = 0.0;
-            this.Minutes += 1;
+        if (TimerReset) {
+            PrevFrame = 0.0;
+            Minutes += 1;
         } else {
-            this.PrevFrame = this.ThisFrame;
+            PrevFrame = ThisFrame;
         }
     }
 
