@@ -224,9 +224,10 @@ public static partial class STR {
 
     //======================================================================================================================================================
     ///
-    ///     String.IsNullOrEmpty("blarg") is stupid :P
+    ///     String.IsNullOrEmpty("blarg")  is stupid :P
     ///
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    ///     "blarg".IsVoid()  much better.
+    ///
     public static bool IsVoid(this string STR) {
         if (STR == null)
             return true;
