@@ -20,6 +20,23 @@ public struct vec4 : IFormattable {
     public vec3 xyz {  get => new vec3(this.x, this.y, this.z);  set { this.x = value.x; this.y = value.y; this.z = value.z; } }
     public vec3 rgb {  get => new vec3(this.x, this.y, this.z);  set { this.x = value.x; this.y = value.y; this.z = value.z; } }
 
+    //==========================================================================================================================================================
+    //  NOTICE: Length is computed each time it is accessed.
+    public float LengthSquared => (this.x*this.x + this.y*this.y + this.z*this.z + this.w*this.w);
+
+    public float Length {
+        get => MathF.Sqrt(this.x*this.x + this.y*this.y + this.z*this.z + this.w*this.w);
+        set {
+            if (this.x == 0f && this.y == 0f && this.z == 0f && this.w == 0f) { //  Avoid Divide-by-Zero.
+                _ = value;
+            } else {
+                float Scaler = value / MathF.Sqrt(this.x*this.x + this.y*this.y + this.z*this.z + this.w*this.w); //  (LengthNew / LengthOld).
+
+                this = new vec4(this.x*Scaler, this.y*Scaler, this.z*Scaler, this.w*Scaler);
+            }
+        }
+    }
+
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     public vec4(float X, float Y, float Z, float W) {
@@ -48,6 +65,13 @@ public struct vec4 : IFormattable {
         this.y = XYZW;
         this.z = XYZW;
         this.w = XYZW;
+    }
+
+    public vec4() {
+        this.x = 0f;
+        this.y = 0f;
+        this.z = 0f;
+        this.w = 0f;
     }
 
     //##########################################################################################################################################################
@@ -97,6 +121,9 @@ public struct vec4 : IFormattable {
     public static vec4 operator %(float A, vec4  B) => new vec4(A  %B.x, A  %B.y, A  %B.z, A  %B.w);
 
     //==========================================================================================================================================================
+    //  Operators Binary:  &  |  ^  <<  >>
+
+    //==========================================================================================================================================================
     //  Operators Logical:  ==  !=  <  >  <=  >=
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator ==(vec4  A, vec4  B) => (A.x == B.x && A.y == B.y && A.z == B.z && A.w == B.w); //  "EqualTo"
@@ -128,9 +155,6 @@ public struct vec4 : IFormattable {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator >=(vec4  A, float B) => (A.x >= B   && A.y >= B   && A.z >= B   && A.w >= B  );
 
-    //==========================================================================================================================================================
-    //  Operators Binary:  &  |  ^  <<  >>
-
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
@@ -155,6 +179,7 @@ public struct vec4 : IFormattable {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
+    //  Required by DotNet "object" type:
     public override bool Equals(object obj) { if (obj is vec4 other) { return this == other; } return false; }
     public override int GetHashCode() => HashCode.Combine(x, y, z);
 

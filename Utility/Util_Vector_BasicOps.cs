@@ -56,6 +56,9 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //                                                                      "Clamp"
+    ///
+    /// clamp(x, *Inclusive*, *Inclusive*)
+    ///
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float clamp(float A, float Min, float Max) => (A < Min) ? Min : (A > Max) ? Max : A;
 
@@ -76,6 +79,9 @@ public static partial class VEC {
 
     //==========================================================================================================================================================
     //                                                                       "Wrap"
+    ///
+    /// wrap(x, *Inclusive*, *Exclusive*)
+    ///
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float wrap(float A, float Min, float Max) {
         #if DEBUG
@@ -85,7 +91,8 @@ public static partial class VEC {
         float Range  = Max - Min;
         float Result = (A - Min) % Range;
 
-        return (Result < 0f)  ?  Result + Range + Min  :  Result + Min;
+        return (Result < 0f) ? Result + Min + Range
+                             : Result + Min;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -97,7 +104,8 @@ public static partial class VEC {
         float Range = Max - Min;
         vec2 Result = (A - Min) % Range;
 
-        return (Result < 0f)  ?  Result + Range + Min  :  Result + Min;
+        return (Result < 0f) ? Result + Min + Range
+                             : Result + Min;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -109,7 +117,8 @@ public static partial class VEC {
         float Range = Max - Min;
         vec3 Result = (A - Min) % Range;
 
-        return (Result < 0f)  ?  Result + Range + Min  :  Result + Min;
+        return (Result < 0f) ? Result + Min + Range
+                             : Result + Min;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -121,7 +130,8 @@ public static partial class VEC {
         float Range = Max - Min;
         vec4 Result = (A - Min) % Range;
 
-        return (Result < 0f)  ?  Result + Range + Min  :  Result + Min;
+        return (Result < 0f) ? Result + Min + Range
+                             : Result + Min;
     }
 
     //##########################################################################################################################################################
@@ -145,14 +155,17 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //                                                                     "Distance"
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static float dist(vec2 A, vec2 B) {
+    public static float distance(float A, float B) => (B - A);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float distance(vec2 A, vec2 B) {
         float Dlt_x = B.x - A.x;
         float Dlt_y = B.y - A.y;
         return MathF.Sqrt(Dlt_x*Dlt_x + Dlt_y*Dlt_y);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static float dist(vec3 A, vec3 B) {
+    public static float distance(vec3 A, vec3 B) {
         float Dlt_x = B.x - A.x;
         float Dlt_y = B.y - A.y;
         float Dlt_z = B.z - A.z;
@@ -163,7 +176,7 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //                                                                 "Fractional" Part
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static float fract(float A) => A - MathF.Floor(A);
+    public static float fract(float A) => (A - MathF.Floor(A));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static vec2 fract(vec2 A) => new vec2( A.x-MathF.Floor(A.x),  A.y-MathF.Floor(A.y) );
@@ -245,26 +258,26 @@ public static partial class VEC {
     public static float mod(float A, float B) => (A % B);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static vec2 mod(vec2  A, vec2  B) => new vec2(A.x%B.x, A.y%B.y);
+    public static vec2 mod(vec2 A, vec2  B) => new vec2(A.x%B.x, A.y%B.y);
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static vec2 mod(vec2  A, float B) => new vec2(A.x%B  , A.y%B  );
+    public static vec2 mod(vec2 A, float B) => new vec2(A.x%B  , A.y%B  );
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static vec3 mod(vec3  A, vec3  B) => new vec3(A.x%B.x, A.y%B.y, A.z%B.z);
+    public static vec3 mod(vec3 A, vec3  B) => new vec3(A.x%B.x, A.y%B.y, A.z%B.z);
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static vec3 mod(vec3  A, float B) => new vec3(A.x%B  , A.y%B  , A.z%B  );
+    public static vec3 mod(vec3 A, float B) => new vec3(A.x%B  , A.y%B  , A.z%B  );
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static vec4 mod(vec4  A, vec4  B) => new vec4(A.x%B.x, A.y%B.y, A.z%B.z, A.w%B.w);
+    public static vec4 mod(vec4 A, vec4  B) => new vec4(A.x%B.x, A.y%B.y, A.z%B.z, A.w%B.w);
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static vec4 mod(vec4  A, float B) => new vec4(A.x%B  , A.y%B  , A.z%B  , A.w%B  );
+    public static vec4 mod(vec4 A, float B) => new vec4(A.x%B  , A.y%B  , A.z%B  , A.w%B  );
 #endif
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //                                                                    "Normalize"
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static vec2 normalize(vec2 A) {
-        if (A == 0f) //  Avoid DivByZero.
+        if (A.x == 0f && A.y == 0f) //  Avoid DivByZero.
             return A;
 
         float Scaler = 1f / MathF.Sqrt(A.x*A.x + A.y*A.y); //  (LengthNew / LengthOld).
@@ -274,7 +287,7 @@ public static partial class VEC {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static vec3 normalize(vec3 A) {
-        if (A == 0f) //  Avoid DivByZero.
+        if (A.x == 0f && A.y == 0f && A.z == 0f) //  Avoid DivByZero.
             return A;
 
         float Scaler = 1f / MathF.Sqrt(A.x*A.x + A.y*A.y + A.z*A.z); //  (LengthNew / LengthOld).
@@ -300,70 +313,115 @@ public static partial class VEC {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
+    //                                                                     "Reflect"
+    ///
+    /// https://registry.khronos.org/OpenGL-Refpages/gl4/html/reflect.xhtml
+    ///
+    ///     reflect( Vector-Normal, Surface-Normal )
+    ///
+    public static vec2 reflect(vec2 Vn, vec2 Sn) {
+        float Dot = (Vn.x * Sn.x) + (Vn.y * Sn.y);
+        return new vec2(
+            Vn.x - (2.0f * Dot) * Sn.x,
+            Vn.y - (2.0f * Dot) * Sn.y
+        );
+    }
+
+    public static vec3 reflect(vec3 Vn, vec3 Sn) {
+        float Dot = (Vn.x * Sn.x) + (Vn.y * Sn.y) + (Vn.z * Sn.z);
+        return new vec3(
+            Vn.x - (2.0f * Dot) * Sn.x,
+            Vn.y - (2.0f * Dot) * Sn.y,
+            Vn.z - (2.0f * Dot) * Sn.z
+        );
+    }
+
+    //==========================================================================================================================================================
+    //                                                                     "Refract"
+    ///
+    /// https://registry.khronos.org/OpenGL-Refpages/gl4/html/refract.xhtml
+    /// https://www.desmos.com/calculator/m0e0rzhgkh
+    ///
+    ///     refract( Vector-Normal, Surface-Normal, Index-Of-Refraction)
+    ///
+    ///     IndexOfRefraction:  The ratio of the speed of light in a vacuum, to the speed of light in a medium.
+    ///                         Or from one medium to another medium.
+    ///
+    public static vec2 refract(vec2 Vn, vec2 Sn, float Ratio) {
+        float Dot = (Vn.x * Sn.x) + (Vn.y * Sn.y);
+
+        float K = 1f - Ratio*Ratio * (1f - Dot*Dot);
+
+        float Sqrt_K = MathF.Sqrt(K);   //  First testing if this will be used isn't worth the bother, the case where it's not used is improper usage of this function anyhow.
+
+        return (K < 0f) ? new vec2(0f)
+                        : new vec2( Ratio * Vn.x - (Ratio * Dot + Sqrt_K) * Sn.x,
+                                    Ratio * Vn.y - (Ratio * Dot + Sqrt_K) * Sn.y );
+    }
+
+    public static vec3 refract(vec3 Vn, vec3 Sn, float Ratio) {
+        float Dot = (Vn.x * Sn.x) + (Vn.y * Sn.y) + (Vn.z * Sn.z);
+
+        float K = 1f - Ratio*Ratio * (1f - Dot*Dot);
+
+        float Sqrt_K = MathF.Sqrt(K);   //  Ditto.
+
+        return (K < 0f) ? new vec3(0f)
+                        : new vec3( Ratio * Vn.x - (Ratio * Dot + Sqrt_K) * Sn.x,
+                                    Ratio * Vn.y - (Ratio * Dot + Sqrt_K) * Sn.y,
+                                    Ratio * Vn.z - (Ratio * Dot + Sqrt_K) * Sn.z );
+    }
+
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    //                                                                      "Round"                                     Each component rounded to nearest integer.
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float round(float A) => MathF.Round(A);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static vec2 round(vec2 A) => new vec2( MathF.Round(A.x), MathF.Round(A.y) );
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static vec3 round(vec3 A) => new vec3( MathF.Round(A.x), MathF.Round(A.y),  MathF.Round(A.z) );
+
+    //==========================================================================================================================================================
+    //                                                                     "Round" To                                   Each component rounded to nearest 'RoundTo'.
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float round(float A, float RoundTo) =>
+        (RoundTo == 0f || RoundTo == 1f) ? MathF.Round(A)
+                                         : MathF.Round(A/RoundTo)*RoundTo;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static vec2 round(vec2 A, float RoundTo) =>
+        (RoundTo == 0f || RoundTo == 1f) ? new vec2(  MathF.Round(A.x)                ,  MathF.Round(A.y)                  )
+                                         : new vec2(  MathF.Round(A.x/RoundTo)*RoundTo,  MathF.Round(A.y/RoundTo)*RoundTo  );
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static vec3 round(vec3 A, float RoundTo) =>
+        (RoundTo == 0f || RoundTo == 1f) ? new vec3(  MathF.Round(A.x)                ,  MathF.Round(A.y)                ,  MathF.Round(A.z)                  )
+                                         : new vec3(  MathF.Round(A.x/RoundTo)*RoundTo,  MathF.Round(A.y/RoundTo)*RoundTo,  MathF.Round(A.z/RoundTo)*RoundTo  );
+
+    //==========================================================================================================================================================
     //                                                                      "Floor"                                     Each component rounded down.
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float floor(float A) => MathF.Floor(A);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static vec2  floor(vec2  A) => new vec2( MathF.Floor(A.x),  MathF.Floor(A.y) );
+    public static vec2 floor(vec2 A) => new vec2( MathF.Floor(A.x),  MathF.Floor(A.y) );
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static vec3  floor(vec3  A) => new vec3( MathF.Floor(A.x),  MathF.Floor(A.y),  MathF.Floor(A.z));
+    public static vec3 floor(vec3 A) => new vec3( MathF.Floor(A.x),  MathF.Floor(A.y),  MathF.Floor(A.z));
 
     //==========================================================================================================================================================
     //                                                                      "Ceiling"                                   Each component rounded up.
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static float ceiling(float A) => MathF.Ceiling(A);
+    public static float ceil(float A) => MathF.Ceiling(A);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static vec2  ceiling(vec2  A) => new vec2( MathF.Ceiling(A.x),  MathF.Ceiling(A.y) );
+    public static vec2 ceil(vec2 A) => new vec2( MathF.Ceiling(A.x),  MathF.Ceiling(A.y) );
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static vec3  ceiling(vec3  A) => new vec3( MathF.Ceiling(A.x),  MathF.Ceiling(A.y),  MathF.Ceiling(A.z) );
-
-    //==========================================================================================================================================================
-    //                                                                       "Round"                                    Each component rounded to nearest integer.
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static float round(float A) => MathF.Round(A);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static vec2  round(vec2  A) => new vec2( MathF.Round(A.x), MathF.Round(A.y) );
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static vec3  round(vec3  A) => new vec3( MathF.Round(A.x), MathF.Round(A.y),  MathF.Round(A.z) );
-
-    //==========================================================================================================================================================
-    //                                                                     "Round" To                                   Each component rounded to nearest 'RoundTo'.
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static float round(float A, float RoundTo) {
-        if (RoundTo == 0f || RoundTo == 1f)
-            return MathF.Round(A);
-
-        return MathF.Round(A / RoundTo) * RoundTo;                              //@@ revisit...
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static vec2 round(vec2 A, float RoundTo) {
-        if (RoundTo == 0f || RoundTo == 1f)
-            return new vec2( MathF.Round(A.x), MathF.Round(A.y) );
-
-        return new vec2(
-            MathF.Round(A.x / RoundTo) * RoundTo,
-            MathF.Round(A.y / RoundTo) * RoundTo
-        );
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static vec3 round(vec3 A, float RoundTo) {
-        if (RoundTo == 0f || RoundTo == 1f)
-            return new vec3( MathF.Round(A.x), MathF.Round(A.y), MathF.Round(A.z) );
-
-        return new vec3(
-            MathF.Round(A.x / RoundTo) * RoundTo,
-            MathF.Round(A.y / RoundTo) * RoundTo,
-            MathF.Round(A.z / RoundTo) * RoundTo
-        );
-    }
+    public static vec3 ceil(vec3 A) => new vec3( MathF.Ceiling(A.x),  MathF.Ceiling(A.y),  MathF.Ceiling(A.z) );
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
@@ -372,13 +430,13 @@ public static partial class VEC {
   //public static float square(float A) => (A * A);
   //
   //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-  //public static vec2  square(vec2  A) => new vec2( (A.x * A.x),  (A.y * A.y) );
+  //public static vec2 square(vec2 A) => new vec2( (A.x * A.x),  (A.y * A.y) );
   //
   //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-  //public static vec3  square(vec3  A) => new vec3( (A.x * A.x),  (A.y * A.y),  (A.z * A.z) );
+  //public static vec3 square(vec3 A) => new vec3( (A.x * A.x),  (A.y * A.y),  (A.z * A.z) );
   //
   //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-  //public static vec4  square(vec4  A) => new vec4( (A.x * A.x),  (A.y * A.y),  (A.z * A.z),  (A.w * A.w) );
+  //public static vec4 square(vec4 A) => new vec4( (A.x * A.x),  (A.y * A.y),  (A.z * A.z),  (A.w * A.w) );
 
     //==========================================================================================================================================================
     //                                                                   "Square Root"
@@ -386,13 +444,13 @@ public static partial class VEC {
     public static float sqrt(float A) => MathF.Sqrt(A);
 
   //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-  //public static vec2  sqrt(vec2  A) => new vec2( MathF.Sqrt(A.x),  MathF.Sqrt(A.y) );
+  //public static vec2 sqrt(vec2 A) => new vec2( MathF.Sqrt(A.x),  MathF.Sqrt(A.y) );
   //
   //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-  //public static vec3  sqrt(vec3  A) => new vec3( MathF.Sqrt(A.x),  MathF.Sqrt(A.y),  MathF.Sqrt(A.z) );
+  //public static vec3 sqrt(vec3 A) => new vec3( MathF.Sqrt(A.x),  MathF.Sqrt(A.y),  MathF.Sqrt(A.z) );
   //
   //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-  //public static vec4  sqrt(vec4  A) => new vec4( MathF.Sqrt(A.x),  MathF.Sqrt(A.y),  MathF.Sqrt(A.z),  MathF.Sqrt(A.w) );
+  //public static vec4 sqrt(vec4 A) => new vec4( MathF.Sqrt(A.x),  MathF.Sqrt(A.y),  MathF.Sqrt(A.z),  MathF.Sqrt(A.w) );
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################

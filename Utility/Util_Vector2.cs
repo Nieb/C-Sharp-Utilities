@@ -14,6 +14,7 @@ public struct vec2 : IFormattable {
     public float v {  get => this.y;  set => this.y = value;  }
 
     //==========================================================================================================================================================
+    //  NOTICE: Length is computed each time it is accessed.
     public float LengthSquared => (this.x*this.x + this.y*this.y);
 
     public float Length {
@@ -39,6 +40,11 @@ public struct vec2 : IFormattable {
     public vec2(float XY) {
         this.x = XY;
         this.y = XY;
+    }
+
+    public vec2() {
+        this.x = 0f;
+        this.y = 0f;
     }
 
     //##########################################################################################################################################################
@@ -137,6 +143,7 @@ public struct vec2 : IFormattable {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
+    //  Required by DotNet "object" type:
     public override bool Equals(object obj) { if (obj is vec2 other) { return (this == other); } return false; }
     public override int GetHashCode() => HashCode.Combine(this.x, this.y);
 

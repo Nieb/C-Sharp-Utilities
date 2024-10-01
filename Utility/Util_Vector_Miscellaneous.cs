@@ -81,12 +81,12 @@ public static partial class VEC {
     ///
     /// Get Nearest-Point-On-Line from Point.
     ///
-    ///     prj("Point", "LinePosition", "LineNormal")
+    ///     Project(  Point,  Line-Position,  Line-Normal  )
     ///
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static vec2 prj(vec2 P, vec2 Lp, vec2 Ln) {
+    public static vec2 Project(vec2 P, vec2 Lp, vec2 Ln) {
 
-        //  Distance from LinePosition to Nearest-Point-On-Line:
+        //  Distance from LinePosition to NearestPointOnLine:
         float DotAP_AB = ((P.x - Lp.x) * Ln.x) + ((P.y - Lp.y) * Ln.y);
 
         return new vec2(
@@ -96,9 +96,9 @@ public static partial class VEC {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static vec3 prj(vec3 P, vec3 Lp, vec3 Ln) {
+    public static vec3 Project(vec3 P, vec3 Lp, vec3 Ln) {
 
-        //  Distance from LinePosition to Nearest-Point-On-Line:
+        //  Distance from LinePosition to NearestPointOnLine:
         float DotAP_AB = ((P.x - Lp.x) * Ln.x) + ((P.y - Lp.y) * Ln.y) + ((P.z - Lp.z) * Ln.z);
 
         return new vec3(
@@ -110,20 +110,20 @@ public static partial class VEC {
 
     //==========================================================================================================================================================
     ///
-    ///     prj_("Point", "LineA (start)", "LineB (end)")
+    ///     Project_(  Point,  Line-Point-A (start),  Line-Point-B (end)  )
     ///
-    public static vec2 prj_(vec2 P, vec2 La, vec2 Lb) {
+    public static vec2 Project_(vec2 P, vec2 La, vec2 Lb) {
         float DltAP_x = P.x  - La.x;
         float DltAP_y = P.y  - La.y;
 
         float DltAB_x = Lb.x - La.x;
         float DltAB_y = Lb.y - La.y;
 
-        float DotAP_AB          = (DltAP_x * DltAB_x) + (DltAP_y * DltAB_y);
-        float DltAB_Length_Sqrd = (DltAB_x * DltAB_x) + (DltAB_y * DltAB_y);
+        float DotAP_AB         = (DltAP_x * DltAB_x) + (DltAP_y * DltAB_y);
+        float DltAB_LengthSqrd = (DltAB_x * DltAB_x) + (DltAB_y * DltAB_y);
 
-        //  Distance from LinePointA to Nearest-Point-On-Line, as multiple of DltAB:
-        float Scaler = DotAP_AB / DltAB_Length_Sqrd;        //  (LengthNew / LengthOld).
+        //  Distance from LinePointA to NearestPointOnLine, as multiple of DltAB:
+        float Scaler = DotAP_AB / DltAB_LengthSqrd;        //  (LengthNew / LengthOld).
 
         return new vec2(
             La.x + (DltAB_x * Scaler),
@@ -131,7 +131,7 @@ public static partial class VEC {
         );
     }
 
-    public static vec3 prj_(vec3 P, vec3 La, vec3 Lb) {
+    public static vec3 Project_(vec3 P, vec3 La, vec3 Lb) {
         float DltAP_x = P.x - La.x;
         float DltAP_y = P.y - La.y;
         float DltAP_z = P.z - La.z;
@@ -140,98 +140,17 @@ public static partial class VEC {
         float DltAB_y = Lb.y - La.y;
         float DltAB_z = Lb.z - La.z;
 
-        float DotAP_AB          = (DltAP_x * DltAB_x) + (DltAP_y * DltAB_y) + (DltAP_z * DltAB_z);
-        float DltAB_Length_Sqrd = (DltAB_x * DltAB_x) + (DltAB_y * DltAB_y) + (DltAB_z * DltAB_z);
+        float DotAP_AB         = (DltAP_x * DltAB_x) + (DltAP_y * DltAB_y) + (DltAP_z * DltAB_z);
+        float DltAB_LengthSqrd = (DltAB_x * DltAB_x) + (DltAB_y * DltAB_y) + (DltAB_z * DltAB_z);
 
-        //  Distance from LinePointA to Nearest-Point-On-Line, as multiple of DltAB:
-        float Scaler = DotAP_AB / DltAB_Length_Sqrd;        // (LengthNew / LengthOld)
+        //  Distance from LinePointA to NearestPointOnLine, as multiple of DltAB:
+        float Scaler = DotAP_AB / DltAB_LengthSqrd;        // (LengthNew / LengthOld)
 
         return new vec3(
             La.x + (DltAB_x * Scaler),
             La.y + (DltAB_y * Scaler),
             La.z + (DltAB_z * Scaler)
         );
-    }
-
-    //##########################################################################################################################################################
-    //##########################################################################################################################################################
-    //                                                                     "Reflect"
-    //
-    //  https://registry.khronos.org/OpenGL-Refpages/gl4/html/reflect.xhtml
-    //
-    public static vec2 reflect(vec2 Vn, vec2 Sn) {
-        float Dot = (Vn.x * Sn.x) + (Vn.y * Sn.y);
-        return new vec2(
-            Vn.x - (2.0f * Dot) * Sn.x,
-            Vn.y - (2.0f * Dot) * Sn.y
-        );
-    }
-
-    public static vec3 reflect(vec3 Vn, vec3 Sn) {
-        float Dot = (Vn.x * Sn.x) + (Vn.y * Sn.y) + (Vn.z * Sn.z);
-        return new vec3(
-            Vn.x - (2.0f * Dot) * Sn.x,
-            Vn.y - (2.0f * Dot) * Sn.y,
-            Vn.z - (2.0f * Dot) * Sn.z
-        );
-    }
-
-    //==========================================================================================================================================================
-    //                                                                     "Refract"
-    //
-    //  https://registry.khronos.org/OpenGL-Refpages/gl4/html/refract.xhtml
-    //  https://www.desmos.com/calculator/m0e0rzhgkh
-    //
-    public static vec2 refract(vec2 Vn, vec2 Sn, float Scaler) {
-        float Dot = (Vn.x * Sn.x) + (Vn.y * Sn.y);
-
-        float K = 1f - Scaler*Scaler * (1f - Dot*Dot);
-
-        #if true
-            float Sqrt_K = MathF.Sqrt(K);
-
-            return (K < 0f) ? new vec2(0f) : new vec2(
-                Scaler * Vn.x - (Scaler * Dot + Sqrt_K) * Sn.x,
-                Scaler * Vn.y - (Scaler * Dot + Sqrt_K) * Sn.y
-            );
-        #else
-            if (K < 0f) {
-                return new vec2(0f);
-            } else {
-                float Sqrt_K = MathF.Sqrt(K);
-                return new vec2(
-                    Scaler * Vn.x - (Scaler * Dot + Sqrt_K) * Sn.x,
-                    Scaler * Vn.y - (Scaler * Dot + Sqrt_K) * Sn.y
-                );
-            }
-        #endif
-    }
-
-    public static vec3 refract(vec3 Vn, vec3 Sn, float Scaler) {
-        float Dot = (Vn.x * Sn.x) + (Vn.y * Sn.y) + (Vn.z * Sn.z);
-
-        float K = 1f - Scaler*Scaler * (1f - Dot*Dot);
-
-        #if true
-            float Sqrt_K = MathF.Sqrt(K);
-
-            return (K < 0f) ? new vec3(0f) : new vec3(
-                Scaler * Vn.x - (Scaler * Dot + Sqrt_K) * Sn.x,
-                Scaler * Vn.y - (Scaler * Dot + Sqrt_K) * Sn.y,
-                Scaler * Vn.z - (Scaler * Dot + Sqrt_K) * Sn.z
-            );
-        #else
-            if (K < 0f) {
-                return new vec3(0f);
-            } else {
-                float Sqrt_K = MathF.Sqrt(K);
-                return new vec3(
-                    Scaler * Vn.x - (Scaler * Dot + Sqrt_K) * Sn.x,
-                    Scaler * Vn.y - (Scaler * Dot + Sqrt_K) * Sn.y,
-                    Scaler * Vn.z - (Scaler * Dot + Sqrt_K) * Sn.z
-                );
-            }
-        #endif
     }
 
     //##########################################################################################################################################################
