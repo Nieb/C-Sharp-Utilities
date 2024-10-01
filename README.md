@@ -12,7 +12,7 @@ A collection of various utilities.
 
 ## Vector -- Collision & Miscellaneous
 The intended use of the functions found in `Vector_Collision` & `Vector_Miscellaneous` is for fast prototyping & testing.
-In production, it would be wise to copy the code out of such functions and create tailored functions for your usecase.
+In production, it would be wise to copy the code out of such functions and create tailored functions for your use-case.
 
 For example:
   * Using `PointVsLine()` to test if the mouse is selecting a line.
