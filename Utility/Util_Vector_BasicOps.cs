@@ -128,10 +128,10 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //                                                                  "Cross" Product
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static float crs(vec2 A, vec2 B) => (A.x*B.y - A.y*B.x);
+    public static float cross(vec2 A, vec2 B) => (A.x*B.y - A.y*B.x);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static vec3 crs(vec3 A, vec3 B) => new vec3((A.y*B.z - A.z*B.y),  (A.z*B.x - A.x*B.z),  (A.x*B.y - A.y*B.x));
+    public static vec3 cross(vec3 A, vec3 B) => new vec3((A.y*B.z - A.z*B.y),  (A.z*B.x - A.x*B.z),  (A.x*B.y - A.y*B.x));
 
     //==========================================================================================================================================================
     //                                                                   "Dot" Product
@@ -145,14 +145,14 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //                                                                     "Distance"
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static float dst(vec2 A, vec2 B) {
+    public static float dist(vec2 A, vec2 B) {
         float Dlt_x = B.x - A.x;
         float Dlt_y = B.y - A.y;
         return MathF.Sqrt(Dlt_x*Dlt_x + Dlt_y*Dlt_y);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static float dst(vec3 A, vec3 B) {
+    public static float dist(vec3 A, vec3 B) {
         float Dlt_x = B.x - A.x;
         float Dlt_y = B.y - A.y;
         float Dlt_z = B.z - A.z;
