@@ -21,6 +21,5 @@ For example:
 
 I would rather keep these functions as primal as possible.
 As apposed to returning complex objects with various parameters of the collision event (with 3D collisions, the parameters can get particularly complex).
-
-Parameters, of which, many would not be used in a particular event, but could be used in any given event.
+Parameters, of which, many would go unused in a particular event, but _could_ be used in any given event.
 Ugh, just create tailored functions when you are done prototyping. :P
