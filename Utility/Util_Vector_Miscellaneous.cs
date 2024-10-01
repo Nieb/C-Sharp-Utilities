@@ -24,7 +24,10 @@ public static partial class VEC {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    //                                                                    "Delaunay"                                    Test if a Point is inside of a Triangle's Circumcircle.
+    //                                                                    "Delaunay"
+    ///
+    /// Test if a Point is inside of a Triangle's Circumcircle.
+    ///
     public static bool Delaunay(vec2 P, vec2 A, vec2 B, vec2 C) {
         float DltAB_x = B.x - A.x;
         float DltAB_y = B.y - A.y;
@@ -74,9 +77,14 @@ public static partial class VEC {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    //                                                                    "Projection"                                  Get Nearest-Point-On-Line from Point.
+    //                                                                    "Projection"
+    ///
+    /// Get Nearest-Point-On-Line from Point.
+    ///
+    ///     prj("Point", "LinePosition", "LineNormal")
+    ///
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static vec2 prj(vec2 P, vec2 Lp, vec2 Ln) {                                                                  //  (Point, LinePosition, LineNormal)
+    public static vec2 prj(vec2 P, vec2 Lp, vec2 Ln) {
 
         //  Distance from LinePosition to Nearest-Point-On-Line:
         float DotAP_AB = ((P.x - Lp.x) * Ln.x) + ((P.y - Lp.y) * Ln.y);
@@ -101,7 +109,10 @@ public static partial class VEC {
     }
 
     //==========================================================================================================================================================
-    public static vec2 prj_(vec2 P, vec2 La, vec2 Lb) {                                                                 //  (Point, LineStart, LineEnd)
+    ///
+    ///     prj_("Point", "LineA (start)", "LineB (end)")
+    ///
+    public static vec2 prj_(vec2 P, vec2 La, vec2 Lb) {
         float DltAP_x = P.x  - La.x;
         float DltAP_y = P.y  - La.y;
 
@@ -120,7 +131,7 @@ public static partial class VEC {
         );
     }
 
-    public static vec3 prj_(vec3 P, vec3 La, vec3 Lb) {                                                                 //  (Point, LineStart, LineEnd)
+    public static vec3 prj_(vec3 P, vec3 La, vec3 Lb) {
         float DltAP_x = P.x - La.x;
         float DltAP_y = P.y - La.y;
         float DltAP_z = P.z - La.z;
@@ -133,7 +144,7 @@ public static partial class VEC {
         float DltAB_Length_Sqrd = (DltAB_x * DltAB_x) + (DltAB_y * DltAB_y) + (DltAB_z * DltAB_z);
 
         //  Distance from LinePointA to Nearest-Point-On-Line, as multiple of DltAB:
-        float Scaler = DotAP_AB / DltAB_Length_Sqrd; // (LengthNew / LengthOld)
+        float Scaler = DotAP_AB / DltAB_Length_Sqrd;        // (LengthNew / LengthOld)
 
         return new vec3(
             La.x + (DltAB_x * Scaler),

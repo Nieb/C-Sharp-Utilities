@@ -36,7 +36,7 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //
-    //  https://www.desmos.com/calculator/d2o8t3dogy
+    //  https://www.desmos.com/calculator/6uaprr91ju
     //  https://entropymine.com/imageworsener/srgbformula/
     //
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
