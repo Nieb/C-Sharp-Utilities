@@ -4,7 +4,17 @@ namespace Utility;
 public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public const float EPSILON = 0.000_001f;
+    public const float FLOAT_NaN      = System.Single.NaN;
+
+    public const float FLOAT_NEG_INF  = System.Single.NegativeInfinity;
+    public const float FLOAT_MIN      = System.Single.MinValue;
+    public const float FLOAT_NEG_ZERO = System.Single.NegativeZero;
+    public const float FLOAT_MAX      = System.Single.MaxValue;
+    public const float FLOAT_INF      = System.Single.PositiveInfinity;
+
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    public const float EPSILON = 0.000001f;
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
@@ -27,13 +37,14 @@ public static partial class VEC {
   //public const float TWO_SQRT3 =   0.26794919243112270647255365849412763305719474618962f;     //  2 - sqrt(3)
 
     //==========================================================================================================================================================
-    public const float PIQ       =   0.78539816339744830961566084581987572104929234984378f;     //  pi / 4   (Radians =  45 Degrees)
-    public const float PIH       =   1.57079632679489661923132169163975144209858469968755f;     //  pi / 2   (Radians =  90 Degrees)
-    public const float PI        =   3.14159265358979323846264338327950288419716939937511f;     //  pi       (Radians = 180 Degrees)
-    public const float PI1H      =   4.71238898038468985769396507491925432629575409906266f;     //  pi * 1.5 (Radians = 270 Degrees)
-    public const float PI2       =   6.28318530717958647692528676655900576839433879875021f;     //  pi * 2   (Radians = 360 Degrees)  SurfaceArea of Half-UnitSphere.  (2pi * r*h)
-    public const float PI3       =   9.42477796076937971538793014983850865259150819812532f;     //  pi * 3   (Radians = 540 Degrees)
-    public const float PI4       =  12.56637061435917295385057353311801153678867759750042f;     //  pi * 4   (Radians = 720 Degrees)  SurfaceArea of UnitSphere.       (4pi * r^2)
+    public const float PIQ       =   0.78539816339744830961566084581987572104929234984378f;     //  pi / 4   (Radians ==  45 Degrees)
+    public const float PIH       =   1.57079632679489661923132169163975144209858469968755f;     //  pi / 2   (Radians ==  90 Degrees)
+    public const float PI        =   3.14159265358979323846264338327950288419716939937511f;     //  pi       (Radians == 180 Degrees)
+    public const float PI1H      =   4.71238898038468985769396507491925432629575409906266f;     //  pi * 1.5 (Radians == 270 Degrees)
+    public const float PI2       =   6.28318530717958647692528676655900576839433879875021f;     //  pi * 2   (Radians == 360 Degrees)  SurfaceArea of Half-UnitSphere.  (2pi * r*h)
+    public const float TAU       =   6.28318530717958647692528676655900576839433879875021f;     //
+    public const float PI3       =   9.42477796076937971538793014983850865259150819812532f;     //  pi * 3   (Radians == 540 Degrees)
+    public const float PI4       =  12.56637061435917295385057353311801153678867759750042f;     //  pi * 4   (Radians == 720 Degrees)  SurfaceArea of UnitSphere.       (4pi * r^2)
 
     public const float PI_RCP    =   0.31830988618379067153776752674502872406891929148091f;     //  1 /  pi
     public const float PI2_RCP   =   0.15915494309189533576888376337251436203445964574046f;     //  1 / 2pi
@@ -41,10 +52,13 @@ public static partial class VEC {
     public const float PI4_RCP   =   0.07957747154594766788444188168625718101722982287023f;     //  1 / 4pi
 
     //==========================================================================================================================================================
-    public const float EULER     =   2.71828182845904523536028747135266249775724709369996f;     //  Euler's number.
+    public const float E         =   2.71828182845904523536028747135266249775724709369996f;     //  Euler's number.
 
     public const float NATLOG2   =   0.69314718055994530941723212145817656807550013436026f;     //  ln(2)
     public const float NATLOG10  =   2.30258509299404568401799145468436420760110148862877f;     //  ln(10)
+
+                                                                                                //  2^x  inverse:  log(2, 2^x)
+                                                                                                //  x^2  inverse:  sqrt(x^2)
 
     //==========================================================================================================================================================
     public const float PHI       =   1.61803398874989484820458683436563811772030917980576f;     //  (1+sqrt(5)) / 2                     Golden Ratio.
@@ -61,31 +75,31 @@ public static partial class VEC {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static readonly vec2 ZERO2 = new vec2(0.0f, 0.0f);
-    public static readonly vec2 ONE2  = new vec2(1.0f, 1.0f);
+    public static readonly vec2 ZERO2 = new vec2(0f, 0f);
+    public static readonly vec2 ONE2  = new vec2(1f, 1f);
 
-    public static readonly vec2 AXIS2_X = new vec2(1.0f, 0.0f);
-    public static readonly vec2 AXIS2_Y = new vec2(0.0f, 1.0f);
+    public static readonly vec2 AXIS2_X = new vec2(1f, 0f);
+    public static readonly vec2 AXIS2_Y = new vec2(0f, 1f);
 
     public static readonly vec2 AXIS2_XY = new vec2(SQRT2RCP, SQRT2RCP);
 
     //==========================================================================================================================================================
-    public static readonly vec3 ZERO3 = new vec3(0.0f, 0.0f, 0.0f);
-    public static readonly vec3 ONE3  = new vec3(1.0f, 1.0f, 1.0f);
+    public static readonly vec3 ZERO3 = new vec3(0f, 0f, 0f);
+    public static readonly vec3 ONE3  = new vec3(1f, 1f, 1f);
 
-    public static readonly vec3 AXIS3_X = new vec3(1.0f, 0.0f, 0.0f);
-    public static readonly vec3 AXIS3_Y = new vec3(0.0f, 1.0f, 0.0f);
-    public static readonly vec3 AXIS3_Z = new vec3(0.0f, 0.0f, 1.0f);
+    public static readonly vec3 AXIS3_X = new vec3(1f, 0f, 0f);
+    public static readonly vec3 AXIS3_Y = new vec3(0f, 1f, 0f);
+    public static readonly vec3 AXIS3_Z = new vec3(0f, 0f, 1f);
 
-    public static readonly vec3 AXIS3_XY = new vec3(SQRT2RCP, SQRT2RCP,     0.0f);
-    public static readonly vec3 AXIS3_YZ = new vec3(    0.0f, SQRT2RCP, SQRT2RCP);
-    public static readonly vec3 AXIS3_XZ = new vec3(SQRT2RCP,     0.0f, SQRT2RCP);
+    public static readonly vec3 AXIS3_XY = new vec3(SQRT2RCP, SQRT2RCP,       0f);
+    public static readonly vec3 AXIS3_YZ = new vec3(      0f, SQRT2RCP, SQRT2RCP);
+    public static readonly vec3 AXIS3_XZ = new vec3(SQRT2RCP,       0f, SQRT2RCP);
 
     public static readonly vec3 AXIS3_XYZ = new vec3(SQRT3RCP, SQRT3RCP, SQRT3RCP);
 
     //==========================================================================================================================================================
-    public static readonly vec4 ZERO4 = new vec4(0.0f, 0.0f, 0.0f, 0.0f);
-    public static readonly vec4 ONE4  = new vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    public static readonly vec4 ZERO4 = new vec4(0f, 0f, 0f, 0f);
+    public static readonly vec4 ONE4  = new vec4(1f, 1f, 1f, 1f);
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
