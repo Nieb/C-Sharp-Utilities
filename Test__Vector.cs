@@ -4,7 +4,7 @@ internal static partial class Program {
     static void Test__Vector() {
         PRINT("\n[Utility.VEC]");
 
-
+        //======================================================================================================================================================
         RESULT("abs()", true
             &&    abs(-2f) == 2f    &&    abs(new vec2(-2f)) == new vec2(2f)    &&    abs(new vec3(-2f)) == new vec3(2f)    &&    abs(new vec4(-2f)) == new vec4(2f)
             &&    abs(-1f) == 1f    &&    abs(new vec2(-1f)) == new vec2(1f)    &&    abs(new vec3(-1f)) == new vec3(1f)    &&    abs(new vec4(-1f)) == new vec4(1f)
@@ -13,9 +13,7 @@ internal static partial class Program {
             &&    abs( 2f) == 2f    &&    abs(new vec2( 2f)) == new vec2(2f)    &&    abs(new vec3( 2f)) == new vec3(2f)    &&    abs(new vec4( 2f)) == new vec4(2f)
         );
 
-
-
-
+        //======================================================================================================================================================
         PRINT("");
         RESULT("avg()", true
             &&    avg(0f, 1f        ) == 0.5f    &&    avg(new vec2(0f), new vec2(1f)                            ) == new vec2(0.5f)    &&    avg(new vec3(0f), new vec3(1f)                            ) == new vec3(0.5f)
@@ -23,9 +21,7 @@ internal static partial class Program {
             &&    avg(0f, 1f, 2f, 3f) == 1.5f    &&    avg(new vec2(0f), new vec2(1f), new vec2(2f), new vec2(3f)) == new vec2(1.5f)    &&    avg(new vec3(0f), new vec3(1f), new vec3(2f), new vec3(3f)) == new vec3(1.5f)
         );
 
-
-
-
+        //======================================================================================================================================================
         PRINT("");
         RESULT("clamp()", true
             && clamp(-3f, -1f, 1f) == -1f
@@ -57,9 +53,7 @@ internal static partial class Program {
             && wrap( 8f, 0f, 4f) == 0f
         );
 
-
-
-
+        //======================================================================================================================================================
         PRINT("");
         RESULT("min()", true
             && min(-2f,  2f) == -2f
@@ -81,6 +75,6 @@ internal static partial class Program {
             && max( 2f, -2f) ==  2f
         );
 
-
+        //======================================================================================================================================================
     }
 }

@@ -5,16 +5,13 @@ internal static partial class Program {
     static void Test__String() {
         PRINT("\n[Utility.STR]");
 
-
-
-
+        //======================================================================================================================================================
         RESULT("RandomDigits()", true
             && RandomDigits(5).Length      == 5
             && RandomDigits(5).IsNumeric() == true
         );
 
-
-
+        //======================================================================================================================================================
         PRINT("");
         RESULT("ToBool()", true
             && "true".ToBool() == true
@@ -56,9 +53,7 @@ internal static partial class Program {
             && "ABC=123, def=Xyz, G=456, H=1.414, i=0, ABC=789".ToNameValueCollection()["i"]   == "0"
         );
 
-
-
-
+        //======================================================================================================================================================
         PRINT("");
         RESULT("ByteArrayToString()", true
             && ByteArrayToString(new byte[] { 0xFF, 0xCC, 0xAA })                                  == "FF CC AA "
@@ -83,9 +78,7 @@ internal static partial class Program {
             && IntToBinaryString((ulong )0xFFFF_FFFF_FFFF_FFFF) == "11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111"
         );
 
-
-
-
+        //======================================================================================================================================================
         PRINT("");
         RESULT(".IsNumeric()", true
             && "123".IsNumeric() == true
@@ -123,9 +116,7 @@ internal static partial class Program {
             && ((string)null).IsVoid() == true
         );
 
-
-
-
+        //======================================================================================================================================================
         PRINT("");
         RESULT(".ContainsAny()", true
             && "blarg".ContainsAny( new string[] {"ugh", "arg"} ) == true
@@ -136,6 +127,8 @@ internal static partial class Program {
             && "blarg".ContainsAny_GetMatches( new string[] {"bla", "ugh", "arg"} )[1] == "arg"
         );
 
+        //======================================================================================================================================================
+        PRINT("");
         RESULT(".Indent()", true
             && "blarg\nblarg\nblarg".Indent() == "    blarg\n    blarg\n    blarg"
         );
@@ -162,5 +155,6 @@ internal static partial class Program {
             && "blarg BLARG bLaRg".ToTitleCase() == "Blarg Blarg Blarg"
         );
 
+        //======================================================================================================================================================
     }
 }

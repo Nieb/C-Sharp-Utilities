@@ -4,7 +4,7 @@ internal static partial class Program {
     static void Test__Vector_Color() {
         PRINT("\n[Utility.VEC -- Color]");
 
-
+        //======================================================================================================================================================
         RESULT("ByteToUnit()", true
             && ByteToUnit(  0) == 0.0f             && ByteToUnit(  1) == 0.0039215686274f && ByteToUnit(  2) == 0.0078431372549f && ByteToUnit(  3) == 0.0117647058823f && ByteToUnit(  4) == 0.0156862745098f && ByteToUnit(  5) == 0.0196078431372f && ByteToUnit(  6) == 0.0235294117647f && ByteToUnit(  7) == 0.0274509803921f
             && ByteToUnit(  8) == 0.0313725490196f && ByteToUnit(  9) == 0.0352941176470f && ByteToUnit( 10) == 0.0392156862745f && ByteToUnit( 11) == 0.0431372549019f && ByteToUnit( 12) == 0.0470588235294f && ByteToUnit( 13) == 0.0509803921568f && ByteToUnit( 14) == 0.0549019607843f && ByteToUnit( 15) == 0.0588235294117f
@@ -89,9 +89,7 @@ internal static partial class Program {
             && UnitToByte(0.9725490196078f) == 248 && UnitToByte(0.9764705882352f) == 249 && UnitToByte(0.9803921568627f) == 250 && UnitToByte(0.9843137254901f) == 251 && UnitToByte(0.9882352941176f) == 252 && UnitToByte(0.9921568627450f) == 253 && UnitToByte(0.9960784313725f) == 254 && UnitToByte(1.0f)             == 255
         );
 
-
-
-
+        //======================================================================================================================================================
         PRINT("");
         RESULT("sRGB_To_Lin()", true
             && sRGB_To_Lin(0.00f) == 0.0f         && sRGB_To_Lin(0.01f) == 0.0007739938f && sRGB_To_Lin(0.02f) == 0.0015479876f && sRGB_To_Lin(0.03f) == 0.0023219814f && sRGB_To_Lin(0.04f) == 0.0030959751f && sRGB_To_Lin(0.05f) == 0.0039359396f && sRGB_To_Lin(0.06f) == 0.0048963088f && sRGB_To_Lin(0.07f) == 0.005981059f && sRGB_To_Lin(0.08f) == 0.0071944077f && sRGB_To_Lin(0.09f) == 0.008540383f
@@ -121,9 +119,7 @@ internal static partial class Program {
             && Lin_To_sRGB(1.0f) == 0.99999994f
         );
 
-
-
-
+        //======================================================================================================================================================
         PRINT("");
         RESULT("FromHSV()", true
             && round(FromHSV(-3.6f, 1f, 1f), 0.000001f) == new vec3(1.0f, 0.0f, 0.0f)  &&  round(FromHSV(-3.3f, 1f, 1f), 0.000001f) == new vec3(1.0f, 0.5f, 0.0f)
