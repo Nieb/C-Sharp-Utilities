@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Utility;
 public static partial class VEC {
@@ -8,18 +9,20 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool PointVsPoint(vec2 Pa, vec2 Pb, float Threshold) =>
         PointVsCircle(Pa, Pb, Threshold);
 
     //##########################################################################################################################################################
     public static bool PointVsCircle(vec2 P, vec2 Cp, float Cr) {               //  ( Point,  Circle-Position,  Circle-Radius )
-        float Dlt_X = P.x - Cp.x;
-        float Dlt_Y = P.y - Cp.y;
-        return (Dlt_X*Dlt_X + Dlt_Y*Dlt_Y < Cr*Cr);
+        float d_x = P.x - Cp.x;
+        float d_y = P.y - Cp.y;
+        return (d_x*d_x + d_y*d_y < Cr*Cr);
     }
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool PointVsAar(vec2 P, vec2 Rp, vec2 Rs) => (                //  ( Point,  Rectangle-Position,  Rectangle-Size )
            P.x <  Rp.x+Rs.x                                                     //      +Y +--------@ RectSiz
         && P.x >= Rp.x                                                          //         |        |
@@ -29,9 +32,9 @@ public static partial class VEC {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static bool PointVsTriangle(vec2 P, vec2 Ta, vec2 Tb, vec2 Tc) {        //  ( Point, Triangle(Ta, Tb, Tc) )
-        float dPA_x = Ta.x - P.x;                                                //  Winding is Anti-Clockwise.
-        float dPA_y = Ta.y - P.y;                                                //  https://www.desmos.com/calculator/dzkn7zysvv
+    public static bool PointVsTriangle(vec2 P, vec2 Ta, vec2 Tb, vec2 Tc) {     //  ( Point, Triangle(Ta, Tb, Tc) )
+        float dPA_x = Ta.x - P.x;                                               //  Winding is Anti-Clockwise.
+        float dPA_y = Ta.y - P.y;                                               //  https://www.desmos.com/calculator/dzkn7zysvv
         float dPB_x = Tb.x - P.x;
         float dPB_y = Tb.y - P.y;
         float dPC_x = Tc.x - P.x;
@@ -41,16 +44,51 @@ public static partial class VEC {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
+    public static bool PointVsLine(vec2 P,                                      //  Point
+                                   vec2 La, vec2 Lb, float Tolerance) {         //  Line-Point-A, Line-Point-B
+
+        //if (P.x == La.x && P.y == La.y) return true;  The occurrence of these is so rare that it is not worth checking for.
+        //if (P.x == Lb.x && P.y == Lb.y) return true;
+
+        float dAP_x =  P.x - La.x;
+        float dAP_y =  P.y - La.y;
+
+        float dAB_x = Lb.x - La.x;
+        float dAB_y = Lb.y - La.y;
+
+        float DotAP_AB = (dAP_x * dAB_x) + (dAP_y * dAB_y);
+        float DotAB_AB = (dAB_x * dAB_x) + (dAB_y * dAB_y);
+
+        // Get distance to NearestPointOnLine from LinePointA as multiple of DeltaAB:
+        float Scaler = DotAP_AB / DotAB_AB;
+
+        // Is ProjectedPoint going to be between LinePointA and LinePointB:
+        if (Scaler < 0f || Scaler >= 1f) return false; // -1
+
+        // Project Point onto Line:
+        float PP_x = dAB_x * Scaler;
+        float PP_y = dAB_y * Scaler;
+
+        // Distance between Point and ProjectedPoint:
+        float dPPP_x = dAP_x - PP_x;
+        float dPPP_y = dAP_y - PP_y;
+
+        return (dPPP_x*dPPP_x + dPPP_y*dPPP_y < Tolerance*Tolerance);
+    }
+
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static bool AarVsAar(vec2 Rct1_Pos, vec2 Rct1_Siz,
-                                vec2 Rct2_Pos, vec2 Rct2_Siz) => (
-           Rct1_Pos.x            <  Rct2_Pos.x+Rct2_Siz.x
-        && Rct1_Pos.x+Rct1_Siz.x >= Rct2_Pos.x
-        && Rct1_Pos.y            <  Rct2_Pos.y+Rct2_Siz.y
-        && Rct1_Pos.y+Rct1_Siz.y >= Rct2_Pos.y
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool AarVsAar(vec2 Rp1, vec2 Rs1,                             //  Rectangle-Position, Rectangle-Size
+                                vec2 Rp2, vec2 Rs2) => (
+           Rp1.x       <  Rp2.x+Rs2.x
+        && Rp1.x+Rs1.x >= Rp2.x
+        && Rp1.y       <  Rp2.y+Rs2.y
+        && Rp1.y+Rs1.y >= Rp2.y
     );
 
     //##########################################################################################################################################################
@@ -59,42 +97,42 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static bool CircleVsCircle(vec2 Cir1_Pos, float Cir1_Rds,
-                                      vec2 Cir2_Pos, float Cir2_Rds) {
-        float Dlt_X = Cir1_Pos.x - Cir2_Pos.x;
-        float Dlt_Y = Cir1_Pos.y - Cir2_Pos.y;
-        return ((Dlt_X*Dlt_X + Dlt_Y*Dlt_Y) < (Cir1_Rds*Cir1_Rds + Cir2_Rds*Cir2_Rds));
+    public static bool CircleVsCircle(vec2 Cp1, float Cr1,                      //  Circle-Position   , Circle-Radius
+                                      vec2 Cp2, float Cr2) {
+        float d_x = Cp1.x - Cp2.x;
+        float d_y = Cp1.y - Cp2.y;
+        return ((d_x*d_x + d_y*d_y) < (Cr1*Cr1 + Cr2*Cr2));
     }
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static bool CircleVsAar(vec2 Cir_Pos, float Cir_Rds,
-                                   vec2 Rct_Pos, vec2  Rct_Siz) {
+    public static bool CircleVsAar(vec2 Cp, float Cr,                           //  Circle-Position   , Circle-Radius
+                                   vec2 Rp, vec2  Rs) {                         //  Rectangle-Position, Rectangle-Size
 
-        float Cir_Lf = Cir_Pos.x - Cir_Rds; // "Circle Left"
-        float Cir_Rt = Cir_Pos.x + Cir_Rds; // "Circle Right"
-        float Cir_Bm = Cir_Pos.y - Cir_Rds; // "Circle Bottom"
-        float Cir_Tp = Cir_Pos.y + Cir_Rds; // "Circle Top"
+        float C_Lf = Cp.x - Cr; // "Circle Left"
+        float C_Rt = Cp.x + Cr; // "Circle Right"
+        float C_Bm = Cp.y - Cr; // "Circle Bottom"
+        float C_Tp = Cp.y + Cr; // "Circle Top"
 
-        float Rct_Lt = Rct_Pos.x;             // "Rectangle Left"
-        float Rct_Rt = Rct_Pos.x + Rct_Siz.x; // "Rectangle Right"
-        float Rct_Bm = Rct_Pos.y;             // "Rectangle Bottom"
-        float Rct_Tp = Rct_Pos.y + Rct_Siz.y; // "Rectangle Top"
+        float R_Lf = Rp.x;        // "Rectangle Left"
+        float R_Rt = Rp.x + Rs.x; // "Rectangle Right"
+        float R_Bm = Rp.y;        // "Rectangle Bottom"
+        float R_Tp = Rp.y + Rs.y; // "Rectangle Top"
 
-        if (Cir_Lf > Rct_Rt || Cir_Bm > Rct_Tp || Cir_Rt < Rct_Lt || Cir_Tp < Rct_Bm) return false;
+        if (C_Lf > R_Rt || C_Bm > R_Tp || C_Rt < R_Lf || C_Tp < R_Bm) return false;
 
-        if      (Cir_Pos.y >= Rct_Bm && Cir_Pos.y < Rct_Tp && Cir_Lf < Rct_Rt && Cir_Rt > Rct_Lt) return true;
-        else if (Cir_Pos.x >= Rct_Lt && Cir_Pos.x < Rct_Rt && Cir_Bm < Rct_Tp && Cir_Tp > Rct_Bm) return true;
+        if      (Cp.y >= R_Bm && Cp.y < R_Tp && C_Lf < R_Rt && C_Rt > R_Lf) return true;
+        else if (Cp.x >= R_Lf && Cp.x < R_Rt && C_Bm < R_Tp && C_Tp > R_Bm) return true;
 
-        float Dlt_X = (Cir_Pos.x < Rct_Lt) ? Cir_Pos.x - Rct_Lt
-                    : (Cir_Pos.x > Rct_Rt) ? Cir_Pos.x - Rct_Rt
-                    : 0.0f;
+        float d_x = (Cp.x < R_Lf) ? Cp.x - R_Lf
+                  : (Cp.x > R_Rt) ? Cp.x - R_Rt
+                  : 0f;
 
-        float Dlt_Y = (Cir_Pos.y < Rct_Bm) ? Cir_Pos.y - Rct_Bm
-                    : (Cir_Pos.y > Rct_Tp) ? Cir_Pos.y - Rct_Tp
-                    : 0.0f;
+        float d_y = (Cp.y < R_Bm) ? Cp.y - R_Bm
+                  : (Cp.y > R_Tp) ? Cp.y - R_Tp
+                  : 0f;
 
-        if (Dlt_X*Dlt_X + Dlt_Y*Dlt_Y <= Cir_Rds*Cir_Rds) return true;
+        if (d_x*d_x + d_y*d_y <= Cr*Cr) return true;
 
         return false;
     }
@@ -105,158 +143,83 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    //public static int WhichSideOfLine(vec2 Pnt,
-    //                                  vec2 LinA, vec2 LinB) {
-    //    float Determinant = (Pnt.x-LinA.x)*(LinB.y-LinA.y) - (Pnt.y-LinA.y)*(LinB.x-LinA.x); // cross(DeltaAP, DeltaAB)
+    //public static int WhichSideOfLine(vec2 P,
+    //                                  vec2 La, vec2 Lb) {
+    //    float Determinant = (P.x-La.x)*(Lb.y-La.y) - (P.y-La.y)*(Lb.x-La.x); // cross(DeltaAP, DeltaAB)
     //    //         P           1
     //    //
     //    //  A──────P──────B    0
     //    //
     //    //         P          -1
-    //    return 0 + (Determinant > 0.0) - (Determinant < 0.0);
+    //    return 0 + (Determinant > 0f) - (Determinant < 0f);
     //}
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static bool PointVsLine(vec2 Pnt,
-                                   vec2 LinA, vec2 LinB, float Tolerance) {
-        //if (Pnt.x = LinA.x && Pnt.y = LinA.y) return true;  The occurrence of these is so rare that it is not worth checking for.
-        //if (Pnt.x = LinB.x && Pnt.y = LinB.y) return true;
-
-        float DltAP_X =  Pnt.x - LinA.x;
-        float DltAP_Y =  Pnt.y - LinA.y;
-
-        float DltAB_X = LinB.x - LinA.x;
-        float DltAB_Y = LinB.y - LinA.y;
-
-        float DotAP_AB = (DltAP_X * DltAB_X) + (DltAP_Y * DltAB_Y);
-        float DotAB_AB = (DltAB_X * DltAB_X) + (DltAB_Y * DltAB_Y);
-
-        // Get distance to NearestPointOnLine from LinA as multiple of DltAB:
-        float DltAB_Scalar = DotAP_AB / DotAB_AB;
-
-        // Is ProjectedPoint going to be between A and B:
-        if (DltAB_Scalar < 0.0 || DltAB_Scalar >= 1.0) return false; // -1
-
-        // Project 'Pnt' onto Line:
-        float PrjPnt_X = DltAB_X * DltAB_Scalar;
-        float PrjPnt_Y = DltAB_Y * DltAB_Scalar;
-
-        // Distance between 'Pnt' and 'PrjPnt':
-        float DltPPP_X = DltAP_X - PrjPnt_X;
-        float DltPPP_Y = DltAP_Y - PrjPnt_Y;
-
-        return (DltPPP_X*DltPPP_X + DltPPP_Y*DltPPP_Y < Tolerance*Tolerance);
-    }
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    public static bool PointVsLine_1(vec2 Pnt,
-                                     vec2 LinA, vec2 LinB, float Tolerance) {
-        float DltPA_X = LinA.x - Pnt.x;
-        float DltPA_Y = LinA.y - Pnt.y;
-
-        float DltPB_X = LinB.x - Pnt.x;
-        float DltPB_Y = LinB.y - Pnt.y;
-
-        float APB_Len = MathF.Sqrt(DltPA_X*DltPA_X + DltPA_Y*DltPA_Y) + MathF.Sqrt(DltPB_X*DltPB_X + DltPB_Y*DltPB_Y);   //@@  SQRTs can likely be optimized out.
-
-        float DltAB_X = LinB.x - LinA.x;
-        float DltAB_Y = LinB.y - LinA.y;
-
-        float AB_Len  = MathF.Sqrt(DltAB_X*DltAB_X + DltAB_Y*DltAB_Y);    //@@  SQRT can likely be optimized out.
-
-        return (APB_Len < AB_Len + Tolerance) && (APB_Len > AB_Len - Tolerance);
-    }
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    public static bool PointVsLine_2(vec2 Pnt,
-                                     vec2 LinA, vec2 LinB, float Tolerance) {
-        float DltAB_X = LinB.x - LinA.x;
-        float DltAB_Y = LinB.y - LinA.y;
-        float LenAB = DltAB_X*DltAB_X + DltAB_Y*DltAB_Y;
-
-        float DltPA_X = LinA.x - Pnt.x;
-        float DltPA_Y = LinA.y - Pnt.y;
-        float LenPA = DltPA_X*DltPA_X + DltPA_Y*DltPA_Y;
-        if (LenPA > LenAB) return false;
-
-        float DltPB_X = LinB.x - Pnt.x;
-        float DltPB_Y = LinB.y - Pnt.y;
-        float LenPB = DltPB_X*DltPB_X + DltPB_Y*DltPB_Y;
-        if (LenPB > LenAB) return false;
-
-        LenAB = 1.0f / MathF.Sqrt(LenAB);   //@@ SQRT can likely be optimized out.
-
-        float Dtrmnt = DltPB_X*DltPA_Y - DltPA_X*DltPB_Y;
-        Dtrmnt = Dtrmnt*LenAB;
-
-        return (Dtrmnt > -Tolerance) && (Dtrmnt < Tolerance);
-    }
-
-    //##########################################################################################################################################################
-    //##########################################################################################################################################################
-    public static bool LineVsLine(vec2 Lin1A, vec2 Lin1B,  //  Parallel overlapping Lines will not test positive as a collision.
-                                  vec2 Lin2A, vec2 Lin2B ) {
+    ///
+    /// Parallel overlapping Lines will not test positive as a collision.
+    ///
+    public static bool LineVsLine(vec2 La1, vec2 Lb1,
+                                  vec2 La2, vec2 Lb2 ) {
         //=====================================================================================================================================
-        float Dlt_Lin1_X   = Lin1B.x - Lin1A.x; //  Line1 in LocalSpace.   A = (0,0)  B = (#,#)
-        float Dlt_Lin1_Y   = Lin1B.y - Lin1A.y;
-        float Dlt_Lin2_X   = Lin2B.x - Lin2A.x; //  Line2 in LocalSpace.   A = (0,0)  B = (#,#)
-        float Dlt_Lin2_Y   = Lin2B.y - Lin2A.y;
-        float Dlt_LinPos_X = Lin1A.x - Lin2A.x;
-        float Dlt_LinPos_Y = Lin1A.y - Lin2A.y;
+        float dAB1_x   = Lb1.x - La1.x;
+        float dAB1_y   = Lb1.y - La1.y;
+        float dAB2_x   = Lb2.x - La2.x;
+        float dAB2_y   = Lb2.y - La2.y;
+        float dA12_x = La1.x - La2.x;
+        float dA12_y = La1.y - La2.y;
         //=====================================================================================================================================
-        float n1 = Dlt_Lin1_X*Dlt_LinPos_Y - Dlt_Lin1_Y*Dlt_LinPos_X; //  Dlt_Lin1  cross  Dlt_LinPos
-        float n2 = Dlt_Lin2_X*Dlt_LinPos_Y - Dlt_Lin2_Y*Dlt_LinPos_X; //  Dlt_Lin2  cross  Dlt_LinPos
-        float d  = Dlt_Lin1_X*Dlt_Lin2_Y   - Dlt_Lin1_Y*Dlt_Lin2_X;   //  Dlt_Lin1  cross  Dlt_Lin2
+        float n1 = dAB1_x*dA12_y - dAB1_y*dA12_x; //  DeltaAB1  cross  DeltaA12
+        float n2 = dAB2_x*dA12_y - dAB2_y*dA12_x; //  DeltaAB2  cross  DeltaA12
+        float d  = dAB1_x*dAB2_y - dAB1_y*dAB2_x; //  DeltaAB1  cross  DeltaAB2
         float r  = n1 / d;     //@@  DivByZero possible?
         //@@  EarlyOut?
         float s  = n2 / d;
         //=====================================================================================================================================
-        return (r >= 0.0 && r <= 1.0) && (s >= 0.0 && s <= 1.0);
+        return (r >= 0f && r <= 1f) && (s >= 0f && s <= 1f);
     }
 
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static bool LineVsAar(vec2 LinA,    vec2 LinB,
-                                 vec2 Rct_Pos, vec2 Rct_Siz ) {  // Pos = BottomLeft     Siz = (Width, Height)
+    public static bool LineVsAar(vec2 La, vec2 Lb,                              //  Line-Point-A      , Line-Point-B
+                                 vec2 Rp, vec2 Rs ) {                           //  Rectangle-Position, Rectangle-Size
         //=====================================================================================================================================
-        float Rct_Rt = Rct_Pos.x + Rct_Siz.x;
-        float Rct_Bm = Rct_Pos.y + Rct_Siz.y;
+        float R_Rt = Rp.x + Rs.x;
+        float R_Bm = Rp.y + Rs.y;       //@@  Fix Y inversion...
         //=====================================================================================================================================
-        // Is Area-of-Line over Area-of-Rectangle?
-        float Lin_Lf = 0.0f;
-        float Lin_Rt = 0.0f;
-        if      (LinA.x <= LinB.x) { Lin_Lf = LinA.x; Lin_Rt = LinB.x; }
-        else if (LinA.x >  LinB.x) { Lin_Lf = LinB.x; Lin_Rt = LinA.x; }
+        //  Is Area-of-Line over Area-of-Rectangle?
+        float L_Lf = 0f;
+        float L_Rt = 0f;
+        if      (La.x <= Lb.x) { L_Lf = La.x; L_Rt = Lb.x; }
+        else if (La.x >  Lb.x) { L_Lf = Lb.x; L_Rt = La.x; }
 
-        float Lin_Bm = 0.0f;
-        float Lin_Tp = 0.0f;
-        if      (LinA.y <= LinB.y) { Lin_Bm = LinB.y; Lin_Tp = LinA.y; }
-        else if (LinA.y >  LinB.y) { Lin_Bm = LinA.y; Lin_Tp = LinB.y; }
+        float L_Bm = 0f;
+        float L_Tp = 0f;
+        if      (La.y <= Lb.y) { L_Bm = Lb.y; L_Tp = La.y; }
+        else if (La.y >  Lb.y) { L_Bm = La.y; L_Tp = Lb.y; }
 
-        if (Rct_Pos.x >= Lin_Rt || Rct_Pos.y >= Lin_Bm || Rct_Rt < Lin_Lf || Rct_Bm < Lin_Tp) return false;
+        if (Rp.x >= L_Rt || Rp.y >= L_Bm || R_Rt < L_Lf || R_Bm < L_Tp) return false;
         //=====================================================================================================================================
-        // Is PointB in Rectangle?
-        // Check PointB first, it's typically used as the destination of a movement vector.
-        if (   LinB.x <  Rct_Rt
-            && LinB.x >= Rct_Pos.x
-            && LinB.y <  Rct_Bm
-            && LinB.y >= Rct_Pos.y) return true;
+        //  Is PointB in Rectangle?     Check B first, it's typically used as the destination of a movement vector.
+        if (   Lb.x <  R_Rt
+            && Lb.x >= Rp.x
+            && Lb.y <  R_Bm
+            && Lb.y >= Rp.y) return true;
         //=====================================================================================================================================
         // Is PointA in Rectangle?
-        if (   LinA.x <  Rct_Rt
-            && LinA.x >= Rct_Pos.x
-            && LinA.y <  Rct_Bm
-            && LinA.y >= Rct_Pos.y) return true;
+        if (   La.x <  R_Rt
+            && La.x >= Rp.x
+            && La.y <  R_Bm
+            && La.y >= Rp.y) return true;
         //=====================================================================================================================================
         // Are any of the 4 Rectangle-Lines colliding with the Line?
-        float Delta_1A_1B_X = LinB.x - LinA.x;
-        float Delta_1A_1B_Y = LinB.y - LinA.y;
-        float Delta_2A_2B_X;
-        float Delta_2A_2B_Y;
-        float Delta_1A_2A_X;
-        float Delta_1A_2A_Y;
+        float d1A_1B_x = Lb.x - La.x;
+        float d1A_1B_y = Lb.y - La.y;
+        float d2A_2B_x;
+        float d2A_2B_y;
+        float d1A_2A_x;
+        float d1A_2A_y;
         //=====================================================================================================================================
         float n1;
         float n2;
@@ -264,104 +227,89 @@ public static partial class VEC {
         float r;
         float s;
         //=====================================================================================================================================
-        Delta_2A_2B_X = Rct_Rt    - Rct_Pos.x;
-        Delta_2A_2B_Y = Rct_Pos.y - Rct_Pos.y;
-        Delta_1A_2A_X = LinA.x - Rct_Pos.x;
-        Delta_1A_2A_Y = LinA.y - Rct_Pos.y;
-        n1 = (Delta_1A_2A_Y * Delta_1A_1B_X) - (Delta_1A_2A_X * Delta_1A_1B_Y);
-        n2 = (Delta_1A_2A_Y * Delta_2A_2B_X) - (Delta_1A_2A_X * Delta_2A_2B_Y);
-        d  = (Delta_1A_1B_X * Delta_2A_2B_Y) - (Delta_1A_1B_Y * Delta_2A_2B_X);
+        d2A_2B_x = R_Rt - Rp.x;
+        d2A_2B_y = Rp.y - Rp.y;
+        d1A_2A_x = La.x - Rp.x;
+        d1A_2A_y = La.y - Rp.y;
+        n1 = (d1A_2A_y * d1A_1B_x) - (d1A_2A_x * d1A_1B_y);
+        n2 = (d1A_2A_y * d2A_2B_x) - (d1A_2A_x * d2A_2B_y);
+        d  = (d1A_1B_x * d2A_2B_y) - (d1A_1B_y * d2A_2B_x);
         r  = n1 / d;
         s  = n2 / d;
-        if (r >= 0.0 && r <= 1.0 && s >= 0.0 && s <= 1.0) return true;
+        if (r >= 0f && r <= 1f && s >= 0f && s <= 1f) return true;
         //=====================================================================================================================================
-        Delta_2A_2B_X = Rct_Rt - Rct_Rt;
-        Delta_2A_2B_Y = Rct_Bm - Rct_Pos.y;
-        Delta_1A_2A_X = LinA.x - Rct_Rt;
-        Delta_1A_2A_Y = LinA.y - Rct_Pos.y;
-        n1 = (Delta_1A_2A_Y * Delta_1A_1B_X) - (Delta_1A_2A_X * Delta_1A_1B_Y);
-        n2 = (Delta_1A_2A_Y * Delta_2A_2B_X) - (Delta_1A_2A_X * Delta_2A_2B_Y);
-        d  = (Delta_1A_1B_X * Delta_2A_2B_Y) - (Delta_1A_1B_Y * Delta_2A_2B_X);
+        d2A_2B_x = R_Rt - R_Rt;
+        d2A_2B_y = R_Bm - Rp.y;
+        d1A_2A_x = La.x - R_Rt;
+        d1A_2A_y = La.y - Rp.y;
+        n1 = (d1A_2A_y * d1A_1B_x) - (d1A_2A_x * d1A_1B_y);
+        n2 = (d1A_2A_y * d2A_2B_x) - (d1A_2A_x * d2A_2B_y);
+        d  = (d1A_1B_x * d2A_2B_y) - (d1A_1B_y * d2A_2B_x);
         r  = n1 / d;
         s  = n2 / d;
-        if (r >= 0.0 && r <= 1.0 && s >= 0.0 && s <= 1.0) return true;
+        if (r >= 0f && r <= 1f && s >= 0f && s <= 1f) return true;
         //=====================================================================================================================================
-        Delta_2A_2B_X = Rct_Pos.x - Rct_Rt;
-        Delta_2A_2B_Y = Rct_Bm    - Rct_Bm;
-        Delta_1A_2A_X = LinA.x - Rct_Rt;
-        Delta_1A_2A_Y = LinA.y - Rct_Bm;
-        n1 = (Delta_1A_2A_Y * Delta_1A_1B_X) - (Delta_1A_2A_X * Delta_1A_1B_Y);
-        n2 = (Delta_1A_2A_Y * Delta_2A_2B_X) - (Delta_1A_2A_X * Delta_2A_2B_Y);
-        d  = (Delta_1A_1B_X * Delta_2A_2B_Y) - (Delta_1A_1B_Y * Delta_2A_2B_X);
+        d2A_2B_x = Rp.x - R_Rt;
+        d2A_2B_y = R_Bm - R_Bm;
+        d1A_2A_x = La.x - R_Rt;
+        d1A_2A_y = La.y - R_Bm;
+        n1 = (d1A_2A_y * d1A_1B_x) - (d1A_2A_x * d1A_1B_y);
+        n2 = (d1A_2A_y * d2A_2B_x) - (d1A_2A_x * d2A_2B_y);
+        d  = (d1A_1B_x * d2A_2B_y) - (d1A_1B_y * d2A_2B_x);
         r  = n1 / d;
         s  = n2 / d;
-        if (r >= 0.0 && r <= 1.0 && s >= 0.0 && s <= 1.0) return true;
+        if (r >= 0f && r <= 1f && s >= 0f && s <= 1f) return true;
         //=====================================================================================================================================
         // The function will never make it here.
-        //Delta_2A_2B_X = Rct_Pos.x - Rct_Pos.x;
-        //Delta_2A_2B_Y = Rct_Pos.y - Rct_Bm;
-        //Delta_1A_2A_X = LinA.x - Rct_Pos.x;
-        //Delta_1A_2A_Y = LinA.y - Rct_Bm;
-        //n1 = (Delta_1A_2A_Y * Delta_1A_1B_X) - (Delta_1A_2A_X * Delta_1A_1B_Y);
-        //n2 = (Delta_1A_2A_Y * Delta_2A_2B_X) - (Delta_1A_2A_X * Delta_2A_2B_Y);
-        //d  = (Delta_1A_1B_X * Delta_2A_2B_Y) - (Delta_1A_1B_Y * Delta_2A_2B_X);
+        //d2A_2B_x = Rp.x - Rp.x;
+        //d2A_2B_y = Rp.y - R_Bm;
+        //d1A_2A_x = La.x - Rp.x;
+        //d1A_2A_y = La.y - R_Bm;
+        //n1 = (d1A_2A_y * d1A_1B_x) - (d1A_2A_x * d1A_1B_y);
+        //n2 = (d1A_2A_y * d2A_2B_x) - (d1A_2A_x * d2A_2B_y);
+        //d  = (d1A_1B_x * d2A_2B_y) - (d1A_1B_y * d2A_2B_x);
         //r  = n1 / d;
         //s  = n2 / d;
-        //IF (r >= 0.0 && r <= 1.0 && s >= 0.0 && s <= 1.0) return true;
+        //if (r >= 0f && r <= 1f && s >= 0f && s <= 1f) return true;
         //=====================================================================================================================================
         return false;
     }
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static bool LineVsCircle(vec2 LinA   , vec2 LinB,
-                                    vec2 Cir_Pos, float Cir_Rds) {
-        //=====================================================================================================================================
-        float Cir_Lf = Cir_Pos.x - Cir_Rds;
-        float Cir_Tp = Cir_Pos.y - Cir_Rds;
-        float Cir_Rt = Cir_Pos.x + Cir_Rds;
-        float Cir_Bm = Cir_Pos.y + Cir_Rds;
-        //=====================================================================================================================================
-        // Is Area-of-Line over Area-of-Circle?
-        float Lin_Lf = 0.0f;
-        float Lin_Rt = 0.0f;
-        if      (LinA.x <= LinB.x) { Lin_Lf = LinA.x; Lin_Rt = LinB.x; }
-        else if (LinA.x >  LinB.x) { Lin_Lf = LinB.x; Lin_Rt = LinA.x; }
+    public static bool LineVsCircle(vec2 La, vec2 Lb,                           //  Line-Point-A   , Line-Point-B
+                                    vec2 Cp, float Cr) {                        //  Circle-Position, Circle-Radius
 
-        float Lin_Tp = 0.0f;
-        float Lin_Bm = 0.0f;
-        if      (LinA.y <= LinB.y) { Lin_Tp = LinA.y; Lin_Bm = LinB.y; }
-        else if (LinA.y >  LinB.y) { Lin_Tp = LinB.y; Lin_Bm = LinA.y; }
+        //  CircleRadius Squared:
+        float Cr_Sqrd = Cr*Cr;
 
-        if (Cir_Lf > Lin_Rt || Cir_Tp > Lin_Bm || Cir_Rt < Lin_Lf || Cir_Bm < Lin_Tp) return false;
-        //=====================================================================================================================================
-        float CirRds_Sqrd = Cir_Rds*Cir_Rds;
-        //=====================================================================================================================================
-        // Is PointB in Circle?                                Check PointB first, it's typically used as the destination of a movement vector.
-        float DeltaBC_X = Cir_Pos.x - LinB.x;
-        float DeltaBC_Y = Cir_Pos.y - LinB.y;
-        if ((DeltaBC_X*DeltaBC_X + DeltaBC_Y*DeltaBC_Y) < CirRds_Sqrd) return true;
-        //=====================================================================================================================================
-        // Is PointA in Circle?
-        float DeltaAC_X = Cir_Pos.x - LinA.x;
-        float DeltaAC_Y = Cir_Pos.y - LinA.y;
-        if ((DeltaAC_X*DeltaAC_X + DeltaAC_Y*DeltaAC_Y) < CirRds_Sqrd) return true;
-        //=====================================================================================================================================
-        // PointD = CircleCenter projected on to Line.
-        float DeltaAB_X = LinB.x - LinA.x;
-        float DeltaAB_Y = LinB.y - LinA.y;
-        float DeltaAD_L = (DeltaAC_X*DeltaAB_X + DeltaAC_Y*DeltaAB_Y) / (DeltaAB_X*DeltaAB_X + DeltaAB_Y*DeltaAB_Y);
-        float PntD_X = LinA.x + DeltaAB_X * DeltaAD_L;
-        float PntD_Y = LinA.y + DeltaAB_Y * DeltaAD_L;
-        //=====================================================================================================================================
-        // Is PntD between PointA and PointB?
-        if (PntD_X > Lin_Rt || PntD_Y > Lin_Bm || PntD_X < Lin_Lf || PntD_Y < Lin_Tp) return false;
-        //=====================================================================================================================================
-        // Is PntD in Circle?
-        float DeltaDC_X = PntD_X - Cir_Pos.x;
-        float DeltaDC_Y = PntD_Y - Cir_Pos.y;
-        if ((DeltaDC_X*DeltaDC_X + DeltaDC_Y*DeltaDC_Y) < CirRds_Sqrd) return true;
-        //=====================================================================================================================================
+        //  Is LinePointB in Circle?    Check B first, it's typically used as the destination of a movement vector.
+        float dBC_x = Cp.x - Lb.x;
+        float dBC_y = Cp.y - Lb.y;
+        if ((dBC_x*dBC_x + dBC_y*dBC_y) < Cr_Sqrd) return true;
+
+        //  Is LinePointA in Circle?
+        float dAC_x = Cp.x - La.x;
+        float dAC_y = Cp.y - La.y;
+        if ((dAC_x*dAC_x + dAC_y*dAC_y) < Cr_Sqrd) return true;
+
+        // Get distance to NearestPointOnLine from LinePointA as multiple of DeltaAB:
+        float dAB_x = Lb.x - La.x;
+        float dAB_y = Lb.y - La.y;
+        float Scaler = (dAC_x*dAB_x + dAC_y*dAB_y) / (dAB_x*dAB_x + dAB_y*dAB_y);
+
+        // Is ProjectedPoint going to be between LinePointA and LinePointB:
+        if (Scaler < 0f || Scaler >= 1f) return false;
+
+        //  CirclePosition projected on to Line:
+        float CpP_x = La.x + dAB_x * Scaler;
+        float CpP_y = La.y + dAB_y * Scaler;
+
+        // Is ProjectedPoint in Circle?
+        float dPC_X = CpP_x - Cp.x;
+        float dPC_Y = CpP_y - Cp.y;
+        if ((dPC_X*dPC_X + dPC_Y*dPC_Y) < Cr_Sqrd) return true;
+
         return false;
     }
 
