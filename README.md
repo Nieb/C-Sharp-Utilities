@@ -20,6 +20,6 @@ For example:
   * Those 2 functions contain many of the same operations, repeating that work in production code is silly.
 
 I would rather keep these functions as primal as possible.
-As apposed to returning complex objects with various parameters of the collision event (with 3D collisions, the parameters can get particularly complex).
+As apposed to `return`ing a complex object with various parameters of the collision event (there can be quite a few parameters with 3D collisions).
 Parameters, of which, many would go unused in a particular event, but _could_ be used in any given event.
 Ugh, just create tailored functions when you are done prototyping. :P
