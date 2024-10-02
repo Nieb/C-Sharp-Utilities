@@ -5,74 +5,78 @@ namespace Utility;
 public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
+    //                                                                    "Barycentric"
+    ///
+    /// Returns 3 weights corresponding to a position relative to the 3 points of a triangle.
+    ///
     public static vec3 Barycentric(vec2 P, vec2 A, vec2 B, vec2 C) {
-        float DltAB_x = B.x - A.x;
-        float DltAB_y = B.y - A.y;
-        float DltAC_x = C.x - A.x;
-        float DltAC_y = C.y - A.y;
-        float DltAP_x = P.x - A.x;
-        float DltAP_y = P.y - A.y;
+        float dAB_x = B.x - A.x;
+        float dAB_y = B.y - A.y;
+        float dAC_x = C.x - A.x;
+        float dAC_y = C.y - A.y;
+        float dAP_x = P.x - A.x;
+        float dAP_y = P.y - A.y;
 
-        float Scaler = 1.0f / (DltAB_x*DltAC_y - DltAC_x*DltAB_y);
+        float Scaler = 1f / (dAB_x*dAC_y - dAC_x*dAB_y);
 
-        float WeightB = (DltAP_x*DltAC_y - DltAC_x*DltAP_y) * Scaler;
-        float WeightC = (DltAP_y*DltAB_x - DltAB_y*DltAP_x) * Scaler;
-        float WeightA = 1.0f - WeightB - WeightC;
+        float Bw = (dAP_x*dAC_y - dAC_x*dAP_y) * Scaler;
+        float Cw = (dAP_y*dAB_x - dAB_y*dAP_x) * Scaler;
+        float Aw = 1f - Bw - Cw;
 
-        return new vec3(WeightA, WeightB, WeightC);
+        return new vec3(Aw, Bw, Cw);
     }
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //                                                                    "Delaunay"
     ///
-    /// Test if a Point is inside of a Triangle's Circumcircle.
+    /// Test if a Point is inside of a Triangle's CircumCircle.
     ///
     public static bool Delaunay(vec2 P, vec2 A, vec2 B, vec2 C) {
-        float DltAB_x = B.x - A.x;
-        float DltAB_y = B.y - A.y;
+        float dAB_x = B.x - A.x;
+        float dAB_y = B.y - A.y;
 
-        float DltBC_x = C.x - B.x;
-        float DltBC_y = C.y - B.y;
+        float dBC_x = C.x - B.x;
+        float dBC_y = C.y - B.y;
 
-        float Determinant = 2.0f * (DltAB_x*DltBC_y - DltAB_y*DltBC_x);
+        float Determinant = 2f * (dAB_x*dBC_y - dAB_y*dBC_x);
 
-        float DltX;
-        float DltY;
-        float TriCntr_x;
-        float TriCntr_y;
+        float d_x;
+        float d_y;
+        float CCc_x; //  CircumCircle's center position.
+        float CCc_y;
         if (MathF.Abs(Determinant) < EPSILON) {
-            float MinX = MathF.Min(MathF.Min(A.x, B.x), C.x);
-            float MaxX = MathF.Max(MathF.Max(A.x, B.x), C.x);
+            float Min_x = MathF.Min(MathF.Min(A.x, B.x), C.x);
+            float Min_y = MathF.Min(MathF.Min(A.y, B.y), C.y);
 
-            float MinY = MathF.Min(MathF.Min(A.y, B.y), C.y);
-            float MaxY = MathF.Max(MathF.Max(A.y, B.y), C.y);
+            float Max_x = MathF.Max(MathF.Max(A.x, B.x), C.x);
+            float Max_y = MathF.Max(MathF.Max(A.y, B.y), C.y);
 
-            TriCntr_x = (MinX + MaxX)*0.5f;
-            TriCntr_y = (MinY + MaxY)*0.5f;
+            CCc_x = (Min_x + Max_x)*0.5f;
+            CCc_y = (Min_y + Max_y)*0.5f;
 
-            DltX = TriCntr_x - MinX;
-            DltY = TriCntr_y - MinY;
+            d_x = CCc_x - Min_x;
+            d_y = CCc_y - Min_y;
         } else {
-            float DltAC_x = C.x - A.x;
-            float DltAC_y = C.y - A.y;
+            float dAC_x = C.x - A.x;
+            float dAC_y = C.y - A.y;
 
-            float AB_AB = DltAB_x*(A.x + B.x) + DltAB_y*(A.y + B.y);
-            float AC_AC = DltAC_x*(A.x + C.x) + DltAC_y*(A.y + C.y);
+            float AB_AB = dAB_x*(A.x + B.x) + dAB_y*(A.y + B.y);
+            float AC_AC = dAC_x*(A.x + C.x) + dAC_y*(A.y + C.y);
 
-            TriCntr_x = (DltAC_y*AB_AB - DltAB_y*AC_AC) / Determinant;
-            TriCntr_y = (DltAB_x*AC_AC - DltAC_x*AB_AB) / Determinant;
+            CCc_x = (dAC_y*AB_AB - dAB_y*AC_AC) / Determinant;
+            CCc_y = (dAB_x*AC_AC - dAC_x*AB_AB) / Determinant;
 
-            DltX = TriCntr_x - A.x;
-            DltY = TriCntr_y - A.y;
+            d_x = CCc_x - A.x;
+            d_y = CCc_y - A.y;
         }
 
-        float Tri_RdsSqrd = DltX*DltX + DltY*DltY;
+        float Tri_RdsSqrd = d_x*d_x + d_y*d_y;
 
-        DltX = TriCntr_x - P.x;
-        DltY = TriCntr_y - P.y;
+        d_x = CCc_x - P.x;
+        d_y = CCc_y - P.y;
 
-        return ((DltX*DltX + DltY*DltY) < Tri_RdsSqrd);
+        return ((d_x*d_x + d_y*d_y) < Tri_RdsSqrd);
     }
 
     //##########################################################################################################################################################
@@ -110,46 +114,46 @@ public static partial class VEC {
 
     //==========================================================================================================================================================
     ///
-    ///     Project_(  Point,  Line-Point-A (start),  Line-Point-B (end)  )
+    ///     Project_(  Point,  Line-Point-A,  Line-Point-B  )
     ///
     public static vec2 Project_(vec2 P, vec2 La, vec2 Lb) {
-        float DltAP_x = P.x  - La.x;
-        float DltAP_y = P.y  - La.y;
+        float dAP_x = P.x  - La.x;
+        float dAP_y = P.y  - La.y;
 
-        float DltAB_x = Lb.x - La.x;
-        float DltAB_y = Lb.y - La.y;
+        float dAB_x = Lb.x - La.x;
+        float dAB_y = Lb.y - La.y;
 
-        float DotAP_AB         = (DltAP_x * DltAB_x) + (DltAP_y * DltAB_y);
-        float DltAB_LengthSqrd = (DltAB_x * DltAB_x) + (DltAB_y * DltAB_y);
+        float DotAP_AB       = (dAP_x * dAB_x) + (dAP_y * dAB_y);
+        float dAB_LengthSqrd = (dAB_x * dAB_x) + (dAB_y * dAB_y);
 
-        //  Distance from LinePointA to NearestPointOnLine, as multiple of DltAB:
-        float Scaler = DotAP_AB / DltAB_LengthSqrd;        //  (LengthNew / LengthOld).
+        //  Distance from LinePointA to NearestPointOnLine, as multiple of DeltaAB.Length:
+        float Scaler = DotAP_AB / dAB_LengthSqrd; //  (LengthNew / LengthOld).
 
         return new vec2(
-            La.x + (DltAB_x * Scaler),
-            La.y + (DltAB_y * Scaler)
+            La.x + (dAB_x * Scaler),
+            La.y + (dAB_y * Scaler)
         );
     }
 
     public static vec3 Project_(vec3 P, vec3 La, vec3 Lb) {
-        float DltAP_x = P.x - La.x;
-        float DltAP_y = P.y - La.y;
-        float DltAP_z = P.z - La.z;
+        float dAP_x = P.x - La.x;
+        float dAP_y = P.y - La.y;
+        float dAP_z = P.z - La.z;
 
-        float DltAB_x = Lb.x - La.x;
-        float DltAB_y = Lb.y - La.y;
-        float DltAB_z = Lb.z - La.z;
+        float dAB_x = Lb.x - La.x;
+        float dAB_y = Lb.y - La.y;
+        float dAB_z = Lb.z - La.z;
 
-        float DotAP_AB         = (DltAP_x * DltAB_x) + (DltAP_y * DltAB_y) + (DltAP_z * DltAB_z);
-        float DltAB_LengthSqrd = (DltAB_x * DltAB_x) + (DltAB_y * DltAB_y) + (DltAB_z * DltAB_z);
+        float DotAP_AB       = (dAP_x * dAB_x) + (dAP_y * dAB_y) + (dAP_z * dAB_z);
+        float dAB_LengthSqrd = (dAB_x * dAB_x) + (dAB_y * dAB_y) + (dAB_z * dAB_z);
 
-        //  Distance from LinePointA to NearestPointOnLine, as multiple of DltAB:
-        float Scaler = DotAP_AB / DltAB_LengthSqrd;        // (LengthNew / LengthOld)
+        //  Distance from LinePointA to NearestPointOnLine, as multiple of DeltaAB.Length:
+        float Scaler = DotAP_AB / dAB_LengthSqrd; // (LengthNew / LengthOld)
 
         return new vec3(
-            La.x + (DltAB_x * Scaler),
-            La.y + (DltAB_y * Scaler),
-            La.z + (DltAB_z * Scaler)
+            La.x + (dAB_x * Scaler),
+            La.y + (dAB_y * Scaler),
+            La.z + (dAB_z * Scaler)
         );
     }
 
