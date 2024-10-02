@@ -6,56 +6,74 @@ internal static partial class Program {
 
         //======================================================================================================================================================
         RESULT("Mix()", true
-            && round(Mix(0.0f, 1.7f, 3.4f), 0.000001f) == 1.7f
-            && round(Mix(0.5f, 1.7f, 3.4f), 0.000001f) == 2.55f
-            && round(Mix(1.0f, 1.7f, 3.4f), 0.000001f) == 3.4f
+            && Mix(0.0f, 1.7f, 3.4f).ApproximatelyEquals(1.7f)
+            && Mix(0.5f, 1.7f, 3.4f).ApproximatelyEquals(2.55f)
+            && Mix(1.0f, 1.7f, 3.4f).ApproximatelyEquals(3.4f)
+
+            //@@ more...
         );
 
         RESULT("BiMix()", true
-            && BiMix(new vec2(0.0f, 0.0f), 0f, 1f, 2f, 3f) == 0f
-            && BiMix(new vec2(1.0f, 0.0f), 0f, 1f, 2f, 3f) == 1f
-            && BiMix(new vec2(0.0f, 1.0f), 0f, 1f, 2f, 3f) == 2f
-            && BiMix(new vec2(1.0f, 1.0f), 0f, 1f, 2f, 3f) == 3f
+            && BiMix(new vec2(0.0f, 0.0f), 0, 1, 2, 3).ApproximatelyEquals(0)
+            && BiMix(new vec2(1.0f, 0.0f), 0, 1, 2, 3).ApproximatelyEquals(1)
+            && BiMix(new vec2(0.0f, 1.0f), 0, 1, 2, 3).ApproximatelyEquals(2)
+            && BiMix(new vec2(1.0f, 1.0f), 0, 1, 2, 3).ApproximatelyEquals(3)
 
-            && BiMix(new vec2(0.25f, 0.25f), 0f, 1f, 2f, 3f) == 0.75f
-            && BiMix(new vec2(0.50f, 0.25f), 0f, 1f, 2f, 3f) == 1.00f
-            && BiMix(new vec2(0.75f, 0.25f), 0f, 1f, 2f, 3f) == 1.25f
-            && BiMix(new vec2(0.25f, 0.50f), 0f, 1f, 2f, 3f) == 1.25f
-            && BiMix(new vec2(0.50f, 0.50f), 0f, 1f, 2f, 3f) == 1.50f
-            && BiMix(new vec2(0.75f, 0.50f), 0f, 1f, 2f, 3f) == 1.75f
-            && BiMix(new vec2(0.25f, 0.75f), 0f, 1f, 2f, 3f) == 1.75f
-            && BiMix(new vec2(0.50f, 0.75f), 0f, 1f, 2f, 3f) == 2.00f
-            && BiMix(new vec2(0.75f, 0.75f), 0f, 1f, 2f, 3f) == 2.25f
+            && BiMix(new vec2(0.25f, 0.25f), 0, 1, 2, 3).ApproximatelyEquals(0.75f)
+            && BiMix(new vec2(0.50f, 0.25f), 0, 1, 2, 3).ApproximatelyEquals(1.00f)
+            && BiMix(new vec2(0.75f, 0.25f), 0, 1, 2, 3).ApproximatelyEquals(1.25f)
+            && BiMix(new vec2(0.25f, 0.50f), 0, 1, 2, 3).ApproximatelyEquals(1.25f)
+            && BiMix(new vec2(0.50f, 0.50f), 0, 1, 2, 3).ApproximatelyEquals(1.50f)
+            && BiMix(new vec2(0.75f, 0.50f), 0, 1, 2, 3).ApproximatelyEquals(1.75f)
+            && BiMix(new vec2(0.25f, 0.75f), 0, 1, 2, 3).ApproximatelyEquals(1.75f)
+            && BiMix(new vec2(0.50f, 0.75f), 0, 1, 2, 3).ApproximatelyEquals(2.00f)
+            && BiMix(new vec2(0.75f, 0.75f), 0, 1, 2, 3).ApproximatelyEquals(2.25f)
+
+            //@@ more...
         );
 
         RESULT("SmoothMix()", true
-            && round(SmoothMix(0.0f, 1.7f, 3.4f), 0.000001f) == 1.7f
-            && round(SmoothMix(0.5f, 1.7f, 3.4f), 0.000001f) == 2.55f
-            && round(SmoothMix(1.0f, 1.7f, 3.4f), 0.000001f) == 3.4f
+            && SmoothMix(0.0f, 1.7f, 3.4f).ApproximatelyEquals(1.7f)
+            && SmoothMix(0.5f, 1.7f, 3.4f).ApproximatelyEquals(2.55f)
+            && SmoothMix(1.0f, 1.7f, 3.4f).ApproximatelyEquals(3.4f)
+
+            //@@ more...
         );
 
         //======================================================================================================================================================
         PRINT("");
         RESULT("Step()", true
-            && Step(0.0f, 1.0f) == 0f
-            && Step(0.5f, 1.0f) == 0f
-            && Step(1.0f, 1.0f) == 1f
-            && Step(1.5f, 1.0f) == 1f
-            && Step(2.0f, 1.0f) == 1f
+            && Step(-2.00f, -1) == 0
+            && Step(-1.50f, -1) == 0
+            && Step(-1.01f, -1) == 0
+            && Step(-1.00f, -1) == 1
+            && Step(-0.99f, -1) == 1
+            && Step(-0.50f, -1) == 1
+            && Step( 0.00f, -1) == 1
+
+            && Step(0.00f, 1) == 0
+            && Step(0.50f, 1) == 0
+            && Step(0.99f, 1) == 0
+            && Step(1.00f, 1) == 1
+            && Step(1.01f, 1) == 1
+            && Step(1.50f, 1) == 1
+            && Step(2.00f, 1) == 1
         );
 
         RESULT("LinearStep()", true
-            && round(LinearStep(1.70f, 1.7f, 3.4f), 0.000001f) == 0.0f
-            && round(LinearStep(2.55f, 1.7f, 3.4f), 0.000001f) == 0.5f
-            && round(LinearStep(3.40f, 1.7f, 3.4f), 0.000001f) == 1.0f
-            //...
+            && LinearStep(1.70f, 1.7f, 3.4f).ApproximatelyEquals(0.0f)
+            && LinearStep(2.55f, 1.7f, 3.4f).ApproximatelyEquals(0.5f)
+            && LinearStep(3.40f, 1.7f, 3.4f).ApproximatelyEquals(1.0f)
+
+            //@@ more...
         );
 
         RESULT("SmoothStep()", true
-            && round(SmoothStep(1.70f, 1.7f, 3.4f), 0.000001f) == 0.0f
-            && round(SmoothStep(2.55f, 1.7f, 3.4f), 0.000001f) == 0.5f
-            && round(SmoothStep(3.40f, 1.7f, 3.4f), 0.000001f) == 1.0f
-            //...
+            && SmoothStep(1.70f, 1.7f, 3.4f).ApproximatelyEquals(0.0f)
+            && SmoothStep(2.55f, 1.7f, 3.4f).ApproximatelyEquals(0.5f)
+            && SmoothStep(3.40f, 1.7f, 3.4f).ApproximatelyEquals(1.0f)
+
+            //@@ more...
         );
 
         //======================================================================================================================================================

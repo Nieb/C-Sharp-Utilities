@@ -6,73 +6,73 @@ internal static partial class Program {
 
         //======================================================================================================================================================
         RESULT("abs()", true
-            &&    abs(-2f) == 2f    &&    abs(new vec2(-2f)) == new vec2(2f)    &&    abs(new vec3(-2f)) == new vec3(2f)    &&    abs(new vec4(-2f)) == new vec4(2f)
-            &&    abs(-1f) == 1f    &&    abs(new vec2(-1f)) == new vec2(1f)    &&    abs(new vec3(-1f)) == new vec3(1f)    &&    abs(new vec4(-1f)) == new vec4(1f)
-            &&    abs( 0f) == 0f    &&    abs(new vec2( 0f)) == new vec2(0f)    &&    abs(new vec3( 0f)) == new vec3(0f)    &&    abs(new vec4( 0f)) == new vec4(0f)
-            &&    abs( 1f) == 1f    &&    abs(new vec2( 1f)) == new vec2(1f)    &&    abs(new vec3( 1f)) == new vec3(1f)    &&    abs(new vec4( 1f)) == new vec4(1f)
-            &&    abs( 2f) == 2f    &&    abs(new vec2( 2f)) == new vec2(2f)    &&    abs(new vec3( 2f)) == new vec3(2f)    &&    abs(new vec4( 2f)) == new vec4(2f)
+            &&    abs(-2) == 2    &&    abs(new vec2(-2)) == new vec2(2)    &&    abs(new vec3(-2)) == new vec3(2)    &&    abs(new vec4(-2)) == new vec4(2)
+            &&    abs(-1) == 1    &&    abs(new vec2(-1)) == new vec2(1)    &&    abs(new vec3(-1)) == new vec3(1)    &&    abs(new vec4(-1)) == new vec4(1)
+            &&    abs( 0) == 0    &&    abs(new vec2( 0)) == new vec2(0)    &&    abs(new vec3( 0)) == new vec3(0)    &&    abs(new vec4( 0)) == new vec4(0)
+            &&    abs( 1) == 1    &&    abs(new vec2( 1)) == new vec2(1)    &&    abs(new vec3( 1)) == new vec3(1)    &&    abs(new vec4( 1)) == new vec4(1)
+            &&    abs( 2) == 2    &&    abs(new vec2( 2)) == new vec2(2)    &&    abs(new vec3( 2)) == new vec3(2)    &&    abs(new vec4( 2)) == new vec4(2)
         );
 
         //======================================================================================================================================================
         PRINT("");
         RESULT("avg()", true
-            &&    avg(0f, 1f        ) == 0.5f    &&    avg(new vec2(0f), new vec2(1f)                            ) == new vec2(0.5f)    &&    avg(new vec3(0f), new vec3(1f)                            ) == new vec3(0.5f)
-            &&    avg(0f, 1f, 2f    ) == 1.0f    &&    avg(new vec2(0f), new vec2(1f), new vec2(2f)              ) == new vec2(1.0f)    &&    avg(new vec3(0f), new vec3(1f), new vec3(2f)              ) == new vec3(1.0f)
-            &&    avg(0f, 1f, 2f, 3f) == 1.5f    &&    avg(new vec2(0f), new vec2(1f), new vec2(2f), new vec2(3f)) == new vec2(1.5f)    &&    avg(new vec3(0f), new vec3(1f), new vec3(2f), new vec3(3f)) == new vec3(1.5f)
+            &&    avg(0, 1      ) == 0.5f    &&    avg(new vec2(0), new vec2(1)                          ) == new vec2(0.5f)    &&    avg(new vec3(0), new vec3(1)                          ) == new vec3(0.5f)
+            &&    avg(0, 1, 2   ) == 1.0f    &&    avg(new vec2(0), new vec2(1), new vec2(2)             ) == new vec2(1.0f)    &&    avg(new vec3(0), new vec3(1), new vec3(2)             ) == new vec3(1.0f)
+            &&    avg(0, 1, 2, 3) == 1.5f    &&    avg(new vec2(0), new vec2(1), new vec2(2), new vec2(3)) == new vec2(1.5f)    &&    avg(new vec3(0), new vec3(1), new vec3(2), new vec3(3)) == new vec3(1.5f)
         );
 
         //======================================================================================================================================================
         PRINT("");
         RESULT("clamp()", true
-            && clamp(-3f, -1f, 1f) == -1f
-            && clamp(-2f, -1f, 1f) == -1f
-            && clamp(-1f, -1f, 1f) == -1f
-            && clamp( 0f, -1f, 1f) ==  0f
-            && clamp( 1f, -1f, 1f) ==  1f
-            && clamp( 2f, -1f, 1f) ==  1f
-            && clamp( 3f, -1f, 1f) ==  1f
+            && clamp(-3, -1, 1) == -1
+            && clamp(-2, -1, 1) == -1
+            && clamp(-1, -1, 1) == -1
+            && clamp( 0, -1, 1) ==  0
+            && clamp( 1, -1, 1) ==  1
+            && clamp( 2, -1, 1) ==  1
+            && clamp( 3, -1, 1) ==  1
         );
 
         RESULT("wrap()", true
-            && wrap(-8f, 0f, 4f) == 0f
-            && wrap(-7f, 0f, 4f) == 1f
-            && wrap(-6f, 0f, 4f) == 2f
-            && wrap(-5f, 0f, 4f) == 3f
-            && wrap(-4f, 0f, 4f) == 0f
-            && wrap(-3f, 0f, 4f) == 1f
-            && wrap(-2f, 0f, 4f) == 2f
-            && wrap(-1f, 0f, 4f) == 3f
-            && wrap( 0f, 0f, 4f) == 0f
-            && wrap( 1f, 0f, 4f) == 1f
-            && wrap( 2f, 0f, 4f) == 2f
-            && wrap( 3f, 0f, 4f) == 3f
-            && wrap( 4f, 0f, 4f) == 0f
-            && wrap( 5f, 0f, 4f) == 1f
-            && wrap( 6f, 0f, 4f) == 2f
-            && wrap( 7f, 0f, 4f) == 3f
-            && wrap( 8f, 0f, 4f) == 0f
+            && wrap(-8, 0, 4) == 0
+            && wrap(-7, 0, 4) == 1
+            && wrap(-6, 0, 4) == 2
+            && wrap(-5, 0, 4) == 3
+            && wrap(-4, 0, 4) == 0
+            && wrap(-3, 0, 4) == 1
+            && wrap(-2, 0, 4) == 2
+            && wrap(-1, 0, 4) == 3
+            && wrap( 0, 0, 4) == 0
+            && wrap( 1, 0, 4) == 1
+            && wrap( 2, 0, 4) == 2
+            && wrap( 3, 0, 4) == 3
+            && wrap( 4, 0, 4) == 0
+            && wrap( 5, 0, 4) == 1
+            && wrap( 6, 0, 4) == 2
+            && wrap( 7, 0, 4) == 3
+            && wrap( 8, 0, 4) == 0
         );
 
         //======================================================================================================================================================
         PRINT("");
         RESULT("min()", true
-            && min(-2f,  2f) == -2f
-            && min(-1f,  1f) == -1f
-            && min(-1f, -1f) == -1f
-            && min( 0f,  0f) ==  0f
-            && min( 1f,  1f) ==  1f
-            && min( 1f, -1f) == -1f
-            && min( 2f, -2f) == -2f
+            && min(-2,  2) == -2
+            && min(-1,  1) == -1
+            && min(-1, -1) == -1
+            && min( 0,  0) ==  0
+            && min( 1,  1) ==  1
+            && min( 1, -1) == -1
+            && min( 2, -2) == -2
         );
 
         RESULT("max()", true
-            && max(-2f,  2f) ==  2f
-            && max(-1f,  1f) ==  1f
-            && max(-1f, -1f) == -1f
-            && max( 0f,  0f) ==  0f
-            && max( 1f,  1f) ==  1f
-            && max( 1f, -1f) ==  1f
-            && max( 2f, -2f) ==  2f
+            && max(-2,  2) ==  2
+            && max(-1,  1) ==  1
+            && max(-1, -1) == -1
+            && max( 0,  0) ==  0
+            && max( 1,  1) ==  1
+            && max( 1, -1) ==  1
+            && max( 2, -2) ==  2
         );
 
         //======================================================================================================================================================
