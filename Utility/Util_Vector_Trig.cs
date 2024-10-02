@@ -32,6 +32,9 @@ public static partial class VEC {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float atan(float A) => MathF.Atan(A);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float atan2(float A, float B) => MathF.Atan2(A, B);
+
     //##########################################################################################################################################################
     //##########################################################################################################################################################
 }
