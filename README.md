@@ -12,7 +12,7 @@ A collection of various utilities.
 
 ## Vector -- Collision & Miscellaneous
 The intended use of the functions found in `Vector_Collision` & `Vector_Miscellaneous` is for fast prototyping & testing.
-In production, it would be wise to copy the code out of such functions and create tailored functions for your usecase.
+In production, it would be wise to copy the code out of such functions and create tailored functions for your use-case.
 
 For example:
   * Using `PointVsLine()` to test if the mouse is selecting a line.
@@ -20,7 +20,6 @@ For example:
   * Those 2 functions contain many of the same operations, repeating that work in production code is silly.
 
 I would rather keep these functions as primal as possible.
-As apposed to returning complex objects with various parameters of the collision event (with 3D collisions, the parameters can get particularly complex).
-
-Parameters, of which, many would not be used in a particular event, but could be used in any given event.
+As apposed to `return`ing a complex object with various parameters of the collision event (there can be quite a few parameters with 3D collisions).
+Parameters, of which, many would go unused in a particular event, but _could_ be used in any given event.
 Ugh, just create tailored functions when you are done prototyping. :P
