@@ -10,11 +10,13 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool PointVsPoint(vec2 Pa, vec2 Pb, float Threshold) =>
-        PointVsCircle(Pa, Pb, Threshold);
+    public static bool PointVsPoint(vec2 Pa, vec2 Pb, float Threshold) => PointVsCircle(Pa, Pb, Threshold);
 
-    //##########################################################################################################################################################
-    public static bool PointVsCircle(vec2 P, vec2 Cp, float Cr) {               //  ( Point,  Circle-Position,  Circle-Radius )
+    //==========================================================================================================================================================
+    ///
+    ///     PointVsCircle(  Point,  Circle-Position,  Circle-Radius  )
+    ///
+    public static bool PointVsCircle(vec2 P, vec2 Cp, float Cr) {
         float d_x = P.x - Cp.x;
         float d_y = P.y - Cp.y;
         return (d_x*d_x + d_y*d_y < Cr*Cr);
@@ -22,24 +24,52 @@ public static partial class VEC {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
+    ///
+    /// "Aar" == "Axis Aligned Rectangle"
+    ///
+    ///                   RectSiz
+    ///      +Y *--------@
+    ///         |        |
+    ///         |        |
+    ///         |        |
+    ///         @--------* +X
+    ///  RectPos
+    ///
+    ///     PointVsAar(  Point,  Rectangle-Position,  Rectangle-Size  )
+    ///
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool PointVsAar(vec2 P, vec2 Rp, vec2 Rs) => (                //  ( Point,  Rectangle-Position,  Rectangle-Size )
-           P.x <  Rp.x+Rs.x                                                     //      +Y +--------@ RectSiz
-        && P.x >= Rp.x                                                          //         |        |
-        && P.y <  Rp.y+Rs.y                                                     //         |        |
-        && P.y >= Rp.y                                                          //         |        |
-    );                                                                          // RectPos @--------+ +X
+    public static bool PointVsAar(vec2 P, vec2 Rp, vec2 Rs) => (
+           P.x <  Rp.x+Rs.x
+        && P.x >= Rp.x
+        && P.y <  Rp.y+Rs.y
+        && P.y >= Rp.y
+    );
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static bool PointVsTriangle(vec2 P, vec2 Ta, vec2 Tb, vec2 Tc) {     //  ( Point, Triangle(Ta, Tb, Tc) )
-        float dPA_x = Ta.x - P.x;                                               //  Winding is Anti-Clockwise.
-        float dPA_y = Ta.y - P.y;                                               //  https://www.desmos.com/calculator/dzkn7zysvv
+    ///
+    /// https://www.desmos.com/calculator/dzkn7zysvv
+    ///
+    ///             A
+    ///       +Y    @       Winding is Anti-Clockwise.
+    ///            / \
+    ///           /   \
+    ///          /     \
+    ///         @-------@   +X
+    ///        B         C
+    ///
+    ///     PointVsTriangle(  Point,  Triangle-Point-A,  B,  C  )
+    ///
+    public static bool PointVsTriangle(vec2 P, vec2 Ta, vec2 Tb, vec2 Tc) {
+        float dPA_x = Ta.x - P.x;
+        float dPA_y = Ta.y - P.y;
         float dPB_x = Tb.x - P.x;
         float dPB_y = Tb.y - P.y;
         float dPC_x = Tc.x - P.x;
         float dPC_y = Tc.y - P.y;
-        return (dPA_x*dPC_y >= dPC_x*dPA_y) && (dPB_x*dPA_y >= dPA_x*dPB_y) && (dPC_x*dPB_y >= dPB_x*dPC_y);
+        return (dPA_x*dPC_y >= dPA_y*dPC_x)
+            && (dPB_x*dPA_y >= dPB_y*dPA_x)
+            && (dPC_x*dPB_y >= dPC_y*dPB_x);
     }
 
     //##########################################################################################################################################################

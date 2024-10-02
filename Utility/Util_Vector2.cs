@@ -132,14 +132,15 @@ public struct vec2 : IFormattable {
             return $"( {this.x,9:0.000000}, {this.y,9:0.000000} )";
 
         int Padding = FormatStr.Length+1;
-        return "( " + this.x.ToString(FormatStr).PadLeft(Padding)
-             + ", " + this.y.ToString(FormatStr).PadLeft(Padding)
+        return "( " + (this.x == FLOAT_NEG_ZERO ? 0f : this.x).ToString(FormatStr).PadLeft(Padding)
+             + ", " + (this.y == FLOAT_NEG_ZERO ? 0f : this.y).ToString(FormatStr).PadLeft(Padding)
              + " )";
     }
 
     //==========================================================================================================================================================
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public override string ToString() => $"( {this.x,9:0.000000}, {this.y,9:0.000000} )";
+    public override string ToString() =>
+          $"( {(this.x == FLOAT_NEG_ZERO ? 0f : this.x),9:0.000000}"
+        + $", {(this.y == FLOAT_NEG_ZERO ? 0f : this.y),9:0.000000} )";
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################

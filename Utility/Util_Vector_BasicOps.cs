@@ -344,8 +344,8 @@ public static partial class VEC {
     ///
     ///     refract( Vector-Normal, Surface-Normal, Index-Of-Refraction)
     ///
-    ///     IndexOfRefraction:  The ratio of the speed of light in a vacuum, to the speed of light in a medium.
-    ///                         Or from one medium to another medium.
+    ///         IndexOfRefraction:  The ratio of the speed of light in a vacuum, to the speed of light in a medium.
+    ///                             Or from one medium to another medium.
     ///
     public static vec2 refract(vec2 Vn, vec2 Sn, float Ratio) {
         float Dot = (Vn.x * Sn.x) + (Vn.y * Sn.y);

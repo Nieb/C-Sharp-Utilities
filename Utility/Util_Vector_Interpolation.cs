@@ -76,21 +76,21 @@ public static partial class VEC {
         return A*(1f-SmoStep) + B*SmoStep;
     }
 
-    public static vec2 SmoothMix(vec2 V, vec2 A, vec2 B) {
+    public static vec2 SmoothMix(float V, vec2 A, vec2 B) {
         vec2 DltAB = B-A;
         vec2 LinStep = clamp((V*DltAB)/DltAB, 0f, 1f);
         vec2 SmoStep = (LinStep*LinStep) * (3f - 2f*LinStep);
         return A*(1f-SmoStep) + B*SmoStep;
     }
 
-    public static vec3 SmoothMix(vec3 V, vec3 A, vec3 B) {
+    public static vec3 SmoothMix(float V, vec3 A, vec3 B) {
         vec3 DltAB = B-A;
         vec3 LinStep = clamp((V*DltAB)/DltAB, 0f, 1f);
         vec3 SmoStep = (LinStep*LinStep) * (3f - 2f*LinStep);
         return A*(1f-SmoStep) + B*SmoStep;
     }
 
-    public static vec4 SmoothMix(vec4 V, vec4 A, vec4 B) {
+    public static vec4 SmoothMix(float V, vec4 A, vec4 B) {
         vec4 DltAB = B-A;
         vec4 LinStep = clamp((V*DltAB)/DltAB, 0f, 1f);
         vec4 SmoStep = (LinStep*LinStep) * (3f - 2f*LinStep);

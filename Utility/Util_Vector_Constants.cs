@@ -28,10 +28,10 @@ public static partial class VEC {
 
     //==========================================================================================================================================================
     public const float SQRT2     =   1.41421356237309504880168872420969807856967187537695f;
-    public const float SQRT2RCP  =   0.70710678118654752440084436210484903928483593768847f;     //  1 / sqrt(2)
+    public const float SQRT2_RCP =   0.70710678118654752440084436210484903928483593768847f;     //  1 / sqrt(2)
 
     public const float SQRT3     =   1.73205080756887729352744634150587236694280525381038f;
-    public const float SQRT3RCP  =   0.57735026918962576450914878050195745564760175127013f;     //  1 / sqrt(3)
+    public const float SQRT3_RCP =   0.57735026918962576450914878050195745564760175127013f;     //  1 / sqrt(3)
 
   //public const float TWO_SQRT2 =   0.58578643762690495119831127579030192143032812462305f;     //  2 - sqrt(2)
   //public const float TWO_SQRT3 =   0.26794919243112270647255365849412763305719474618962f;     //  2 - sqrt(3)
@@ -81,7 +81,7 @@ public static partial class VEC {
     public static readonly vec2 AXIS2_X = new vec2(1f, 0f);
     public static readonly vec2 AXIS2_Y = new vec2(0f, 1f);
 
-    public static readonly vec2 AXIS2_XY = new vec2(SQRT2RCP, SQRT2RCP);
+    public static readonly vec2 AXIS2_XY = new vec2(SQRT2_RCP, SQRT2_RCP);
 
     //==========================================================================================================================================================
     public static readonly vec3 ZERO3 = new vec3(0f, 0f, 0f);
@@ -91,11 +91,11 @@ public static partial class VEC {
     public static readonly vec3 AXIS3_Y = new vec3(0f, 1f, 0f);
     public static readonly vec3 AXIS3_Z = new vec3(0f, 0f, 1f);
 
-    public static readonly vec3 AXIS3_XY = new vec3(SQRT2RCP, SQRT2RCP,       0f);
-    public static readonly vec3 AXIS3_YZ = new vec3(      0f, SQRT2RCP, SQRT2RCP);
-    public static readonly vec3 AXIS3_XZ = new vec3(SQRT2RCP,       0f, SQRT2RCP);
+    public static readonly vec3 AXIS3_XY = new vec3(SQRT2_RCP, SQRT2_RCP,        0f);
+    public static readonly vec3 AXIS3_YZ = new vec3(       0f, SQRT2_RCP, SQRT2_RCP);
+    public static readonly vec3 AXIS3_XZ = new vec3(SQRT2_RCP,        0f, SQRT2_RCP);
 
-    public static readonly vec3 AXIS3_XYZ = new vec3(SQRT3RCP, SQRT3RCP, SQRT3RCP);
+    public static readonly vec3 AXIS3_XYZ = new vec3(SQRT3_RCP, SQRT3_RCP, SQRT3_RCP);
 
     //==========================================================================================================================================================
     public static readonly vec4 ZERO4 = new vec4(0f, 0f, 0f, 0f);

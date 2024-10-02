@@ -166,16 +166,19 @@ public struct vec4 : IFormattable {
             return $"( {this.x,9:0.000000}, {this.y,9:0.000000}, {this.z,9:0.000000}, {this.w,9:0.000000} )";
 
         int Padding = FormatStr.Length+1;
-        return "( " + this.x.ToString(FormatStr).PadLeft(Padding)
-             + ", " + this.y.ToString(FormatStr).PadLeft(Padding)
-             + ", " + this.z.ToString(FormatStr).PadLeft(Padding)
-             + ", " + this.w.ToString(FormatStr).PadLeft(Padding)
+        return "( " + (this.x == FLOAT_NEG_ZERO ? 0f : this.x).ToString(FormatStr).PadLeft(Padding)
+             + ", " + (this.y == FLOAT_NEG_ZERO ? 0f : this.y).ToString(FormatStr).PadLeft(Padding)
+             + ", " + (this.z == FLOAT_NEG_ZERO ? 0f : this.z).ToString(FormatStr).PadLeft(Padding)
+             + ", " + (this.w == FLOAT_NEG_ZERO ? 0f : this.w).ToString(FormatStr).PadLeft(Padding)
              + " )";
     }
 
     //==========================================================================================================================================================
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public override string ToString() => $"( {this.x,9:0.000000}, {this.y,9:0.000000}, {this.z,9:0.000000}, {this.w,9:0.000000} )";
+    public override string ToString() =>
+          $"( {(this.x == FLOAT_NEG_ZERO ? 0f : this.x),9:0.000000}"
+        + $", {(this.y == FLOAT_NEG_ZERO ? 0f : this.y),9:0.000000}"
+        + $", {(this.z == FLOAT_NEG_ZERO ? 0f : this.z),9:0.000000}"
+        + $", {(this.w == FLOAT_NEG_ZERO ? 0f : this.w),9:0.000000} )";
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
