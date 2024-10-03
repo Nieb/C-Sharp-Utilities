@@ -31,7 +31,6 @@ public struct vec4 : IFormattable {
                 _ = value;
             } else {
                 float Scaler = value / MathF.Sqrt(this.x*this.x + this.y*this.y + this.z*this.z + this.w*this.w); //  (LengthNew / LengthOld).
-
                 this = new vec4(this.x*Scaler, this.y*Scaler, this.z*Scaler, this.w*Scaler);
             }
         }
@@ -73,6 +72,16 @@ public struct vec4 : IFormattable {
         this.z = 0f;
         this.w = 0f;
     }
+
+    //==========================================================================================================================================================
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator vec4( (float X, float Y, float Z, float W) t ) => new vec4(t.X, t.Y, t.Z, t.W);
+  //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+  //public static implicit operator vec4( (vec3 XYZ, float W) t )                  => new vec4(t.XYZ.x, t.XYZ.y, t.XYZ.z, t.W);
+  //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+  //public static implicit operator vec4( (float XYZ, float W) t )                 => new vec4(t.XYZ, t.XYZ, t.XYZ, t.W);
+  //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+  //public static implicit operator vec4( float XYZW )                             => new vec4(XYZW, XYZW, XYZW, XYZW);
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
@@ -163,22 +172,22 @@ public struct vec4 : IFormattable {
     //##########################################################################################################################################################
     public string ToString(string FormatStr, IFormatProvider FormatProvider) {
         if (FormatStr.IsVoid())
-            return $"( {this.x,9:0.000000}, {this.y,9:0.000000}, {this.z,9:0.000000}, {this.w,9:0.000000} )";
+            return this.ToString();
 
         int Padding = FormatStr.Length+1;
-        return "( " + (this.x == FLOAT_NEG_ZERO ? 0f : this.x).ToString(FormatStr).PadLeft(Padding)
-             + ", " + (this.y == FLOAT_NEG_ZERO ? 0f : this.y).ToString(FormatStr).PadLeft(Padding)
-             + ", " + (this.z == FLOAT_NEG_ZERO ? 0f : this.z).ToString(FormatStr).PadLeft(Padding)
-             + ", " + (this.w == FLOAT_NEG_ZERO ? 0f : this.w).ToString(FormatStr).PadLeft(Padding)
+        return "( " + (abs(this.x) < EPSILON ? 0f : this.x).ToString(FormatStr).PadLeft(Padding)
+             + ", " + (abs(this.y) < EPSILON ? 0f : this.y).ToString(FormatStr).PadLeft(Padding)
+             + ", " + (abs(this.z) < EPSILON ? 0f : this.z).ToString(FormatStr).PadLeft(Padding)
+             + ", " + (abs(this.w) < EPSILON ? 0f : this.w).ToString(FormatStr).PadLeft(Padding)
              + " )";
     }
 
     //==========================================================================================================================================================
     public override string ToString() =>
-          $"( {(this.x == FLOAT_NEG_ZERO ? 0f : this.x),9:0.000000}"
-        + $", {(this.y == FLOAT_NEG_ZERO ? 0f : this.y),9:0.000000}"
-        + $", {(this.z == FLOAT_NEG_ZERO ? 0f : this.z),9:0.000000}"
-        + $", {(this.w == FLOAT_NEG_ZERO ? 0f : this.w),9:0.000000} )";
+          $"( {(abs(this.x) < EPSILON ? 0f : this.x),9:0.000000}"
+        + $", {(abs(this.y) < EPSILON ? 0f : this.y),9:0.000000}"
+        + $", {(abs(this.z) < EPSILON ? 0f : this.z),9:0.000000}"
+        + $", {(abs(this.w) < EPSILON ? 0f : this.w),9:0.000000} )";
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################

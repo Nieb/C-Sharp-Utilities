@@ -24,7 +24,6 @@ public struct vec2 : IFormattable {
                 _ = value;
             } else {
                 float Scaler = value / MathF.Sqrt(this.x*this.x + this.y*this.y); //  (LengthNew / LengthOld).
-
                 this = new vec2(this.x*Scaler, this.y*Scaler);
             }
         }
@@ -46,6 +45,12 @@ public struct vec2 : IFormattable {
         this.x = 0f;
         this.y = 0f;
     }
+
+    //==========================================================================================================================================================
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator vec2( (float X, float Y) tuple ) => new vec2(tuple.X, tuple.Y);
+  //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+  //public static implicit operator vec2( float XY ) => new vec2(XY, XY);
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
@@ -129,18 +134,18 @@ public struct vec2 : IFormattable {
     //##########################################################################################################################################################
     public string ToString(string FormatStr, IFormatProvider FormatProvider) {
         if (FormatStr.IsVoid())
-            return $"( {this.x,9:0.000000}, {this.y,9:0.000000} )";
+            return this.ToString();
 
         int Padding = FormatStr.Length+1;
-        return "( " + (this.x == FLOAT_NEG_ZERO ? 0f : this.x).ToString(FormatStr).PadLeft(Padding)
-             + ", " + (this.y == FLOAT_NEG_ZERO ? 0f : this.y).ToString(FormatStr).PadLeft(Padding)
+        return "( " + (abs(this.x) < EPSILON ? 0f : this.x).ToString(FormatStr).PadLeft(Padding)
+             + ", " + (abs(this.y) < EPSILON ? 0f : this.y).ToString(FormatStr).PadLeft(Padding)
              + " )";
     }
 
     //==========================================================================================================================================================
     public override string ToString() =>
-          $"( {(this.x == FLOAT_NEG_ZERO ? 0f : this.x),9:0.000000}"
-        + $", {(this.y == FLOAT_NEG_ZERO ? 0f : this.y),9:0.000000} )";
+          $"( {(abs(this.x) < EPSILON ? 0f : this.x),9:0.000000}"
+        + $", {(abs(this.y) < EPSILON ? 0f : this.y),9:0.000000} )";
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
