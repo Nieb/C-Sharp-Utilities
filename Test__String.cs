@@ -3,7 +3,8 @@
 namespace TEST;
 internal static partial class Program {
     static void Test__String() {
-        PRINT("\n[Utility.STR]");
+        PRINT("\n\n[Utility.STR]\n");
+        //PRINT($"{}");
 
         //======================================================================================================================================================
         RESULT("RandomDigits()", true
@@ -12,7 +13,6 @@ internal static partial class Program {
         );
 
         //======================================================================================================================================================
-        PRINT("");
         RESULT("ToBool()", true
             && "true".ToBool() == true
             && "True".ToBool() == true
@@ -54,7 +54,6 @@ internal static partial class Program {
         );
 
         //======================================================================================================================================================
-        PRINT("");
         RESULT("ByteArrayToString()", true
             && ByteArrayToString(new byte[] { 0xFF, 0xCC, 0xAA })                                  == "FF CC AA "
             && ByteArrayToString(new byte[] { 0xFF, 0xCC, 0xAA, 0x99, 0x77, 0x55, 0x33, 0x11 }, 3) == "FF CC AA \n99 77 55 \n33 11 "
@@ -79,7 +78,6 @@ internal static partial class Program {
         );
 
         //======================================================================================================================================================
-        PRINT("");
         RESULT(".IsNumeric()", true
             && "123".IsNumeric() == true
 
@@ -117,7 +115,6 @@ internal static partial class Program {
         );
 
         //======================================================================================================================================================
-        PRINT("");
         RESULT(".ContainsAny()", true
             && "blarg".ContainsAny( new string[] {"ugh", "arg"} ) == true
         );
@@ -128,7 +125,6 @@ internal static partial class Program {
         );
 
         //======================================================================================================================================================
-        PRINT("");
         RESULT(".Indent()", true
             && "blarg\nblarg\nblarg".Indent() == "    blarg\n    blarg\n    blarg"
         );

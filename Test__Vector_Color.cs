@@ -2,7 +2,8 @@
 namespace TEST;
 internal static partial class Program {
     static void Test__Vector_Color() {
-        PRINT("\n[Utility.VEC -- Color]");
+        PRINT("\n\n[Utility.VEC -- Color]\n");
+        //PRINT($"{}");
 
         //======================================================================================================================================================
         RESULT("ByteToUnit()", true
@@ -90,7 +91,6 @@ internal static partial class Program {
         );
 
         //======================================================================================================================================================
-        PRINT("");
         RESULT("sRGB_To_Lin()", true
             && sRGB_To_Lin(0.00f) == 0.0f         && sRGB_To_Lin(0.01f) == 0.0007739938f && sRGB_To_Lin(0.02f) == 0.0015479876f && sRGB_To_Lin(0.03f) == 0.0023219814f && sRGB_To_Lin(0.04f) == 0.0030959751f && sRGB_To_Lin(0.05f) == 0.0039359396f && sRGB_To_Lin(0.06f) == 0.0048963088f && sRGB_To_Lin(0.07f) == 0.005981059f && sRGB_To_Lin(0.08f) == 0.0071944077f && sRGB_To_Lin(0.09f) == 0.008540383f
             && sRGB_To_Lin(0.10f) == 0.010022826f && sRGB_To_Lin(0.11f) == 0.011645429f  && sRGB_To_Lin(0.12f) == 0.013411746f  && sRGB_To_Lin(0.13f) == 0.015325204f  && sRGB_To_Lin(0.14f) == 0.0173891f    && sRGB_To_Lin(0.15f) == 0.01960665f   && sRGB_To_Lin(0.16f) == 0.021980947f  && sRGB_To_Lin(0.17f) == 0.02451501f  && sRGB_To_Lin(0.18f) == 0.027211785f  && sRGB_To_Lin(0.19f) == 0.030074105f
@@ -120,30 +120,29 @@ internal static partial class Program {
         );
 
         //======================================================================================================================================================
-        PRINT("");
         RESULT("FromHSV()", true
-            && round(FromHSV(-3.6f, 1f, 1f), 0.000001f) == new vec3(1.0f, 0.0f, 0.0f)  &&  round(FromHSV(-3.3f, 1f, 1f), 0.000001f) == new vec3(1.0f, 0.5f, 0.0f)
-            && round(FromHSV(-3.0f, 1f, 1f), 0.000001f) == new vec3(1.0f, 1.0f, 0.0f)  &&  round(FromHSV(-2.7f, 1f, 1f), 0.000001f) == new vec3(0.5f, 1.0f, 0.0f)
-            && round(FromHSV(-2.4f, 1f, 1f), 0.000001f) == new vec3(0.0f, 1.0f, 0.0f)  &&  round(FromHSV(-2.1f, 1f, 1f), 0.000001f) == new vec3(0.0f, 1.0f, 0.5f)
-            && round(FromHSV(-1.8f, 1f, 1f), 0.000001f) == new vec3(0.0f, 1.0f, 1.0f)  &&  round(FromHSV(-1.5f, 1f, 1f), 0.000001f) == new vec3(0.0f, 0.5f, 1.0f)
-            && round(FromHSV(-1.2f, 1f, 1f), 0.000001f) == new vec3(0.0f, 0.0f, 1.0f)  &&  round(FromHSV(-0.9f, 1f, 1f), 0.000001f) == new vec3(0.5f, 0.0f, 1.0f)
-            && round(FromHSV(-0.6f, 1f, 1f), 0.000001f) == new vec3(1.0f, 0.0f, 1.0f)  &&  round(FromHSV(-0.3f, 1f, 1f), 0.000001f) == new vec3(1.0f, 0.0f, 0.5f)
+            && FromHSV(-3.6f, 1, 1).IsApproximately((1.0f, 0.0f, 0.0f))  &&  FromHSV(-3.3f, 1f, 1f).IsApproximately((1.0f, 0.5f, 0.0f))
+            && FromHSV(-3.0f, 1, 1).IsApproximately((1.0f, 1.0f, 0.0f))  &&  FromHSV(-2.7f, 1f, 1f).IsApproximately((0.5f, 1.0f, 0.0f))
+            && FromHSV(-2.4f, 1, 1).IsApproximately((0.0f, 1.0f, 0.0f))  &&  FromHSV(-2.1f, 1f, 1f).IsApproximately((0.0f, 1.0f, 0.5f))
+            && FromHSV(-1.8f, 1, 1).IsApproximately((0.0f, 1.0f, 1.0f))  &&  FromHSV(-1.5f, 1f, 1f).IsApproximately((0.0f, 0.5f, 1.0f))
+            && FromHSV(-1.2f, 1, 1).IsApproximately((0.0f, 0.0f, 1.0f))  &&  FromHSV(-0.9f, 1f, 1f).IsApproximately((0.5f, 0.0f, 1.0f))
+            && FromHSV(-0.6f, 1, 1).IsApproximately((1.0f, 0.0f, 1.0f))  &&  FromHSV(-0.3f, 1f, 1f).IsApproximately((1.0f, 0.0f, 0.5f))
 
-            && round(FromHSV( 0.0f, 1f, 1f), 0.000001f) == new vec3(1.0f, 0.0f, 0.0f)  &&  round(FromHSV( 0.3f, 1f, 1f), 0.000001f) == new vec3(1.0f, 0.5f, 0.0f)
-            && round(FromHSV( 0.6f, 1f, 1f), 0.000001f) == new vec3(1.0f, 1.0f, 0.0f)  &&  round(FromHSV( 0.9f, 1f, 1f), 0.000001f) == new vec3(0.5f, 1.0f, 0.0f)
-            && round(FromHSV( 1.2f, 1f, 1f), 0.000001f) == new vec3(0.0f, 1.0f, 0.0f)  &&  round(FromHSV( 1.5f, 1f, 1f), 0.000001f) == new vec3(0.0f, 1.0f, 0.5f)
-            && round(FromHSV( 1.8f, 1f, 1f), 0.000001f) == new vec3(0.0f, 1.0f, 1.0f)  &&  round(FromHSV( 2.1f, 1f, 1f), 0.000001f) == new vec3(0.0f, 0.5f, 1.0f)
-            && round(FromHSV( 2.4f, 1f, 1f), 0.000001f) == new vec3(0.0f, 0.0f, 1.0f)  &&  round(FromHSV( 2.7f, 1f, 1f), 0.000001f) == new vec3(0.5f, 0.0f, 1.0f)
-            && round(FromHSV( 3.0f, 1f, 1f), 0.000001f) == new vec3(1.0f, 0.0f, 1.0f)  &&  round(FromHSV( 3.3f, 1f, 1f), 0.000001f) == new vec3(1.0f, 0.0f, 0.5f)
+            && FromHSV( 0.0f, 1, 1).IsApproximately((1.0f, 0.0f, 0.0f))  &&  FromHSV( 0.3f, 1f, 1f).IsApproximately((1.0f, 0.5f, 0.0f))
+            && FromHSV( 0.6f, 1, 1).IsApproximately((1.0f, 1.0f, 0.0f))  &&  FromHSV( 0.9f, 1f, 1f).IsApproximately((0.5f, 1.0f, 0.0f))
+            && FromHSV( 1.2f, 1, 1).IsApproximately((0.0f, 1.0f, 0.0f))  &&  FromHSV( 1.5f, 1f, 1f).IsApproximately((0.0f, 1.0f, 0.5f))
+            && FromHSV( 1.8f, 1, 1).IsApproximately((0.0f, 1.0f, 1.0f))  &&  FromHSV( 2.1f, 1f, 1f).IsApproximately((0.0f, 0.5f, 1.0f))
+            && FromHSV( 2.4f, 1, 1).IsApproximately((0.0f, 0.0f, 1.0f))  &&  FromHSV( 2.7f, 1f, 1f).IsApproximately((0.5f, 0.0f, 1.0f))
+            && FromHSV( 3.0f, 1, 1).IsApproximately((1.0f, 0.0f, 1.0f))  &&  FromHSV( 3.3f, 1f, 1f).IsApproximately((1.0f, 0.0f, 0.5f))
 
-            && round(FromHSV( 3.6f, 1f, 1f), 0.000001f) == new vec3(1.0f, 0.0f, 0.0f)  &&  round(FromHSV( 3.9f, 1f, 1f), 0.000001f) == new vec3(1.0f, 0.5f, 0.0f)
-            && round(FromHSV( 4.2f, 1f, 1f), 0.000001f) == new vec3(1.0f, 1.0f, 0.0f)  &&  round(FromHSV( 4.5f, 1f, 1f), 0.000001f) == new vec3(0.5f, 1.0f, 0.0f)
-            && round(FromHSV( 4.8f, 1f, 1f), 0.000001f) == new vec3(0.0f, 1.0f, 0.0f)  &&  round(FromHSV( 5.1f, 1f, 1f), 0.000001f) == new vec3(0.0f, 1.0f, 0.5f)
-            && round(FromHSV( 5.4f, 1f, 1f), 0.000001f) == new vec3(0.0f, 1.0f, 1.0f)  &&  round(FromHSV( 5.7f, 1f, 1f), 0.000001f) == new vec3(0.0f, 0.5f, 1.0f)
-            && round(FromHSV( 6.0f, 1f, 1f), 0.000001f) == new vec3(0.0f, 0.0f, 1.0f)  &&  round(FromHSV( 6.3f, 1f, 1f), 0.000001f) == new vec3(0.5f, 0.0f, 1.0f)
-            && round(FromHSV( 6.6f, 1f, 1f), 0.000001f) == new vec3(1.0f, 0.0f, 1.0f)  &&  round(FromHSV( 6.9f, 1f, 1f), 0.000001f) == new vec3(1.0f, 0.0f, 0.5f)
+            && FromHSV( 3.6f, 1, 1).IsApproximately((1.0f, 0.0f, 0.0f))  &&  FromHSV( 3.9f, 1f, 1f).IsApproximately((1.0f, 0.5f, 0.0f))
+            && FromHSV( 4.2f, 1, 1).IsApproximately((1.0f, 1.0f, 0.0f))  &&  FromHSV( 4.5f, 1f, 1f).IsApproximately((0.5f, 1.0f, 0.0f))
+            && FromHSV( 4.8f, 1, 1).IsApproximately((0.0f, 1.0f, 0.0f))  &&  FromHSV( 5.1f, 1f, 1f).IsApproximately((0.0f, 1.0f, 0.5f))
+            && FromHSV( 5.4f, 1, 1).IsApproximately((0.0f, 1.0f, 1.0f))  &&  FromHSV( 5.7f, 1f, 1f).IsApproximately((0.0f, 0.5f, 1.0f))
+            && FromHSV( 6.0f, 1, 1).IsApproximately((0.0f, 0.0f, 1.0f))  &&  FromHSV( 6.3f, 1f, 1f).IsApproximately((0.5f, 0.0f, 1.0f))
+            && FromHSV( 6.6f, 1, 1).IsApproximately((1.0f, 0.0f, 1.0f))  &&  FromHSV( 6.9f, 1f, 1f).IsApproximately((1.0f, 0.0f, 0.5f))
         );
 
-
+        //======================================================================================================================================================
     }
 }
