@@ -5,6 +5,26 @@ namespace Utility;
 public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
+    ///
+    /// "Aar" == "Axis Aligned Rectangle"
+    ///
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    ///
+    ///            P           1
+    ///
+    ///     A------P------B    0
+    ///
+    ///            P          -1
+    ///
+    public static int WhichSideOfLine(vec2 P, vec2 La, vec2 Lb) {
+        float Determinant = (P.x-La.x)*(Lb.y-La.y) - (P.y-La.y)*(Lb.x-La.x); // cross(DeltaAP, DeltaAB)
+        return (Determinant > 0f) ?  1
+             : (Determinant < 0f) ? -1 : 0;
+    }
+
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
@@ -14,7 +34,7 @@ public static partial class VEC {
 
     //==========================================================================================================================================================
     ///
-    ///     PointVsCircle(  Point,  Circle-Position,  Circle-Radius  )
+    ///     PointVsCircle(  Point,  CirclePosition,  CircleRadius  )
     ///
     public static bool PointVsCircle(vec2 P, vec2 Cp, float Cr) {
         float d_x = P.x - Cp.x;
@@ -25,8 +45,6 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     ///
-    /// "Aar" == "Axis Aligned Rectangle"
-    ///
     ///                   RectSiz
     ///      +Y *--------@
     ///         |        |
@@ -35,7 +53,7 @@ public static partial class VEC {
     ///         @--------* +X
     ///  RectPos
     ///
-    ///     PointVsAar(  Point,  Rectangle-Position,  Rectangle-Size  )
+    ///     PointVsAar(  Point,  RectanglePosition,  RectangleSize  )
     ///
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool PointVsAar(vec2 P, vec2 Rp, vec2 Rs) => (
@@ -48,62 +66,130 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     ///
-    /// https://www.desmos.com/calculator/dzkn7zysvv
+    /// https://www.desmos.com/calculator/8jfeiiyuap
     ///
-    ///             A
-    ///       +Y    @       Winding is Anti-Clockwise.
+    ///             A   Weinding is Anti-Clockwise.
+    ///       +Y    @
     ///            / \
     ///           /   \
     ///          /     \
     ///         @-------@   +X
     ///        B         C
     ///
-    ///     PointVsTriangle(  Point,  Triangle-Point-A,  B,  C  )
+    ///     PointVsTriangle(  Point,  TrianglePointA,  TrianglePointB,  TrianglePointC  )
     ///
     public static bool PointVsTriangle(vec2 P, vec2 Ta, vec2 Tb, vec2 Tc) {
         float dPA_x = Ta.x - P.x;
         float dPA_y = Ta.y - P.y;
+
         float dPB_x = Tb.x - P.x;
         float dPB_y = Tb.y - P.y;
+
         float dPC_x = Tc.x - P.x;
         float dPC_y = Tc.y - P.y;
-        return (dPA_x*dPC_y >= dPA_y*dPC_x)
-            && (dPB_x*dPA_y >= dPB_y*dPA_x)
-            && (dPC_x*dPB_y >= dPC_y*dPB_x);
+
+        return (dPA_x*dPB_y >= dPA_y*dPB_x)
+            && (dPB_x*dPC_y >= dPB_y*dPC_x)
+            && (dPC_x*dPA_y >= dPC_y*dPA_x);
     }
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static bool PointVsLine(vec2 P,                                      //  Point
-                                   vec2 La, vec2 Lb, float Tolerance) {         //  Line-Point-A, Line-Point-B
+    ///
+    /// https://www.desmos.com/calculator/eyeuk0o9oj
+    ///
+    /// "Irregular Quadrilateral"
+    /// Quad must be convex.
+    ///
+    ///     B
+    ///      @---___
+    ///   +Y  \     `--___
+    ///        \          `--___    A   Weinding is Anti-Clockwise.
+    ///         \               `--@
+    ///          \                /
+    ///           \              /
+    ///            \            /
+    ///             \     __---@
+    ///              @--``      D
+    ///             C              +X
+    ///
+    ///     PointVsQuad(  Point,  QuadPointA,  QuadPointB,  QuadPointC,  QuadPointD  )
+    ///
+    public static bool PointVsQuad(vec2 P, vec2 Qa, vec2 Qb, vec2 Qc, vec2 Qd) {
+        float dPA_x = Qa.x - P.x;  float dPB_x = Qb.x - P.x;
+        float dPA_y = Qa.y - P.y;  float dPB_y = Qb.y - P.y;
 
+        float dPC_x = Qc.x - P.x;  float dPD_x = Qd.x - P.x;
+        float dPC_y = Qc.y - P.y;  float dPD_y = Qd.y - P.y;
+
+        return (dPA_x*dPB_y >= dPA_y*dPB_x)
+            && (dPB_x*dPC_y >= dPB_y*dPC_x)
+            && (dPC_x*dPD_y >= dPC_y*dPD_x)
+            && (dPD_x*dPA_y >= dPD_y*dPA_x);
+    }
+
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    ///
+    /// Polygon must be convex.
+    ///
+    public static bool PointVsPolygon(vec2 P, vec2[] Poly) {
+        #if DEBUG
+            if (Poly.Length < 3) throw new ArgumentException("Derp?");
+            if (Poly.Length < 5) throw new ArgumentException("Use PointVsTri() or PointVsQuad() for polygons with sides fewer than 5.");
+        #endif
+
+        int iA, iB;
+        vec2 dPA;
+        vec2 dPB = Poly[0] - P;
+        for (int i = 0; i < Poly.Length; ++i) {
+            iA = i;
+            iB = (i+1 == Poly.Length) ? 0 : i+1;
+
+            dPA = dPB;
+            dPB = Poly[iB] - P;
+
+            if (dPA.x*dPB.y <= dPA.y*dPB.x)
+                return false;
+        }
+
+        return true;
+    }
+
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    ///
+    ///     PointVsLine(  Point,  Line-PointA,  Line-PointB,  Tolerance  )
+    ///
+    public static bool PointVsLine(vec2 P, vec2 La, vec2 Lb, float Tolerance) {
         //if (P.x == La.x && P.y == La.y) return true;  The occurrence of these is so rare that it is not worth checking for.
         //if (P.x == Lb.x && P.y == Lb.y) return true;
 
+        //  Delta from Line-PointA  to  Point & Line-PointB:
         float dAP_x =  P.x - La.x;
         float dAP_y =  P.y - La.y;
 
         float dAB_x = Lb.x - La.x;
         float dAB_y = Lb.y - La.y;
 
-        float DotAP_AB = (dAP_x * dAB_x) + (dAP_y * dAB_y);
-        float DotAB_AB = (dAB_x * dAB_x) + (dAB_y * dAB_y);
+        float DotPB           = (dAP_x * dAB_x) + (dAP_y * dAB_y);
+        float Line_LengthSqrd = (dAB_x * dAB_x) + (dAB_y * dAB_y);
 
-        // Get distance to NearestPointOnLine from LinePointA as multiple of DeltaAB:
-        float Scaler = DotAP_AB / DotAB_AB;
+        //  Get distance to NearestPointOnLine from Line-PointA as multiple of DeltaAB:
+        float Scaler = DotPB / Line_LengthSqrd;
 
-        // Is ProjectedPoint going to be between LinePointA and LinePointB:
-        if (Scaler < 0f || Scaler >= 1f) return false; // -1
+        //  Is ProjectedPoint going to be between Line-PointA and Line-PointB:
+        if (Scaler < 0f || Scaler >= 1f) return false;
 
-        // Project Point onto Line:
-        float PP_x = dAB_x * Scaler;
-        float PP_y = dAB_y * Scaler;
+        //  Project Point onto Line:
+        float pP_x = dAB_x * Scaler;
+        float pP_y = dAB_y * Scaler;
 
-        // Distance between Point and ProjectedPoint:
-        float dPPP_x = dAP_x - PP_x;
-        float dPPP_y = dAP_y - PP_y;
+        //  Delta between Point and ProjectedPoint:
+        float dPP_x = dAP_x - pP_x;
+        float dPP_y = dAP_y - pP_y;
 
-        return (dPPP_x*dPPP_x + dPPP_y*dPPP_y < Tolerance*Tolerance);
+        return (dPP_x*dPP_x + dPP_y*dPP_y < Tolerance*Tolerance);
     }
 
     //##########################################################################################################################################################
@@ -112,9 +198,11 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
+    ///
+    ///     AarVsAar(  Rectangle1-Position,  Rectangle1-Size,  Rectangle2-Position,  Rectangle2-Size)
+    ///
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool AarVsAar(vec2 Rp1, vec2 Rs1,                             //  Rectangle-Position, Rectangle-Size
-                                vec2 Rp2, vec2 Rs2) => (
+    public static bool AarVsAar(vec2 Rp1, vec2 Rs1, vec2 Rp2, vec2 Rs2) => (
            Rp1.x       <  Rp2.x+Rs2.x
         && Rp1.x+Rs1.x >= Rp2.x
         && Rp1.y       <  Rp2.y+Rs2.y
@@ -127,8 +215,10 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static bool CircleVsCircle(vec2 Cp1, float Cr1,                      //  Circle-Position   , Circle-Radius
-                                      vec2 Cp2, float Cr2) {
+    ///
+    ///     CircleVsCircle(  Circle1-Position,  Circle1-Radius,  Circle2-Position,  Circle2-Radius  )
+    ///
+    public static bool CircleVsCircle(vec2 Cp1, float Cr1, vec2 Cp2, float Cr2) {
         float d_x = Cp1.x - Cp2.x;
         float d_y = Cp1.y - Cp2.y;
         return ((d_x*d_x + d_y*d_y) < (Cr1*Cr1 + Cr2*Cr2));
@@ -136,9 +226,10 @@ public static partial class VEC {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static bool CircleVsAar(vec2 Cp, float Cr,                           //  Circle-Position   , Circle-Radius
-                                   vec2 Rp, vec2  Rs) {                         //  Rectangle-Position, Rectangle-Size
-
+    ///
+    ///     CircleVsAar(  Circle-Position,  Circle-Radius,  Rectangle-Position,  Rectangle-Size  )
+    ///
+    public static bool CircleVsAar(vec2 Cp, float Cr, vec2 Rp, vec2  Rs) {
         float C_Lf = Cp.x - Cr; // "Circle Left"
         float C_Rt = Cp.x + Cr; // "Circle Right"
         float C_Bm = Cp.y - Cr; // "Circle Bottom"
@@ -155,12 +246,10 @@ public static partial class VEC {
         else if (Cp.x >= R_Lf && Cp.x < R_Rt && C_Bm < R_Tp && C_Tp > R_Bm) return true;
 
         float d_x = (Cp.x < R_Lf) ? Cp.x - R_Lf
-                  : (Cp.x > R_Rt) ? Cp.x - R_Rt
-                  : 0f;
+                  : (Cp.x > R_Rt) ? Cp.x - R_Rt : 0f;
 
         float d_y = (Cp.y < R_Bm) ? Cp.y - R_Bm
-                  : (Cp.y > R_Tp) ? Cp.y - R_Tp
-                  : 0f;
+                  : (Cp.y > R_Tp) ? Cp.y - R_Tp : 0f;
 
         if (d_x*d_x + d_y*d_y <= Cr*Cr) return true;
 
@@ -173,35 +262,21 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    //public static int WhichSideOfLine(vec2 P,
-    //                                  vec2 La, vec2 Lb) {
-    //    float Determinant = (P.x-La.x)*(Lb.y-La.y) - (P.y-La.y)*(Lb.x-La.x); // cross(DeltaAP, DeltaAB)
-    //    //         P           1
-    //    //
-    //    //  A──────P──────B    0
-    //    //
-    //    //         P          -1
-    //    return 0 + (Determinant > 0f) - (Determinant < 0f);
-    //}
-
-    //##########################################################################################################################################################
-    //##########################################################################################################################################################
     ///
     /// Parallel overlapping Lines will not test positive as a collision.
     ///
-    public static bool LineVsLine(vec2 La1, vec2 Lb1,
-                                  vec2 La2, vec2 Lb2 ) {
+    public static bool LineVsLine(vec2 La1, vec2 Lb1, vec2 La2, vec2 Lb2 ) {
         //=====================================================================================================================================
-        float dAB1_x   = Lb1.x - La1.x;
-        float dAB1_y   = Lb1.y - La1.y;
-        float dAB2_x   = Lb2.x - La2.x;
-        float dAB2_y   = Lb2.y - La2.y;
+        float dAB1_x = Lb1.x - La1.x;
+        float dAB1_y = Lb1.y - La1.y;
+        float dAB2_x = Lb2.x - La2.x;
+        float dAB2_y = Lb2.y - La2.y;
         float dA12_x = La1.x - La2.x;
         float dA12_y = La1.y - La2.y;
         //=====================================================================================================================================
-        float n1 = dAB1_x*dA12_y - dAB1_y*dA12_x; //  DeltaAB1  cross  DeltaA12
-        float n2 = dAB2_x*dA12_y - dAB2_y*dA12_x; //  DeltaAB2  cross  DeltaA12
-        float d  = dAB1_x*dAB2_y - dAB1_y*dAB2_x; //  DeltaAB1  cross  DeltaAB2
+        float n1 = dAB1_x*dA12_y - dAB1_y*dA12_x; //  cross(DeltaAB1, DeltaA12)
+        float n2 = dAB2_x*dA12_y - dAB2_y*dA12_x; //  cross(DeltaAB2, DeltaA12)
+        float d  = dAB1_x*dAB2_y - dAB1_y*dAB2_x; //  cross(DeltaAB1, DeltaAB2)
         float r  = n1 / d;     //@@  DivByZero possible?
         //@@  EarlyOut?
         float s  = n2 / d;
@@ -209,11 +284,12 @@ public static partial class VEC {
         return (r >= 0f && r <= 1f) && (s >= 0f && s <= 1f);
     }
 
-
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static bool LineVsAar(vec2 La, vec2 Lb,                              //  Line-Point-A      , Line-Point-B
-                                 vec2 Rp, vec2 Rs ) {                           //  Rectangle-Position, Rectangle-Size
+    ///
+    ///     LineVsAar(  Line-Point-A,  Line-Point-B,  Rectangle-Position,  Rectangle-Size  )
+    ///
+    public static bool LineVsAar(vec2 La, vec2 Lb, vec2 Rp, vec2 Rs ) {
         //=====================================================================================================================================
         float R_Rt = Rp.x + Rs.x;
         float R_Bm = Rp.y + Rs.y;       //@@  Fix Y inversion...
@@ -307,10 +383,11 @@ public static partial class VEC {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static bool LineVsCircle(vec2 La, vec2 Lb,                           //  Line-Point-A   , Line-Point-B
-                                    vec2 Cp, float Cr) {                        //  Circle-Position, Circle-Radius
+    ///
+    ///     LineVsCircle(  Line-Point-A,  Line-Point-B,  Circle-Position,  Circle-Radius  )
+    ///
+    public static bool LineVsCircle(vec2 La, vec2 Lb, vec2 Cp, float Cr) {
 
-        //  CircleRadius Squared:
         float Cr_Sqrd = Cr*Cr;
 
         //  Is LinePointB in Circle?    Check B first, it's typically used as the destination of a movement vector.

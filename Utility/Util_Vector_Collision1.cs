@@ -6,7 +6,7 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //
     //      Proper range-check that works for both Integer & Float values.
-    //      This principle applies to all collision/threshold testing......
+    //      This principle applies throughout all collision/threshold testing.
     //
     //                       (P >= Min)          (P < Max)
     //                        ▼                   ▼

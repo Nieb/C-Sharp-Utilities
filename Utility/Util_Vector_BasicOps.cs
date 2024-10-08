@@ -204,16 +204,36 @@ public static partial class VEC {
 
     //==========================================================================================================================================================
     //                                                                    "Reciprocal"              Multiplicative Inverse
-    //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //public static vec2 rcp(vec2 A) => new vec2(1f/A.x, 1f/A.y          );
-    //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //public static vec3 rcp(vec3 A) => new vec3(1f/A.x, 1f/A.y, 1f/A.z);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static vec2 rcp(vec2 A) =>
+        new vec2(
+            (A.x > -EPSILON && A.x < EPSILON) ? 0f : 1f/A.x,
+            (A.y > -EPSILON && A.y < EPSILON) ? 0f : 1f/A.y
+        );
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static vec3 rcp(vec3 A) =>
+        new vec3(
+            (A.x > -EPSILON && A.x < EPSILON) ? 0f : 1f/A.x,
+            (A.y > -EPSILON && A.y < EPSILON) ? 0f : 1f/A.y,
+            (A.z > -EPSILON && A.z < EPSILON) ? 0f : 1f/A.z
+        );
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //                                                                  "Minimal" Value
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float min(float A, float B) => (A < B) ? A : B;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float min(float A, float B, float C) => (A < B) ? ((A < C) ? A : C)
+                                                                  : ((B < C) ? B : C);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float min(float A, float B, float C, float D) => (A < B) ? ((A < C) ? ((A < D) ? A : D)
+                                                                                      : ((C < D) ? C : D))
+                                                                           : ((B < C) ? ((B < D) ? B : D)
+                                                                                      : ((C < D) ? C : D));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static vec2 min(vec2 A, float B) => new vec2( (A.x < B  ) ? A.x : B  ,  (A.y < B  ) ? A.y : B   );
@@ -234,6 +254,16 @@ public static partial class VEC {
     //                                                                  "Maximal" Value
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float max(float A, float B) => (A > B) ? A : B;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float max(float A, float B, float C) => (A > B) ? ((A > C) ? A : C)
+                                                                  : ((B > C) ? B : C);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float max(float A, float B, float C, float D) => (A > B) ? ((A > C) ? ((A > D) ? A : D)
+                                                                                      : ((C > D) ? C : D))
+                                                                           : ((B > C) ? ((B > D) ? B : D)
+                                                                                      : ((C > D) ? C : D));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static vec2 max(vec2 A, float B) => new vec2( (A.x > B  ) ? A.x : B  ,  (A.y > B  ) ? A.y : B   );
@@ -340,19 +370,19 @@ public static partial class VEC {
     //                                                                     "Refract"
     ///
     /// https://registry.khronos.org/OpenGL-Refpages/gl4/html/refract.xhtml
-    /// https://www.desmos.com/calculator/m0e0rzhgkh
+    /// https://www.desmos.com/calculator/mjieymtttc
     ///
     ///     refract( Vector-Normal, Surface-Normal, Index-Of-Refraction)
     ///
     ///         IndexOfRefraction:  The ratio of the speed of light in a vacuum, to the speed of light in a medium.
-    ///                             Or from one medium to another medium.
+    ///                             Or, from one medium to another medium.
     ///
     public static vec2 refract(vec2 Vn, vec2 Sn, float Ratio) {
         float Dot = (Vn.x * Sn.x) + (Vn.y * Sn.y);
 
         float K = 1f - Ratio*Ratio * (1f - Dot*Dot);
 
-        float Sqrt_K = MathF.Sqrt(K);   //  First testing if this will be used isn't worth the bother, the case where it's not used is improper usage of this function anyhow.
+        float Sqrt_K = MathF.Sqrt(K);
 
         return (K < 0f) ? new vec2(0f)
                         : new vec2( Ratio * Vn.x - (Ratio * Dot + Sqrt_K) * Sn.x,
@@ -364,7 +394,7 @@ public static partial class VEC {
 
         float K = 1f - Ratio*Ratio * (1f - Dot*Dot);
 
-        float Sqrt_K = MathF.Sqrt(K);   //  Ditto.
+        float Sqrt_K = MathF.Sqrt(K);
 
         return (K < 0f) ? new vec3(0f)
                         : new vec3( Ratio * Vn.x - (Ratio * Dot + Sqrt_K) * Sn.x,
