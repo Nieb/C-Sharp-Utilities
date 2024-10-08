@@ -166,8 +166,8 @@ public static partial class VEC {
 
         float Axx_iCosT = Axis.x * Axis.x*iCosT;
         float Axy_iCosT = Axis.x * Ay_iCosT;
-        float Axz_iCosT = Axis.x * Az_iCosT;
         float Ayy_iCosT = Axis.y * Ay_iCosT;
+        float Axz_iCosT = Axis.x * Az_iCosT;
         float Ayz_iCosT = Axis.y * Az_iCosT;
         float Azz_iCosT = Axis.z * Az_iCosT;
 
@@ -203,8 +203,8 @@ public static partial class VEC {
 
         float Axx_iCosT = Axis.x * Axis.x*iCosT;
         float Axy_iCosT = Axis.x * Ay_iCosT;
-        float Axz_iCosT = Axis.x * Az_iCosT;
         float Ayy_iCosT = Axis.y * Ay_iCosT;
+        float Axz_iCosT = Axis.x * Az_iCosT;
         float Ayz_iCosT = Axis.y * Az_iCosT;
         float Azz_iCosT = Axis.z * Az_iCosT;
 
@@ -225,14 +225,16 @@ public static partial class VEC {
         if (ThetaVec.x == 0f && ThetaVec.y == 0f && ThetaVec.z == 0f)
             return Pnt;
 
-        //  Derive singular rotation 'Theta'.  Length of 'ThetaVec'.
-        float Theta = -MathF.Sqrt(ThetaVec.x*ThetaVec.x + ThetaVec.y*ThetaVec.y + ThetaVec.z*ThetaVec.z); //  Theta is clockwise.
+        ThetaVec = -ThetaVec; //  Theta is clockwise.
+
+        //  Derive singular rotation Theta (length of ThetaVec):
+        float Theta = MathF.Sqrt(ThetaVec.x*ThetaVec.x + ThetaVec.y*ThetaVec.y + ThetaVec.z*ThetaVec.z);
 
         float  CosT = MathF.Cos(Theta);
         float iCosT = 1f - CosT;
         float  SinT = MathF.Sin(Theta);
 
-        //  Derive singular rotation 'Axis'.  'ThetaVec' normalized.
+        //  Derive singular rotation Axis (ThetaVec normalized):
         float ThetaRcp = 1f / Theta;
         float Axis_x = ThetaVec.x * ThetaRcp;
         float Axis_y = ThetaVec.y * ThetaRcp;
@@ -244,8 +246,8 @@ public static partial class VEC {
 
         float Axx_iCosT = Axis_x * Axis_x*iCosT;
         float Axy_iCosT = Axis_x * Ay_iCosT;
-        float Axz_iCosT = Axis_x * Az_iCosT;
         float Ayy_iCosT = Axis_y * Ay_iCosT;
+        float Axz_iCosT = Axis_x * Az_iCosT;
         float Ayz_iCosT = Axis_y * Az_iCosT;
         float Azz_iCosT = Axis_z * Az_iCosT;
 
@@ -270,14 +272,16 @@ public static partial class VEC {
         float Dlt_y = Pnt.y - Pivot.y;
         float Dlt_z = Pnt.z - Pivot.z;
 
-        //  Derive singular rotation 'Theta'.  Length of 'ThetaVec'.
-        float Theta = -MathF.Sqrt(ThetaVec.x*ThetaVec.x + ThetaVec.y*ThetaVec.y + ThetaVec.z*ThetaVec.z); //  Theta is clockwise.
+        ThetaVec = -ThetaVec; //  Theta is clockwise.
+
+        //  Derive singular rotation Theta (length of ThetaVec):
+        float Theta = MathF.Sqrt(ThetaVec.x*ThetaVec.x + ThetaVec.y*ThetaVec.y + ThetaVec.z*ThetaVec.z);
 
         float  CosT = MathF.Cos(Theta);
         float iCosT = 1f - CosT;
         float  SinT = MathF.Sin(Theta);
 
-        //  Derive singular rotation 'Axis'.  'ThetaVec' normalized.
+        //  Derive singular rotation Axis (ThetaVec normalized):
         float ThetaRcp = 1f / Theta;
         float Axis_x = ThetaVec.x * ThetaRcp;
         float Axis_y = ThetaVec.y * ThetaRcp;
@@ -289,8 +293,8 @@ public static partial class VEC {
 
         float Axx_iCosT = Axis_x * Axis_x*iCosT;
         float Axy_iCosT = Axis_x * Ay_iCosT;
-        float Axz_iCosT = Axis_x * Az_iCosT;
         float Ayy_iCosT = Axis_y * Ay_iCosT;
+        float Axz_iCosT = Axis_x * Az_iCosT;
         float Ayz_iCosT = Axis_y * Az_iCosT;
         float Azz_iCosT = Axis_z * Az_iCosT;
 
