@@ -7,44 +7,42 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //  Random is not ThreadSafe.
     private static readonly Random Random     = new();
-  //private static readonly object ThreadLock = new();
+    //private static readonly object ThreadLock = new();
 
     //  https://devblogs.microsoft.com/dotnet/performance-improvements-in-net-9/#threading
     //  https://learn.microsoft.com/en-us/dotnet/api/system.threading.lock?view=net-9.0
-  //private static readonly System.Threading.Lock ThreadLock = new();
+    //private static readonly System.Threading.Lock ThreadLock = new();
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static float Random1(bool Signed = true) => (
-        Signed ? VEC.Random.NextSingle() * 2.0f - 1.0f
-               : VEC.Random.NextSingle()
-    );
+    public static float Random1(bool Signed = true) =>
+        Signed ? VEC.Random.NextSingle()*2f - 1f : VEC.Random.NextSingle();
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static vec2 Random2() =>
+    public static vec2 Random2(bool Signed = true) =>
         normalize(
             new vec2(
-                VEC.Random.NextSingle() * 2.0f - 1.0f,
-                VEC.Random.NextSingle() * 2.0f - 1.0f
+                Signed ? VEC.Random.NextSingle()*2f - 1f : VEC.Random.NextSingle(),
+                Signed ? VEC.Random.NextSingle()*2f - 1f : VEC.Random.NextSingle()
             )
         );
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static vec3 Random3() =>
+    public static vec3 Random3(bool Signed = true) =>
         normalize(
             new vec3(
-                VEC.Random.NextSingle() * 2.0f - 1.0f,
-                VEC.Random.NextSingle() * 2.0f - 1.0f,
-                VEC.Random.NextSingle() * 2.0f - 1.0f
+                Signed ? VEC.Random.NextSingle()*2f - 1f : VEC.Random.NextSingle(),
+                Signed ? VEC.Random.NextSingle()*2f - 1f : VEC.Random.NextSingle(),
+                Signed ? VEC.Random.NextSingle()*2f - 1f : VEC.Random.NextSingle()
             )
         );
 
     //==========================================================================================================================================================
     public static vec3 Random3_() {
-        // Pitch  RotX  -->   Latitude( –90  +90 South North)        MapCoord  -->  TexCoord V
-        // Yaw    RotY  -->  Longitude(-180 +180 West  East )        MapCoord  -->  TexCoord U
+        //  Pitch  RotX  -->   Latitude(South –90  +90 North)  -->  Position|Texture Coord  Y|V
+        //  Yaw    RotY  -->  Longitude(West -180 +180 East )  -->  Position|Texture Coord  X|U
 
         float Pch = (VEC.Random.NextSingle() - 0.5f) * PI;
         float Yaw = (VEC.Random.NextSingle() - 0.5f) * PI2;
@@ -55,9 +53,9 @@ public static partial class VEC {
         float CosPch = MathF.Cos(Pch);
 
         return new vec3(
-              CosPch * MathF.Sin(Yaw),
-                      -MathF.Sin(Pch),
-             -CosPch * MathF.Cos(Yaw)
+             CosPch * MathF.Sin(Yaw),
+                     -MathF.Sin(Pch),
+            -CosPch * MathF.Cos(Yaw)
         );
     }
 

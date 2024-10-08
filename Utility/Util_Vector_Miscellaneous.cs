@@ -7,18 +7,6 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static bool IsApproximately(this float A, float B) => abs(A-B) <= EPSILON;
-
-    public static bool IsApproximately(this vec2  A, vec2  B) => abs(A-B) <= EPSILON;
-
-    public static bool IsApproximately(this vec3  A, vec3  B) => abs(A-B) <= EPSILON;
-
-    public static bool IsApproximately(this vec4  A, vec4  B) => abs(A-B) <= EPSILON;
-
-    //##########################################################################################################################################################
-    //##########################################################################################################################################################
-    //##########################################################################################################################################################
-    //##########################################################################################################################################################
     //                                                                    "Barycentric"
     ///
     /// Returns 3 weights corresponding to a position relative to the 3 points of a triangle.
@@ -55,10 +43,8 @@ public static partial class VEC {
 
         float Determinant = 2f * (dAB_x*dBC_y - dAB_y*dBC_x);
 
-        float d_x;
-        float d_y;
-        float CCc_x; //  CircumCircle's center position.
-        float CCc_y;
+        float d_x, d_y;
+        float CCp_x, CCp_y; //  CircumCircle Position.
         if (MathF.Abs(Determinant) < EPSILON) {
             float Min_x = MathF.Min(MathF.Min(A.x, B.x), C.x);
             float Min_y = MathF.Min(MathF.Min(A.y, B.y), C.y);
@@ -66,11 +52,11 @@ public static partial class VEC {
             float Max_x = MathF.Max(MathF.Max(A.x, B.x), C.x);
             float Max_y = MathF.Max(MathF.Max(A.y, B.y), C.y);
 
-            CCc_x = (Min_x + Max_x)*0.5f;
-            CCc_y = (Min_y + Max_y)*0.5f;
+            CCp_x = (Min_x + Max_x)*0.5f;
+            CCp_y = (Min_y + Max_y)*0.5f;
 
-            d_x = CCc_x - Min_x;
-            d_y = CCc_y - Min_y;
+            d_x = CCp_x - Min_x;
+            d_y = CCp_y - Min_y;
         } else {
             float dAC_x = C.x - A.x;
             float dAC_y = C.y - A.y;
@@ -78,17 +64,17 @@ public static partial class VEC {
             float AB_AB = dAB_x*(A.x + B.x) + dAB_y*(A.y + B.y);
             float AC_AC = dAC_x*(A.x + C.x) + dAC_y*(A.y + C.y);
 
-            CCc_x = (dAC_y*AB_AB - dAB_y*AC_AC) / Determinant;
-            CCc_y = (dAB_x*AC_AC - dAC_x*AB_AB) / Determinant;
+            CCp_x = (dAC_y*AB_AB - dAB_y*AC_AC) / Determinant;
+            CCp_y = (dAB_x*AC_AC - dAC_x*AB_AB) / Determinant;
 
-            d_x = CCc_x - A.x;
-            d_y = CCc_y - A.y;
+            d_x = CCp_x - A.x;
+            d_y = CCp_y - A.y;
         }
 
         float Tri_RdsSqrd = d_x*d_x + d_y*d_y;
 
-        d_x = CCc_x - P.x;
-        d_y = CCc_y - P.y;
+        d_x = CCp_x - P.x;
+        d_y = CCp_y - P.y;
 
         return ((d_x*d_x + d_y*d_y) < Tri_RdsSqrd);
     }

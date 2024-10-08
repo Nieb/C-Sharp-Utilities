@@ -6,10 +6,10 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //
-    //  The starting orientations for these are designed around being practical, not mathematically "correct".
+    //  The starting orientations for these are designed around being practical, not academically "correct".
     //
-    //  All Thetas are Clockwise
-    //  and are in Radians.
+    //  Theta in Radians.
+    //  Positive rotations are Clockwise.
     //
     //##########################################################################################################################################################
     //##########################################################################################################################################################
@@ -28,7 +28,8 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     ///
-    /// Vector3  FROM  Pitch.  Result on plane spanning YZ.
+    /// Vector3  FROM  Pitch.
+    /// Result on plane spanning YZ.
     ///
     ///     (  0) == ( 0, 0,-1)
     ///     ( 90) == ( 0,-1, 0)
@@ -41,7 +42,8 @@ public static partial class VEC {
 
     //==========================================================================================================================================================
     ///
-    /// Vector3  FROM  Yaw.    Result on plane spanning XZ.
+    /// Vector3  FROM  Yaw.
+    /// Result on plane spanning XZ.
     ///
     ///     (  0) == ( 0, 0,-1)
     ///     ( 90) == ( 1, 0, 0)
@@ -54,7 +56,8 @@ public static partial class VEC {
 
     //==========================================================================================================================================================
     ///
-    /// Vector3  FROM  Roll.   Result on plane spanning XY.
+    /// Vector3  FROM  Roll.
+    /// Result on plane spanning XY.
     ///
     ///     (  0) == ( 0, 1, 0)
     ///     ( 90) == ( 1, 0, 0)
@@ -114,7 +117,7 @@ public static partial class VEC {
 
         float Pch = atan2(Vn.y, sqrt(Vn.x*Vn.x + Vn.z*Vn.z));
 
-        float Yaw = (abs(Pch) >= PIH) ? 0f : wrap(atan2(Vn.x, Vn.z), 0f, PI2);
+        float Yaw = (abs(Pch) >= (PIH-EPSILON)) ? 0f : wrap(atan2(Vn.x, Vn.z), 0f, PI2);
 
         return new vec3(Pch, Yaw, 0f);
     }
