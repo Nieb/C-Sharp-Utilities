@@ -1,7 +1,39 @@
-
+using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Utility;
 public static partial class VEC {
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsApproximatelyZero(this float A) => (A > -EPSILON && A < EPSILON);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsApproximatelyZero(this vec2  A) => (A > -EPSILON && A < EPSILON);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsApproximatelyZero(this vec3  A) => (A > -EPSILON && A < EPSILON);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsApproximatelyZero(this vec4  A) => (A > -EPSILON && A < EPSILON);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsApproximately(this float A, float B) => abs(A-B) < EPSILON;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsApproximately(this vec2  A, vec2  B) => abs(A-B) < EPSILON;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsApproximately(this vec3  A, vec3  B) => abs(A-B) < EPSILON;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsApproximately(this vec4  A, vec4  B) => abs(A-B) < EPSILON;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsRoughly(this float A, float B) => abs(A-B) < EPSILISH;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsRoughly(this vec2  A, vec2  B) => abs(A-B) < EPSILISH;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsRoughly(this vec3  A, vec3  B) => abs(A-B) < EPSILISH;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsRoughly(this vec4  A, vec4  B) => abs(A-B) < EPSILISH;
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
 

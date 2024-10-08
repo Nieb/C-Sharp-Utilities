@@ -11,11 +11,11 @@ public struct vec3 : IFormattable {
     public float y = 0f;
     public float z = 0f;
 
+    //==========================================================================================================================================================
     public float r {  get => this.x;  set => this.x = value;  }
     public float g {  get => this.y;  set => this.y = value;  }
     public float b {  get => this.z;  set => this.z = value;  }
 
-    //==========================================================================================================================================================
     //  NOTICE: Length is computed each time it is accessed.
     public float LengthSquared => (this.x*this.x + this.y*this.y + this.z*this.z);
 
@@ -53,9 +53,10 @@ public struct vec3 : IFormattable {
 
     //==========================================================================================================================================================
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator vec3( (float X, float Y, float Z) tuple ) => new vec3(tuple.X, tuple.Y, tuple.Z);
-  //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-  //public static implicit operator vec3( float XYZ ) => new vec3(XYZ, XYZ, XYZ);
+    public static implicit operator vec3( (float X, float Y, float Z) t ) => new vec3(t.X, t.Y, t.Z);
+
+    //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+    //public static implicit operator vec3( float XYZ ) => new vec3(XYZ, XYZ, XYZ);
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
@@ -150,17 +151,17 @@ public struct vec3 : IFormattable {
             return this.ToString();
 
         int Padding = FormatStr.Length+1;
-        return "( " + (abs(this.x) < EPSILON ? 0f : this.x).ToString(FormatStr).PadLeft(Padding)
-             + ", " + (abs(this.y) < EPSILON ? 0f : this.y).ToString(FormatStr).PadLeft(Padding)
-             + ", " + (abs(this.z) < EPSILON ? 0f : this.z).ToString(FormatStr).PadLeft(Padding)
+        return "( " + (this.x.IsApproximatelyZero() ? 0f : this.x).ToString(FormatStr).PadLeft(Padding)
+             + ", " + (this.y.IsApproximatelyZero() ? 0f : this.y).ToString(FormatStr).PadLeft(Padding)
+             + ", " + (this.z.IsApproximatelyZero() ? 0f : this.z).ToString(FormatStr).PadLeft(Padding)
              + " )";
     }
 
     //==========================================================================================================================================================
     public override string ToString() =>
-        $"( {(abs(this.x) < EPSILON ? 0f : this.x),9:0.000000}, "
-        + $"{(abs(this.y) < EPSILON ? 0f : this.y),9:0.000000}, "
-        + $"{(abs(this.z) < EPSILON ? 0f : this.z),9:0.000000} )";
+        $"( {(this.x.IsApproximatelyZero() ? 0f : this.x),9:0.000000}, "
+        + $"{(this.y.IsApproximatelyZero() ? 0f : this.y),9:0.000000}, "
+        + $"{(this.z.IsApproximatelyZero() ? 0f : this.z),9:0.000000} )";
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
