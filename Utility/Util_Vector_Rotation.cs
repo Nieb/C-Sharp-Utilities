@@ -9,32 +9,32 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static vec2 rot(vec2 Pnt, float Theta) {
+    public static vec2 rot(vec2 P, float Theta) {
         if (Theta == 0.0f)
-            return Pnt;
+            return P;
 
         Theta = -Theta; //  Theta is clockwise.
         float CosT = MathF.Cos(Theta);
         float SinT = MathF.Sin(Theta);
 
-        return new vec2( Pnt.x*CosT - Pnt.y*SinT,
-                         Pnt.x*SinT + Pnt.y*CosT );
+        return new vec2( P.x*CosT - P.y*SinT,
+                         P.x*SinT + P.y*CosT );
     }
 
     //==========================================================================================================================================================
-    public static vec2 rot(vec2 Pnt, vec2 Pivot, float Theta) {
+    public static vec2 rot(vec2 P, vec2 Pivot, float Theta) {
         if (Theta == 0.0f)
-            return Pnt;
+            return P;
 
         Theta = -Theta; //  Theta is clockwise.
         float CosT = MathF.Cos(Theta);
         float SinT = MathF.Sin(Theta);
 
-        float Dlt_x = Pnt.x - Pivot.x;
-        float Dlt_y = Pnt.y - Pivot.y;
+        float d_x = P.x - Pivot.x;
+        float d_y = P.y - Pivot.y;
 
-        return new vec2( Pivot.x  +  Dlt_x*CosT - Dlt_y*SinT,
-                         Pivot.y  +  Dlt_x*SinT + Dlt_y*CosT );
+        return new vec2( Pivot.x  +  d_x*CosT - d_y*SinT,
+                         Pivot.y  +  d_x*SinT + d_y*CosT );
     }
 
     //##########################################################################################################################################################
@@ -43,124 +43,124 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static vec3 pch(vec3 Pnt, float Theta) {
+    public static vec3 pch(vec3 P, float Theta) {
         if (Theta == 0f)
-            return Pnt;
+            return P;
 
         Theta = -Theta; //  Theta is clockwise.
         float CosT = MathF.Cos(Theta);
         float SinT = MathF.Sin(Theta);
 
         return new vec3(
-                 Pnt.x,
-            CosT*Pnt.y + -SinT*Pnt.z,
-            SinT*Pnt.y +  CosT*Pnt.z
+                 P.x,
+            CosT*P.y + -SinT*P.z,
+            SinT*P.y +  CosT*P.z
         );
     }
 
     //==========================================================================================================================================================
-    public static vec3 pch(vec3 Pnt, vec3 Pivot, float Theta) {
+    public static vec3 pch(vec3 P, vec3 Pivot, float Theta) {
         if (Theta == 0f)
-            return Pnt;
+            return P;
 
         Theta = -Theta; //  Theta is clockwise.
         float CosT = MathF.Cos(Theta);
         float SinT = MathF.Sin(Theta);
 
-        float Dlt_y = Pnt.y - Pivot.y;
-        float Dlt_z = Pnt.z - Pivot.z;
+        float d_y = P.y - Pivot.y;
+        float d_z = P.z - Pivot.z;
 
         return new vec3(
-              Pnt.x,
-            Pivot.y  +  CosT*Dlt_y + -SinT*Dlt_z,
-            Pivot.z  +  SinT*Dlt_y +  CosT*Dlt_z
+                P.x,
+            Pivot.y  +  CosT*d_y + -SinT*d_z,
+            Pivot.z  +  SinT*d_y +  CosT*d_z
         );
     }
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static vec3 yaw(vec3 Pnt, float Theta) {
+    public static vec3 yaw(vec3 P, float Theta) {
         if (Theta == 0f)
-            return Pnt;
+            return P;
 
         Theta = -Theta; //  Theta is clockwise.
         float CosT = MathF.Cos(Theta);
         float SinT = MathF.Sin(Theta);
 
         return new vec3(
-             CosT*Pnt.x + SinT*Pnt.z,
-                  Pnt.y,
-            -SinT*Pnt.x + CosT*Pnt.z
-        );
-    }
-
-    //==========================================================================================================================================================
-    public static vec3 yaw(vec3 Pnt, vec3 Pivot, float Theta) {
-        if (Theta == 0f)
-            return Pnt;
-
-        Theta = -Theta; //  Theta is clockwise.
-        float CosT = MathF.Cos(Theta);
-        float SinT = MathF.Sin(Theta);
-
-        float Dlt_x = Pnt.x - Pivot.x;
-        float Dlt_z = Pnt.z - Pivot.z;
-
-        return new vec3(
-            Pivot.x  +   CosT*Dlt_x + SinT*Dlt_z,
-              Pnt.y,
-            Pivot.z  +  -SinT*Dlt_x + CosT*Dlt_z
-        );
-    }
-
-    //##########################################################################################################################################################
-    //##########################################################################################################################################################
-    public static vec3 rol(vec3 Pnt, float Theta) {
-        if (Theta == 0f)
-            return Pnt;
-
-        Theta = -Theta; //  Theta is clockwise.
-        float CosT = MathF.Cos(Theta);
-        float SinT = MathF.Sin(Theta);
-
-        return new vec3(
-            CosT*Pnt.x + -SinT*Pnt.y,
-            SinT*Pnt.x +  CosT*Pnt.y,
-                 Pnt.z
+             CosT*P.x + SinT*P.z,
+                  P.y,
+            -SinT*P.x + CosT*P.z
         );
     }
 
     //==========================================================================================================================================================
-    public static vec3 rol(vec3 Pnt, vec3 Pivot, float Theta) {
+    public static vec3 yaw(vec3 P, vec3 Pivot, float Theta) {
         if (Theta == 0f)
-            return Pnt;
+            return P;
 
         Theta = -Theta; //  Theta is clockwise.
         float CosT = MathF.Cos(Theta);
         float SinT = MathF.Sin(Theta);
 
-        float Dlt_x = Pnt.x - Pivot.x;
-        float Dlt_y = Pnt.y - Pivot.y;
+        float d_x = P.x - Pivot.x;
+        float d_z = P.z - Pivot.z;
 
         return new vec3(
-            Pivot.x  +  CosT*Dlt_x + -SinT*Dlt_y,
-            Pivot.y  +  SinT*Dlt_x +  CosT*Dlt_y,
-              Pnt.z
+            Pivot.x  +   CosT*d_x + SinT*d_z,
+                P.y,
+            Pivot.z  +  -SinT*d_x + CosT*d_z
         );
     }
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static vec3 rot(vec3 Pnt, vec3 Axis, float Theta) {
+    public static vec3 rol(vec3 P, float Theta) {
         if (Theta == 0f)
-            return Pnt;
+            return P;
 
         Theta = -Theta; //  Theta is clockwise.
+        float CosT = MathF.Cos(Theta);
+        float SinT = MathF.Sin(Theta);
+
+        return new vec3(
+            CosT*P.x + -SinT*P.y,
+            SinT*P.x +  CosT*P.y,
+                 P.z
+        );
+    }
+
+    //==========================================================================================================================================================
+    public static vec3 rol(vec3 P, vec3 Pivot, float Theta) {
+        if (Theta == 0f)
+            return P;
+
+        Theta = -Theta; //  Theta is clockwise.
+        float CosT = MathF.Cos(Theta);
+        float SinT = MathF.Sin(Theta);
+
+        float d_x = P.x - Pivot.x;
+        float d_y = P.y - Pivot.y;
+
+        return new vec3(
+            Pivot.x  +  CosT*d_x + -SinT*d_y,
+            Pivot.y  +  SinT*d_x +  CosT*d_y,
+                P.z
+        );
+    }
+
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    public static vec3 rot(vec3 P, vec3 Axis, float Theta) {
+        if (Theta == 0f)
+            return P;
+
+        Theta = -Theta; //  Theta is clockwise.
+
         float  CosT = MathF.Cos(Theta);
         float iCosT = 1f - CosT;
         float  SinT = MathF.Sin(Theta);
 
-        //  DewIt:
         float Ay_iCosT = Axis.y * iCosT;
         float Az_iCosT = Axis.z * iCosT;
 
@@ -176,28 +176,28 @@ public static partial class VEC {
         float Az_SinT = Axis.z * SinT;
 
         return new vec3(
-            Pnt.x*(Axx_iCosT +    CosT)  +  Pnt.y*(Axy_iCosT - Az_SinT)  +  Pnt.z*(Axz_iCosT + Ay_SinT),
-            Pnt.x*(Axy_iCosT + Az_SinT)  +  Pnt.y*(Ayy_iCosT +    CosT)  +  Pnt.z*(Ayz_iCosT - Ax_SinT),
-            Pnt.x*(Axz_iCosT - Ay_SinT)  +  Pnt.y*(Ayz_iCosT + Ax_SinT)  +  Pnt.z*(Azz_iCosT +    CosT)
+            P.x*(Axx_iCosT +    CosT)  +  P.y*(Axy_iCosT - Az_SinT)  +  P.z*(Axz_iCosT + Ay_SinT),
+            P.x*(Axy_iCosT + Az_SinT)  +  P.y*(Ayy_iCosT +    CosT)  +  P.z*(Ayz_iCosT - Ax_SinT),
+            P.x*(Axz_iCosT - Ay_SinT)  +  P.y*(Ayz_iCosT + Ax_SinT)  +  P.z*(Azz_iCosT +    CosT)
         );
     }
 
     //==========================================================================================================================================================
-    public static vec3 rot(vec3 Pnt, vec3 Pivot, vec3 Axis, float Theta) {
+    public static vec3 rot(vec3 P, vec3 Pivot, vec3 Axis, float Theta) {
         if (Theta == 0f)
-            return Pnt;
+            return P;
 
         //  'Point' in 'Pivot' LocalSpace.
-        float Dlt_x = Pnt.x - Pivot.x;
-        float Dlt_y = Pnt.y - Pivot.y;
-        float Dlt_z = Pnt.z - Pivot.z;
+        float d_x = P.x - Pivot.x;
+        float d_y = P.y - Pivot.y;
+        float d_z = P.z - Pivot.z;
 
         Theta = -Theta; //  Theta is clockwise.
+
         float  CosT = MathF.Cos(Theta);
         float iCosT = 1f - CosT;
         float  SinT = MathF.Sin(Theta);
 
-        //  DewIt:
         float Ay_iCosT = Axis.y * iCosT;
         float Az_iCosT = Axis.z * iCosT;
 
@@ -213,34 +213,37 @@ public static partial class VEC {
         float Az_SinT = Axis.z * SinT;
 
         return new vec3(
-            Pivot.x  +  Dlt_x*(Axx_iCosT +    CosT)  +  Dlt_y*(Axy_iCosT - Az_SinT)  +  Dlt_z*(Axz_iCosT + Ay_SinT),
-            Pivot.y  +  Dlt_x*(Axy_iCosT + Az_SinT)  +  Dlt_y*(Ayy_iCosT +    CosT)  +  Dlt_z*(Ayz_iCosT - Ax_SinT),
-            Pivot.z  +  Dlt_x*(Axz_iCosT - Ay_SinT)  +  Dlt_y*(Ayz_iCosT + Ax_SinT)  +  Dlt_z*(Azz_iCosT +    CosT)
+            Pivot.x  +  d_x*(Axx_iCosT +    CosT)  +  d_y*(Axy_iCosT - Az_SinT)  +  d_z*(Axz_iCosT + Ay_SinT),
+            Pivot.y  +  d_x*(Axy_iCosT + Az_SinT)  +  d_y*(Ayy_iCosT +    CosT)  +  d_z*(Ayz_iCosT - Ax_SinT),
+            Pivot.z  +  d_x*(Axz_iCosT - Ay_SinT)  +  d_y*(Ayz_iCosT + Ax_SinT)  +  d_z*(Azz_iCosT +    CosT)
         );
     }
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static vec3 rot(vec3 Pnt, vec3 ThetaVec) {
+    ///
+    /// https://www.desmos.com/3d/twldzidh0g
+    ///
+    public static vec3 rot(vec3 P, vec3 ThetaVec) {
         if (ThetaVec.x == 0f && ThetaVec.y == 0f && ThetaVec.z == 0f)
-            return Pnt;
+            return P;
 
         ThetaVec = -ThetaVec; //  Theta is clockwise.
 
-        //  Derive singular rotation Theta (length of ThetaVec):
+        //  Derive rotation Theta (length of ThetaVec):
         float Theta = MathF.Sqrt(ThetaVec.x*ThetaVec.x + ThetaVec.y*ThetaVec.y + ThetaVec.z*ThetaVec.z);
 
-        float  CosT = MathF.Cos(Theta);
-        float iCosT = 1f - CosT;
-        float  SinT = MathF.Sin(Theta);
-
-        //  Derive singular rotation Axis (ThetaVec normalized):
+        //  Derive rotation Axis (ThetaVec normalized):
         float ThetaRcp = 1f / Theta;
         float Axis_x = ThetaVec.x * ThetaRcp;
         float Axis_y = ThetaVec.y * ThetaRcp;
         float Axis_z = ThetaVec.z * ThetaRcp;
 
         //  DewIt:
+        float  CosT = MathF.Cos(Theta);
+        float iCosT = 1f - CosT;
+        float  SinT = MathF.Sin(Theta);
+
         float Ay_iCosT = Axis_y * iCosT;
         float Az_iCosT = Axis_z * iCosT;
 
@@ -256,38 +259,38 @@ public static partial class VEC {
         float Az_SinT = Axis_z * SinT;
 
         return new vec3(
-            Pnt.x*(Axx_iCosT +    CosT)  +  Pnt.y*(Axy_iCosT - Az_SinT)  +  Pnt.z*(Axz_iCosT + Ay_SinT),
-            Pnt.x*(Axy_iCosT + Az_SinT)  +  Pnt.y*(Ayy_iCosT +    CosT)  +  Pnt.z*(Ayz_iCosT - Ax_SinT),
-            Pnt.x*(Axz_iCosT - Ay_SinT)  +  Pnt.y*(Ayz_iCosT + Ax_SinT)  +  Pnt.z*(Azz_iCosT +    CosT)
+            P.x*(Axx_iCosT +    CosT)  +  P.y*(Axy_iCosT - Az_SinT)  +  P.z*(Axz_iCosT + Ay_SinT),
+            P.x*(Axy_iCosT + Az_SinT)  +  P.y*(Ayy_iCosT +    CosT)  +  P.z*(Ayz_iCosT - Ax_SinT),
+            P.x*(Axz_iCosT - Ay_SinT)  +  P.y*(Ayz_iCosT + Ax_SinT)  +  P.z*(Azz_iCosT +    CosT)
         );
     }
 
     //==========================================================================================================================================================
-    public static vec3 rot(vec3 Pnt, vec3 Pivot, vec3 ThetaVec) {
+    public static vec3 rot(vec3 P, vec3 Pivot, vec3 ThetaVec) {
         if (ThetaVec.x == 0f && ThetaVec.y == 0f && ThetaVec.z == 0f)
-            return Pnt;
+            return P;
 
         //  'Point' in 'Pivot' LocalSpace.
-        float Dlt_x = Pnt.x - Pivot.x;
-        float Dlt_y = Pnt.y - Pivot.y;
-        float Dlt_z = Pnt.z - Pivot.z;
+        float d_x = P.x - Pivot.x;
+        float d_y = P.y - Pivot.y;
+        float d_z = P.z - Pivot.z;
 
         ThetaVec = -ThetaVec; //  Theta is clockwise.
 
-        //  Derive singular rotation Theta (length of ThetaVec):
+        //  Derive rotation Theta (length of ThetaVec):
         float Theta = MathF.Sqrt(ThetaVec.x*ThetaVec.x + ThetaVec.y*ThetaVec.y + ThetaVec.z*ThetaVec.z);
 
-        float  CosT = MathF.Cos(Theta);
-        float iCosT = 1f - CosT;
-        float  SinT = MathF.Sin(Theta);
-
-        //  Derive singular rotation Axis (ThetaVec normalized):
+        //  Derive rotation Axis (ThetaVec normalized):
         float ThetaRcp = 1f / Theta;
         float Axis_x = ThetaVec.x * ThetaRcp;
         float Axis_y = ThetaVec.y * ThetaRcp;
         float Axis_z = ThetaVec.z * ThetaRcp;
 
         //  DewIt:
+        float  CosT = MathF.Cos(Theta);
+        float iCosT = 1f - CosT;
+        float  SinT = MathF.Sin(Theta);
+
         float Ay_iCosT = Axis_y * iCosT;
         float Az_iCosT = Axis_z * iCosT;
 
@@ -303,9 +306,9 @@ public static partial class VEC {
         float Az_SinT = Axis_z * SinT;
 
         return new vec3(
-            Pivot.x  +  Dlt_x*(Axx_iCosT +    CosT)  +  Dlt_y*(Axy_iCosT - Az_SinT)  +  Dlt_z*(Axz_iCosT + Ay_SinT),
-            Pivot.y  +  Dlt_x*(Axy_iCosT + Az_SinT)  +  Dlt_y*(Ayy_iCosT +    CosT)  +  Dlt_z*(Ayz_iCosT - Ax_SinT),
-            Pivot.z  +  Dlt_x*(Axz_iCosT - Ay_SinT)  +  Dlt_y*(Ayz_iCosT + Ax_SinT)  +  Dlt_z*(Azz_iCosT +    CosT)
+            Pivot.x  +  d_x*(Axx_iCosT +    CosT)  +  d_y*(Axy_iCosT - Az_SinT)  +  d_z*(Axz_iCosT + Ay_SinT),
+            Pivot.y  +  d_x*(Axy_iCosT + Az_SinT)  +  d_y*(Ayy_iCosT +    CosT)  +  d_z*(Ayz_iCosT - Ax_SinT),
+            Pivot.z  +  d_x*(Axz_iCosT - Ay_SinT)  +  d_y*(Ayz_iCosT + Ax_SinT)  +  d_z*(Azz_iCosT +    CosT)
         );
     }
 

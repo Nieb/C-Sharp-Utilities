@@ -11,12 +11,13 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     ///
-    ///            P           1
+    ///            P         > 0
     ///
-    ///     A------P------B    0
+    ///     L------P------N  = 0
     ///
-    ///            P          -1
+    ///            P         < 0
     ///
+    //public static int PointVsLine(vec2 P, vec2 Lp, vec2 Ln) {
     public static int WhichSideOfLine(vec2 P, vec2 La, vec2 Lb) {
         float Determinant = (P.x-La.x)*(Lb.y-La.y) - (P.y-La.y)*(Lb.x-La.x); // cross(DeltaAP, DeltaAB)
         return (Determinant > 0f) ?  1

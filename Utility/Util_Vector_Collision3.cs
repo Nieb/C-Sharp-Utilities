@@ -18,6 +18,7 @@ public static partial class VEC {
     ///     WhichSideOfPlane(  Point,  Plane-Position,  Plane-Normal  )
     ///
     public static int WhichSideOfPlane(vec3 V, vec3 Pp, vec3 Pn) {
+    //public static int PointVsPlane(vec3 V, vec3 Pp, vec3 Pn) {
         float Determinant = (Pn.x*(V.x-Pp.x) + Pn.y*(V.y-Pp.y) + Pn.z*(V.z-Pp.z)); // dot(Pn, V - Pp)
         return (Determinant > 0f) ?  1
              : (Determinant < 0f) ? -1 : 0;
@@ -85,7 +86,7 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     ///
-    /// All  RayVsSomething()  functions return:  vec4( HitPosX, HitPosY, HitPosZ, HitDistance )
+    /// All  RayVs<Surface>()  functions return:  vec4( HitPosX, HitPosY, HitPosZ, HitDistance )
     ///
     ///                        Surface      Ray
     ///     Distance < 0.0      |-->        -->
@@ -96,10 +97,10 @@ public static partial class VEC {
     ///     Distance > 0.0      |-->        <--
     ///
     ///
-    /// If surface has bounds and Ray-Line does not intersect, it will return:  RAY_MISS
+    /// If surface has bounds  and  Ray-Line does not intersect, it will return:  RAY_MISS
     ///
     //==========================================================================================================================================================
-    public static readonly vec4 RAY_MISS = new vec4(FLOAT_NaN, FLOAT_NaN, FLOAT_NaN, FLOAT_NEG_INF);
+    public static readonly vec4 RAY_MISS = new vec4(FLOAT_NEG_INF, FLOAT_NEG_INF, FLOAT_NEG_INF, FLOAT_NEG_INF);
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
@@ -255,17 +256,17 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     ///
-    ///     RayVsSphere(  Point,  Sphere-Position,  Sphere-Radius  )
+    ///     RayVsSphere(  Ray-Position,  Ray-Normal,    Sphere-Position,  Sphere-Radius  )
     ///
-    public static vec4 RayVsSphere(vec3 Rp, vec3 Rn, vec3 Rnr, vec3 Sp, float Sr) {
+    public static vec4 RayVsSphere(vec3 Rp, vec3 Rn, vec3 Sp, float Sr) {
         vec4 ToDo = RAY_MISS;
         //
         //  Is Ray_Pos inside the Sphere?
         //      return new vec4(Rp, 0f);
         //
-        //  Project SpherePos onto Ray-Line, is this ProjectedPoint inside the Sphere?
-        //
-        //  Then, determine HitPos...
+        //  Project SpherePos onto Ray-Line,
+        //  is this ProjectedPoint inside the Sphere?
+        //  if so, determine HitPos...
         //
         //                            \  @
         //                             \ :
@@ -293,9 +294,9 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     ///
-    ///     RayVsAab(  Ray-Position,  Ray-Normal,  Ray-NormalReciprocal,  Box-Position,  Box-Size  )
+    ///     RayVsBox(  Ray-Position,  Ray-Normal,  Ray-NormalReciprocal,  Box-Position,  Box-Size  )
     ///
-    public static vec4 RayVsAab(vec3 Rp, vec3 Rn, vec3 Rnr, vec3 Bp, vec3 Bs) {
+    public static vec4 RayVsBox(vec3 Rp, vec3 Rn, vec3 Rnr, vec3 Bp, vec3 Bs) {
         //
         //  Distance to bounding planes from RayPos along RayNrm,
         //  for 3 Axes, Near & Far, 6 total.
@@ -326,8 +327,8 @@ public static partial class VEC {
         if (DistNear_z > DistFar_z)  (DistNear_z, DistFar_z) = (DistFar_z, DistNear_z);
 
         //  Select PlaneHits in Quadrant/Octant of Box:
+        float DistToBackFace  = min(DistFar_x , DistFar_y , DistFar_z );
         float DistToFrontFace = max(DistNear_x, DistNear_y, DistNear_z);
-        float DistToBackFace  = min(DistFar_x, DistFar_y, DistFar_z);
 
         //  Did we hit it?
         return (DistToFrontFace > DistToBackFace) ? RAY_MISS
