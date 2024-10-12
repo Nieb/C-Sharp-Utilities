@@ -40,6 +40,7 @@ internal static partial class Program {
         );
 
         //======================================================================================================================================================
+        PRINT("");
         RESULT("vec3 pch(P,        Theta)", true
             && pch((0, 0,-2),         0 ).IsApproximately((0, 0,-2))
             && pch((0, 0,-2), ToRad( 90)).IsApproximately((0,-2, 0))
@@ -91,6 +92,7 @@ internal static partial class Program {
         );
 
         //======================================================================================================================================================
+        PRINT("");
         RESULT("vec3 rot(P,        Axis, Theta)", true
             && rot((0, 2, 0), (SQRT3_RCP, SQRT3_RCP, SQRT3_RCP),         0 ).IsApproximately(( 0, 2, 0))
             && rot((0, 2, 0), (SQRT3_RCP, SQRT3_RCP, SQRT3_RCP), ToRad(120)).IsApproximately(( 2, 0, 0))
@@ -119,9 +121,9 @@ internal static partial class Program {
         //======================================================================================================================================================
         PRINT("");
         RESULT("vec3 rot(P,        ThetaVec)", true
-            && rot(( 0, 1,   0), (        0,         0,         0)).IsApproximately((         0,         1,         0))
-            && rot(( 0, 1,   0), (PI /SQRT3, PI /SQRT3, PI /SQRT3)).IsApproximately((  TWOTHIRD, -ONETHIRD,  TWOTHIRD)) //  180 along diagonal axis
-            && rot(( 0, 2,   0), (PI2/SQRT3, PI2/SQRT3, PI2/SQRT3)).IsApproximately((         0,         2,         0)) //  360 along diagonal axis
+            && rot(( 0, 1,   0), (        0,         0,         0)).IsApproximately((        0,        1,        0))
+            && rot(( 0, 1,   0), (PI /SQRT3, PI /SQRT3, PI /SQRT3)).IsApproximately(( TWOTHIRD,-ONETHIRD, TWOTHIRD)) //  180 along diagonal axis
+            && rot(( 0, 2,   0), (PI2/SQRT3, PI2/SQRT3, PI2/SQRT3)).IsApproximately((        0,        2,        0)) //  360 along diagonal axis
 
             && rot(( 0, 1,   0), (PI /SQRT3, PI /SQRT3, PI /SQRT3)).Length.IsApproximately(1)
             && rot(( 0, 2,   0), (PI /SQRT3, PI /SQRT3, PI /SQRT3)).Length.IsApproximately(2)
@@ -135,77 +137,41 @@ internal static partial class Program {
 
             && rot(( 0, 0, 1), ( PI/SQRT2, 0, PI/SQRT2)).IsApproximately(( 1, 0, 0)) //  180 along diagonal-ish axis
             && rot(( 0, 0, 1), (-PI/SQRT2, 0,-PI/SQRT2)).IsApproximately(( 1, 0, 0)) //  180 along diagonal-ish axis
-
             && rot(( 0, 0, 1), (-PI/SQRT2, 0, PI/SQRT2)).IsApproximately((-1, 0, 0)) //  180 along diagonal-ish axis
             && rot(( 0, 0, 1), ( PI/SQRT2, 0,-PI/SQRT2)).IsApproximately((-1, 0, 0)) //  180 along diagonal-ish axis
 
             && rot(( 0, 0, 1), ( 0, PI/SQRT2, PI/SQRT2)).IsApproximately(( 0, 1, 0)) //  180 along diagonal-ish axis
             && rot(( 0, 0, 1), ( 0,-PI/SQRT2,-PI/SQRT2)).IsApproximately(( 0, 1, 0)) //  180 along diagonal-ish axis
-
             && rot(( 0, 0, 1), ( 0,-PI/SQRT2, PI/SQRT2)).IsApproximately(( 0,-1, 0)) //  180 along diagonal-ish axis
             && rot(( 0, 0, 1), ( 0, PI/SQRT2,-PI/SQRT2)).IsApproximately(( 0,-1, 0)) //  180 along diagonal-ish axis
 
             && rot(( 0, 0, 1), ( PI/SQRT2, PI/SQRT2, 0)).IsApproximately(( 0, 0,-1)) //  180 along diagonal-ish axis
             && rot(( 0, 0, 1), (-PI/SQRT2,-PI/SQRT2, 0)).IsApproximately(( 0, 0,-1)) //  180 along diagonal-ish axis
-
             && rot(( 0, 0, 1), (-PI/SQRT2, PI/SQRT2, 0)).IsApproximately(( 0, 0,-1)) //  180 along diagonal-ish axis
             && rot(( 0, 0, 1), ( PI/SQRT2,-PI/SQRT2, 0)).IsApproximately(( 0, 0,-1)) //  180 along diagonal-ish axis
+
+            && rot(( 0, 0, 1), ( PIH/SQRT2, 0, PIH/SQRT2)).IsApproximately(( 0.5f     , SQRT2_RCP, 0.5f)) //  90 along diagonal-ish axis
+            && rot(( 0, 0, 1), (-PIH/SQRT2, 0,-PIH/SQRT2)).IsApproximately(( 0.5f     ,-SQRT2_RCP, 0.5f)) //  90 along diagonal-ish axis
+            && rot(( 0, 0, 1), (-PIH/SQRT2, 0, PIH/SQRT2)).IsApproximately((-0.5f     ,-SQRT2_RCP, 0.5f)) //  90 along diagonal-ish axis
+            && rot(( 0, 0, 1), ( PIH/SQRT2, 0,-PIH/SQRT2)).IsApproximately((-0.5f     , SQRT2_RCP, 0.5f)) //  90 along diagonal-ish axis
+
+            && rot(( 0, 0, 1), ( 0, PIH/SQRT2, PIH/SQRT2)).IsApproximately((-SQRT2_RCP, 0.5f     , 0.5f)) //  90 along diagonal-ish axis
+            && rot(( 0, 0, 1), ( 0,-PIH/SQRT2,-PIH/SQRT2)).IsApproximately(( SQRT2_RCP, 0.5f     , 0.5f)) //  90 along diagonal-ish axis
+            && rot(( 0, 0, 1), ( 0,-PIH/SQRT2, PIH/SQRT2)).IsApproximately(( SQRT2_RCP,-0.5f     , 0.5f)) //  90 along diagonal-ish axis
+            && rot(( 0, 0, 1), ( 0, PIH/SQRT2,-PIH/SQRT2)).IsApproximately((-SQRT2_RCP,-0.5f     , 0.5f)) //  90 along diagonal-ish axis
+
+            && rot(( 0, 0, 1), ( PIH/SQRT2, PIH/SQRT2, 0)).IsApproximately((-SQRT2_RCP, SQRT2_RCP, 0f  )) //  90 along diagonal-ish axis
+            && rot(( 0, 0, 1), (-PIH/SQRT2,-PIH/SQRT2, 0)).IsApproximately(( SQRT2_RCP,-SQRT2_RCP, 0f  )) //  90 along diagonal-ish axis
+            && rot(( 0, 0, 1), (-PIH/SQRT2, PIH/SQRT2, 0)).IsApproximately((-SQRT2_RCP,-SQRT2_RCP, 0f  )) //  90 along diagonal-ish axis
+            && rot(( 0, 0, 1), ( PIH/SQRT2,-PIH/SQRT2, 0)).IsApproximately(( SQRT2_RCP, SQRT2_RCP, 0f  )) //  90 along diagonal-ish axis
         );
 
-        //PRINT("");
-        //
-        //PRINT($"rot(V, Axis, Theta)  ( 0, 0, 1), (1, 0, 0), X == {rot(( 0, 0, 1), (1, 0, 0), .1f):0.000}");
-        //
-        //PRINT($"rot(V, ThetaVec)     ( 0, 0, 1), (X, _, _)    == {rot(( 0, 0, 1), (  .1f, 0, 0)):0.000}");
-        //
-        //PRINT("");
-
-        //PRINT($"  ( 0, 0, 1) -> (X, _, X) == {rot(( 0, 0, 1), (  .1f, 0, PIH/SQRT2)):0.000}"); //  == (  1,  0,  0 ) //  90 along diagonal-ish axis
-        //PRINT($"  ( 0, 0, 1) -> (X, _, X) == {rot(( 0, 0, 1), (  .2f, 0, PIH/SQRT2)):0.000}"); //  == (  1,  0,  0 ) //  90 along diagonal-ish axis
-        //PRINT($"  ( 0, 0, 1) -> (X, _, X) == {rot(( 0, 0, 1), (  .3f, 0, PIH/SQRT2)):0.000}"); //  == (  1,  0,  0 ) //  90 along diagonal-ish axis
-        //PRINT($"  ( 0, 0, 1) -> (X, _, X) == {rot(( 0, 0, 1), (  .4f, 0, PIH/SQRT2)):0.000}"); //  == (  1,  0,  0 ) //  90 along diagonal-ish axis
-        //PRINT($"  ( 0, 0, 1) -> (X, _, X) == {rot(( 0, 0, 1), (  .5f, 0, PIH/SQRT2)):0.000}"); //  == (  1,  0,  0 ) //  90 along diagonal-ish axis
-        //PRINT($"  ( 0, 0, 1) -> (X, _, X) == {rot(( 0, 0, 1), (  .6f, 0, PIH/SQRT2)):0.000}"); //  == (  1,  0,  0 ) //  90 along diagonal-ish axis
-        //PRINT($"  ( 0, 0, 1) -> (X, _, X) == {rot(( 0, 0, 1), (  .7f, 0, PIH/SQRT2)):0.000}"); //  == (  1,  0,  0 ) //  90 along diagonal-ish axis
-        //PRINT($"  ( 0, 0, 1) -> (X, _, X) == {rot(( 0, 0, 1), (  .8f, 0, PIH/SQRT2)):0.000}"); //  == (  1,  0,  0 ) //  90 along diagonal-ish axis
-        //PRINT($"  ( 0, 0, 1) -> (X, _, X) == {rot(( 0, 0, 1), (  .9f, 0, PIH/SQRT2)):0.000}"); //  == (  1,  0,  0 ) //  90 along diagonal-ish axis
-        //PRINT($"  ( 0, 0, 1) -> (X, _, X) == {rot(( 0, 0, 1), ( 1.0f, 0, PIH/SQRT2)):0.000}"); //  == (  1,  0,  0 ) //  90 along diagonal-ish axis
-        //PRINT($"  ( 0, 0, 1) -> (X, _, X) == {rot(( 0, 0, 1), ( 1.1f, 0, PIH/SQRT2)):0.000}"); //  == (  1,  0,  0 ) //  90 along diagonal-ish axis
-        //PRINT($"  ( 0, 0, 1) -> (X, _, X) == {rot(( 0, 0, 1), ( 1.2f, 0, PIH/SQRT2)):0.000}"); //  == (  1,  0,  0 ) //  90 along diagonal-ish axis
-        //PRINT($"  ( 0, 0, 1) -> (X, _, X) == {rot(( 0, 0, 1), ( 1.3f, 0, PIH/SQRT2)):0.000}"); //  == (  1,  0,  0 ) //  90 along diagonal-ish axis
-        //PRINT($"  ( 0, 0, 1) -> (X, _, X) == {rot(( 0, 0, 1), ( 1.4f, 0, PIH/SQRT2)):0.000}"); //  == (  1,  0,  0 ) //  90 along diagonal-ish axis
-        //PRINT($"  ( 0, 0, 1) -> (X, _, X) == {rot(( 0, 0, 1), ( 1.5f, 0, PIH/SQRT2)):0.000}"); //  == (  1,  0,  0 ) //  90 along diagonal-ish axis
-        //PRINT($"  ( 0, 0, 1) -> (X, _, X) == {rot(( 0, 0, 1), ( 1.6f, 0, PIH/SQRT2)):0.000}"); //  == (  1,  0,  0 ) //  90 along diagonal-ish axis
-        //PRINT("");
-        //PRINT("");
-        //PRINT($"  ( 0, 0, 1) -> (X, _, X) == {rot(( 0, 0, 1), ( PIH/SQRT2, 0, PIH/SQRT2)):0.000}"); //  == (  1,  0,  0 ) //  90 along diagonal-ish axis
-        //PRINT($"  ( 0, 0, 1) -> (X, _, X) == {rot(( 0, 0, 1), (-PIH/SQRT2, 0,-PIH/SQRT2)):0.000}"); //  == (  1,  0,  0 ) //  90 along diagonal-ish axis
-        //PRINT("");
-        //PRINT($"  ( 0, 0, 1) -> (X, _, X) == {rot(( 0, 0, 1), (-PIH/SQRT2, 0, PIH/SQRT2)):0.000}"); //  == ( -1,  0,  0 ) //  90 along diagonal-ish axis
-        //PRINT($"  ( 0, 0, 1) -> (X, _, X) == {rot(( 0, 0, 1), ( PIH/SQRT2, 0,-PIH/SQRT2)):0.000}"); //  == ( -1,  0,  0 ) //  90 along diagonal-ish axis
-        //PRINT("");
-        //PRINT($"  ( 0, 0, 1) -> (_, X, X) == {rot(( 0, 0, 1), ( 0, PIH/SQRT2, PIH/SQRT2)):0.000}"); //  == (  0,  1,  0 ) //  90 along diagonal-ish axis
-        //PRINT($"  ( 0, 0, 1) -> (_, X, X) == {rot(( 0, 0, 1), ( 0,-PIH/SQRT2,-PIH/SQRT2)):0.000}"); //  == (  0,  1,  0 ) //  90 along diagonal-ish axis
-        //PRINT("");
-        //PRINT($"  ( 0, 0, 1) -> (_, X, X) == {rot(( 0, 0, 1), ( 0,-PIH/SQRT2, PIH/SQRT2)):0.000}"); //  == (  0, -1,  0 ) //  90 along diagonal-ish axis
-        //PRINT($"  ( 0, 0, 1) -> (_, X, X) == {rot(( 0, 0, 1), ( 0, PIH/SQRT2,-PIH/SQRT2)):0.000}"); //  == (  0, -1,  0 ) //  90 along diagonal-ish axis
-        //PRINT("");
-        //PRINT($"  ( 0, 0, 1) -> (X, X, _) == {rot(( 0, 0, 1), ( PIH/SQRT2, PIH/SQRT2, 0)):0.000}"); //  == (  0,  0, -1 ) //  90 along diagonal-ish axis
-        //PRINT($"  ( 0, 0, 1) -> (X, X, _) == {rot(( 0, 0, 1), (-PIH/SQRT2,-PIH/SQRT2, 0)):0.000}"); //  == (  0,  0, -1 ) //  90 along diagonal-ish axis
-        //PRINT("");
-        //PRINT($"  ( 0, 0, 1) -> (X, X, _) == {rot(( 0, 0, 1), (-PIH/SQRT2, PIH/SQRT2, 0)):0.000}"); //  == (  0,  0, -1 ) //  90 along diagonal-ish axis
-        //PRINT($"  ( 0, 0, 1) -> (X, X, _) == {rot(( 0, 0, 1), ( PIH/SQRT2,-PIH/SQRT2, 0)):0.000}"); //  == (  0,  0, -1 ) //  90 along diagonal-ish axis
-
-
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        //PRINT($"{rot((5,6,5), (5,5,5), (PIH/SQRT2, 0, PIH/SQRT2))-(5,5,5)}"); // (5+SQRT2_RCP,5,5-SQRT2_RCP)
-        //PRINT($"{((vec3)(TWOTHIRD,-ONETHIRD,TWOTHIRD)).Length}");
-
         RESULT("vec3 rot(P, Pivot, ThetaVec)", true
-            && rot((5,6,5), (5,5,5), (PI /SQRT3, PI /SQRT3, PI /SQRT3)).IsApproximately((5+TWOTHIRD,5-ONETHIRD,5+TWOTHIRD))
+            && rot((5,6,5), (5,5,5), (PI /SQRT3, PI /SQRT3, PI /SQRT3)).IsApproximately((5+TWOTHIRD         ,5-ONETHIRD         ,5+TWOTHIRD         ))
             && rot((5,7,5), (5,5,5), (PI /SQRT3, PI /SQRT3, PI /SQRT3)).IsApproximately((5+TWOTHIRD+TWOTHIRD,5-ONETHIRD-ONETHIRD,5+TWOTHIRD+TWOTHIRD))
 
-            && rot((5,6,5), (5,5,5), (PIH/SQRT2, 0, PIH/SQRT2)).IsApproximately((5+SQRT2_RCP,5,5-SQRT2_RCP))    //@@@@   rotating in wrong direction...   fixed.
+            && rot((5,6,5), (5,5,5), (PIH/SQRT2,         0, PIH/SQRT2)).IsApproximately((5+SQRT2_RCP        ,5                  ,5-SQRT2_RCP        ))
 
             && (rot((5,6,5    ), (5,5,5), (PI /SQRT3, PI /SQRT3, PI /SQRT3)) - (5,5,5)).Length.IsApproximately(1)
             && (rot((5,7,5    ), (5,5,5), (PI /SQRT3, PI /SQRT3, PI /SQRT3)) - (5,5,5)).Length.IsApproximately(2)

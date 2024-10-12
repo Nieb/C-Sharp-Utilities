@@ -18,6 +18,8 @@ internal static partial class Program {
         Test__Vector_Interpolation();
         Test__Vector_Rotation();
 
+        Test___();
+
         Time.Update();
         PRINT("\n                                 ~~~ FINISH ~~~");
         PRINT($"\n                                   {Time.Seconds}\n");
