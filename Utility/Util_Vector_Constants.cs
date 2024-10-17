@@ -72,7 +72,7 @@ public static partial class VEC {
     public const float PHI         =   1.61803398874989484820458683436563811772030917980576f;   //  (1+sqrt(5)) / 2                     Golden Ratio.
     public const float PHI_RCP     =   0.61803398874989484820458683436563811772030917980576f;   //   1 / PHI
 
-    public const float PHI_RCP_PI2 =   3.88322207745093315469373125992539191526933978769210f;   //  (1 / PHI) * (2 * pi)
+    public const float PHIRCP_PI2  =   3.88322207745093315469373125992539191526933978769210f;   //  (1 / PHI) * (2 * pi)
 
   //public const float PHI_RAD     =   2.39996322972865332223155550663361385312499901105812f;   //   pi * (3-sqrt(5))                   Golden Angle.
   //public const float PHI_DEG     = 137.50776405003785464634873962837027762068869526992537f;   //  180 * (3-sqrt(5))

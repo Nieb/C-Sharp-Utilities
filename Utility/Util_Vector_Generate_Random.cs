@@ -61,16 +61,19 @@ public static partial class VEC {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static vec3[] EvenDistro(int Count, float Spread = 2f) {
+    ///
+    /// https://www.desmos.com/3d/dxbw9sz0g5
+    ///
+    public static vec3[] EvenDistro(int Count, float Spread = 1f) {
         vec3[] Result = new vec3[Count];
 
-        Spread = 1f - cos(Spread*Pi);
+        Spread = 1f - cos(Spread*PI);
 
         float Pch;
         float Yaw;
         float CosPch;
 
-        for (int i = 1; i < Count; ++i) {
+        for (int i = 0; i < Count; ++i) {
             Pch = asin(1f - (Spread*i / Count));
             Yaw = i * PHIRCP_PI2;
             CosPch = cos(Pch);
