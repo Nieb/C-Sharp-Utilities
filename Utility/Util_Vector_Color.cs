@@ -125,6 +125,7 @@ public static partial class VEC {
         //  Not actually uniform, but an approximation.
         //  To be truly uniform, all other colors would be restricted to the brightness of the darkest perceived color (blue?),
         //
+        return new vec3();
     }
 
     //##########################################################################################################################################################

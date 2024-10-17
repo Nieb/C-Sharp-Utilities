@@ -112,10 +112,9 @@ public static partial class VEC {
     ///
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static vec3 RotFromVec(vec3 Vn) {
-        Vn.y = -Vn.y;
         Vn.z = -Vn.z;
 
-        float Pch = atan2(Vn.y, sqrt(Vn.x*Vn.x + Vn.z*Vn.z));
+        float Pch = atan2(-Vn.y, sqrt(Vn.x*Vn.x + Vn.z*Vn.z));
 
         float Yaw = (abs(Pch) >= (PIH-EPSILON)) ? 0f : wrap(atan2(Vn.x, Vn.z), 0f, PI2);
 
