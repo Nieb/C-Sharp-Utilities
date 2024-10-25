@@ -62,21 +62,38 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     ///
-    /// https://www.desmos.com/3d/o6sh7tysni
+    /// https://www.desmos.com/calculator/ct29koavbu
     ///
-    public static vec3[] EvenDistro(int Count, float Spread = 1f) {
-        vec3[] Result = new vec3[Count];
+    public static vec2[] Phyllotaxis2(int Count, float CircleCoverage = 1f, bool CenterPoint = true) {
+        int iStart = (CenterPoint) ? 0 : 1;
 
-        Spread = 1f - cos(Spread*PI);
+        vec2[] Result = new vec2[Count];
 
-        float Pch;
-        float Yaw;
-        float CosPch;
+        for (int i = iStart; i < Count; ++i) {
+            float Ang = i * PHI_RAD;
+            float Rds = CircleCoverage * sqrt((float)i / (float)Count);
+            Result[i].x = Rds * cos(Ang);
+            Result[i].y = Rds * sin(Ang);
+        }
+        return Result;
+    }
 
-        for (int i = 0; i < Count; ++i) {
-            Pch = asin(1f - (Spread*i / Count));
-            Yaw = i * PHIRCP_PI2;
-            CosPch = cos(Pch);
+    //==========================================================================================================================================================
+    ///
+    /// https://www.desmos.com/3d/nrzvi76avc
+    ///
+    public static vec3[] Phyllotaxis3(int Count, float SphereCoverage = 1f, bool Poles = true) {
+        SphereCoverage = 1f - cos(SphereCoverage*PI);
+
+        int iStart = (Poles) ?       0 :     1;
+        int iEnd   = (Poles) ? Count+1 : Count;
+
+        vec3[] Result = new vec3[iEnd];
+
+        for (int i = iStart; i < iEnd; ++i) {
+            float Pch = asin(1f - (SphereCoverage*(float)i / (float)Count));
+            float Yaw = i * PI2_PHI;
+            float CosPch = cos(Pch);
             Result[i].x = sin(Yaw) *  CosPch;
             Result[i].y = sin(Pch);
             Result[i].z = cos(Yaw) * -CosPch;
