@@ -198,7 +198,7 @@ public static partial class VEC {
     //==========================================================================================================================================================
     //                                                                    "Complement"              Complimentary Inverse
     //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //public static vec2 cmp(vec2 A) => new vec2(1f-A.x, 1f-A.y          );
+    //public static vec2 cmp(vec2 A) => new vec2(1f-A.x, 1f-A.y        );
     //[MethodImpl(MethodImplOptions.AggressiveInlining)]
     //public static vec3 cmp(vec3 A) => new vec3(1f-A.x, 1f-A.y, 1f-A.z);
 

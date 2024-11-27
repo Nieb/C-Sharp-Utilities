@@ -24,6 +24,48 @@ public static partial class VEC {
              : (Determinant < 0f) ? -1 : 0;
     }
 
+
+
+
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    ///
+    ///     PointVsLine(  Point,  Line-PointA,  Line-PointB,  Tolerance  )
+    ///
+    public static bool PointVsLine(vec2 P, vec2 La, vec2 Lb, float Tolerance) {
+        //if (P.x == La.x && P.y == La.y) return true;  The occurrence of these is so rare that it is not worth checking for.
+        //if (P.x == Lb.x && P.y == Lb.y) return true;
+
+        //  Delta from Line-PointA  to  Point & Line-PointB:
+        float dAP_x =  P.x - La.x;
+        float dAP_y =  P.y - La.y;
+
+        float dAB_x = Lb.x - La.x;
+        float dAB_y = Lb.y - La.y;
+
+        float DotPB           = (dAP_x * dAB_x) + (dAP_y * dAB_y);
+        float Line_LengthSqrd = (dAB_x * dAB_x) + (dAB_y * dAB_y);
+
+        //  Get distance to NearestPointOnLine from Line-PointA as multiple of DeltaAB:
+        float Scaler = DotPB / Line_LengthSqrd;
+
+        //  Is ProjectedPoint going to be between Line-PointA and Line-PointB:
+        if (Scaler < 0f || Scaler >= 1f) return false;
+
+        //  Project Point onto Line:
+        float pP_x = dAB_x * Scaler;
+        float pP_y = dAB_y * Scaler;
+
+        //  Delta between Point and ProjectedPoint:
+        float dPP_x = dAP_x - pP_x;
+        float dPP_y = dAP_y - pP_y;
+
+        return (dPP_x*dPP_x + dPP_y*dPP_y < Tolerance*Tolerance);
+    }
+
+
+
+
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
@@ -37,6 +79,7 @@ public static partial class VEC {
     ///
     ///     PointVsCircle(  Point,  CirclePosition,  CircleRadius  )
     ///
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool PointVsCircle(vec2 P, vec2 Cp, float Cr) {
         float d_x = P.x - Cp.x;
         float d_y = P.y - Cp.y;
@@ -79,15 +122,11 @@ public static partial class VEC {
     ///
     ///     PointVsTriangle(  Point,  TrianglePointA,  TrianglePointB,  TrianglePointC  )
     ///
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool PointVsTriangle(vec2 P, vec2 Ta, vec2 Tb, vec2 Tc) {
-        float dPA_x = Ta.x - P.x;
-        float dPA_y = Ta.y - P.y;
-
-        float dPB_x = Tb.x - P.x;
-        float dPB_y = Tb.y - P.y;
-
-        float dPC_x = Tc.x - P.x;
-        float dPC_y = Tc.y - P.y;
+        float  dPA_x = Ta.x - P.x,  dPA_y = Ta.y - P.y;
+        float  dPB_x = Tb.x - P.x,  dPB_y = Tb.y - P.y;
+        float  dPC_x = Tc.x - P.x,  dPC_y = Tc.y - P.y;
 
         return (dPA_x*dPB_y >= dPA_y*dPB_x)
             && (dPB_x*dPC_y >= dPB_y*dPC_x)
@@ -116,12 +155,12 @@ public static partial class VEC {
     ///
     ///     PointVsQuad(  Point,  QuadPointA,  QuadPointB,  QuadPointC,  QuadPointD  )
     ///
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool PointVsQuad(vec2 P, vec2 Qa, vec2 Qb, vec2 Qc, vec2 Qd) {
-        float dPA_x = Qa.x - P.x;  float dPB_x = Qb.x - P.x;
-        float dPA_y = Qa.y - P.y;  float dPB_y = Qb.y - P.y;
-
-        float dPC_x = Qc.x - P.x;  float dPD_x = Qd.x - P.x;
-        float dPC_y = Qc.y - P.y;  float dPD_y = Qd.y - P.y;
+        float  dPA_x = Qa.x - P.x,  dPA_y = Qa.y - P.y;
+        float  dPB_x = Qb.x - P.x,  dPB_y = Qb.y - P.y;
+        float  dPC_x = Qc.x - P.x,  dPC_y = Qc.y - P.y;
+        float  dPD_x = Qd.x - P.x,  dPD_y = Qd.y - P.y;
 
         return (dPA_x*dPB_y >= dPA_y*dPB_x)
             && (dPB_x*dPC_y >= dPB_y*dPC_x)
@@ -159,42 +198,6 @@ public static partial class VEC {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    ///
-    ///     PointVsLine(  Point,  Line-PointA,  Line-PointB,  Tolerance  )
-    ///
-    public static bool PointVsLine(vec2 P, vec2 La, vec2 Lb, float Tolerance) {
-        //if (P.x == La.x && P.y == La.y) return true;  The occurrence of these is so rare that it is not worth checking for.
-        //if (P.x == Lb.x && P.y == Lb.y) return true;
-
-        //  Delta from Line-PointA  to  Point & Line-PointB:
-        float dAP_x =  P.x - La.x;
-        float dAP_y =  P.y - La.y;
-
-        float dAB_x = Lb.x - La.x;
-        float dAB_y = Lb.y - La.y;
-
-        float DotPB           = (dAP_x * dAB_x) + (dAP_y * dAB_y);
-        float Line_LengthSqrd = (dAB_x * dAB_x) + (dAB_y * dAB_y);
-
-        //  Get distance to NearestPointOnLine from Line-PointA as multiple of DeltaAB:
-        float Scaler = DotPB / Line_LengthSqrd;
-
-        //  Is ProjectedPoint going to be between Line-PointA and Line-PointB:
-        if (Scaler < 0f || Scaler >= 1f) return false;
-
-        //  Project Point onto Line:
-        float pP_x = dAB_x * Scaler;
-        float pP_y = dAB_y * Scaler;
-
-        //  Delta between Point and ProjectedPoint:
-        float dPP_x = dAP_x - pP_x;
-        float dPP_y = dAP_y - pP_y;
-
-        return (dPP_x*dPP_x + dPP_y*dPP_y < Tolerance*Tolerance);
-    }
-
-    //##########################################################################################################################################################
-    //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
@@ -219,6 +222,7 @@ public static partial class VEC {
     ///
     ///     CircleVsCircle(  Circle1-Position,  Circle1-Radius,  Circle2-Position,  Circle2-Radius  )
     ///
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool CircleVsCircle(vec2 Cp1, float Cr1, vec2 Cp2, float Cr2) {
         float d_x = Cp1.x - Cp2.x;
         float d_y = Cp1.y - Cp2.y;
@@ -241,20 +245,19 @@ public static partial class VEC {
         float R_Bm = Rp.y;        // "Rectangle Bottom"
         float R_Tp = Rp.y + Rs.y; // "Rectangle Top"
 
-        if (C_Lf > R_Rt || C_Bm > R_Tp || C_Rt < R_Lf || C_Tp < R_Bm) return false;
-
-        if      (Cp.y >= R_Bm && Cp.y < R_Tp && C_Lf < R_Rt && C_Rt > R_Lf) return true;
-        else if (Cp.x >= R_Lf && Cp.x < R_Rt && C_Bm < R_Tp && C_Tp > R_Bm) return true;
+        if      (C_Lf >  R_Rt  ||  C_Bm > R_Tp  ||  C_Rt < R_Lf  ||  C_Tp < R_Bm) return false;     //  7   @@ 21 comparisons  &  3 branches
+        if      (Cp.y >= R_Bm  &&  Cp.y < R_Tp  &&  C_Lf < R_Rt  &&  C_Rt > R_Lf) return true;      //  7
+        else if (Cp.x >= R_Lf  &&  Cp.x < R_Rt  &&  C_Bm < R_Tp  &&  C_Tp > R_Bm) return true;      //  7   @@ Get rid of these???
 
         float d_x = (Cp.x < R_Lf) ? Cp.x - R_Lf
-                  : (Cp.x > R_Rt) ? Cp.x - R_Rt : 0f;
+                  : (Cp.x > R_Rt) ? Cp.x - R_Rt
+                                  : 0f;
 
         float d_y = (Cp.y < R_Bm) ? Cp.y - R_Bm
-                  : (Cp.y > R_Tp) ? Cp.y - R_Tp : 0f;
+                  : (Cp.y > R_Tp) ? Cp.y - R_Tp
+                                  : 0f;
 
-        if (d_x*d_x + d_y*d_y <= Cr*Cr) return true;
-
-        return false;
+        return (d_x*d_x + d_y*d_y <= Cr*Cr);
     }
 
     //##########################################################################################################################################################

@@ -17,8 +17,8 @@ public static partial class VEC {
     ///
     ///     WhichSideOfPlane(  Point,  Plane-Position,  Plane-Normal  )
     ///
-    public static int WhichSideOfPlane(vec3 V, vec3 Pp, vec3 Pn) {
     //public static int PointVsPlane(vec3 V, vec3 Pp, vec3 Pn) {
+    public static int WhichSideOfPlane(vec3 V, vec3 Pp, vec3 Pn) {
         float Determinant = (Pn.x*(V.x-Pp.x) + Pn.y*(V.y-Pp.y) + Pn.z*(V.z-Pp.z)); // dot(Pn, V - Pp)
         return (Determinant > 0f) ?  1
              : (Determinant < 0f) ? -1 : 0;
