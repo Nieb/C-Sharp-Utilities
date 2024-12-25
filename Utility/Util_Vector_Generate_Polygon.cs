@@ -17,12 +17,14 @@ public static partial class VEC {
         #if DEBUG
             if (Sides < 3) throw new ArgumentException("Derp?");
         #endif
+
         vec2[] Polygon = new vec2[Sides];
 
         for (int i = 0; i < Sides; ++i) {
             float rad = -i * (PI2/Sides);
             Polygon[i] = (sin(rad)*Radius, cos(rad)*Radius);
         }
+
         return Polygon;
     }
 
@@ -31,12 +33,14 @@ public static partial class VEC {
         #if DEBUG
             if (Sides < 3) throw new ArgumentException("Derp?");
         #endif
+
         vec3[] Polygon = new vec3[Sides];
 
         for (int i = 0; i < Sides; ++i) {
             float rad = -i * (PI2/Sides);
             Polygon[i] = (sin(rad)*Radius, 0f, -cos(rad)*Radius);
         }
+
         return Polygon;
     }
 

@@ -7,11 +7,11 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //  Random is not ThreadSafe.
     private static readonly Random Random     = new();
-    //private static readonly object ThreadLock = new();
+  //private static readonly object ThreadLock = new();
 
     //  https://devblogs.microsoft.com/dotnet/performance-improvements-in-net-9/#threading
     //  https://learn.microsoft.com/en-us/dotnet/api/system.threading.lock?view=net-9.0
-    //private static readonly System.Threading.Lock ThreadLock = new();
+  //private static readonly System.Threading.Lock ThreadLock = new();
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################

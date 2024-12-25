@@ -97,9 +97,9 @@ public static partial class VEC {
         //  Hue: 0.0 0.6 1.2 1.8 2.4 3.0 3.6
         //            1       1       1
         //           / \     / \     / \
-        //          /   \   /   \   /   \
+        //    X:    /   \   /   \   /   \
         //         /     \ /     \ /     \
-        //    X:  0       0       0       0
+        //        0       0       0       0
 
         float Chroma = Val * Sat;
 
