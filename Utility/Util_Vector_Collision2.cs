@@ -25,8 +25,6 @@ public static partial class VEC {
     }
 
 
-
-
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     ///
@@ -62,6 +60,8 @@ public static partial class VEC {
 
         return (dPP_x*dPP_x + dPP_y*dPP_y < Tolerance*Tolerance);
     }
+
+
 
 
 
@@ -112,7 +112,9 @@ public static partial class VEC {
     ///
     /// https://www.desmos.com/calculator/8jfeiiyuap
     ///
-    ///             A   Weinding is Anti-Clockwise.
+    /// Weinding is Anti-Clockwise.
+    ///
+    ///             A
     ///       +Y    @
     ///            / \
     ///           /   \
@@ -124,9 +126,9 @@ public static partial class VEC {
     ///
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool PointVsTriangle(vec2 P, vec2 Ta, vec2 Tb, vec2 Tc) {
-        float  dPA_x = Ta.x - P.x,  dPA_y = Ta.y - P.y;
-        float  dPB_x = Tb.x - P.x,  dPB_y = Tb.y - P.y;
-        float  dPC_x = Tc.x - P.x,  dPC_y = Tc.y - P.y;
+        float dPA_x = Ta.x - P.x,    dPA_y = Ta.y - P.y;
+        float dPB_x = Tb.x - P.x,    dPB_y = Tb.y - P.y;
+        float dPC_x = Tc.x - P.x,    dPC_y = Tc.y - P.y;
 
         return (dPA_x*dPB_y >= dPA_y*dPB_x)
             && (dPB_x*dPC_y >= dPB_y*dPC_x)
@@ -140,11 +142,12 @@ public static partial class VEC {
     ///
     /// "Irregular Quadrilateral"
     /// Quad must be convex.
+    /// Weinding is Anti-Clockwise.
     ///
     ///     B
     ///      @---___
     ///   +Y  \     `--___
-    ///        \          `--___    A   Weinding is Anti-Clockwise.
+    ///        \          `--___    A
     ///         \               `--@
     ///          \                /
     ///           \              /
@@ -157,10 +160,10 @@ public static partial class VEC {
     ///
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool PointVsQuad(vec2 P, vec2 Qa, vec2 Qb, vec2 Qc, vec2 Qd) {
-        float  dPA_x = Qa.x - P.x,  dPA_y = Qa.y - P.y;
-        float  dPB_x = Qb.x - P.x,  dPB_y = Qb.y - P.y;
-        float  dPC_x = Qc.x - P.x,  dPC_y = Qc.y - P.y;
-        float  dPD_x = Qd.x - P.x,  dPD_y = Qd.y - P.y;
+        float dPA_x = Qa.x - P.x,    dPA_y = Qa.y - P.y;
+        float dPB_x = Qb.x - P.x,    dPB_y = Qb.y - P.y;
+        float dPC_x = Qc.x - P.x,    dPC_y = Qc.y - P.y;
+        float dPD_x = Qd.x - P.x,    dPD_y = Qd.y - P.y;
 
         return (dPA_x*dPB_y >= dPA_y*dPB_x)
             && (dPB_x*dPC_y >= dPB_y*dPC_x)
@@ -246,6 +249,7 @@ public static partial class VEC {
         float R_Tp = Rp.y + Rs.y; // "Rectangle Top"
 
         if      (C_Lf >  R_Rt  ||  C_Bm > R_Tp  ||  C_Rt < R_Lf  ||  C_Tp < R_Bm) return false;     //  7   @@ 21 comparisons  &  3 branches
+
         if      (Cp.y >= R_Bm  &&  Cp.y < R_Tp  &&  C_Lf < R_Rt  &&  C_Rt > R_Lf) return true;      //  7
         else if (Cp.x >= R_Lf  &&  Cp.x < R_Rt  &&  C_Bm < R_Tp  &&  C_Tp > R_Bm) return true;      //  7   @@ Get rid of these???
 

@@ -9,7 +9,10 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //                                                                    "Barycentric"
     ///
+    /// https://www.desmos.com/calculator/8jfeiiyuap
+    ///
     /// Returns 3 weights corresponding to a position relative to the 3 points of a triangle.
+    ///     Center = (1/3, 1/3, 1/3)
     ///
     public static vec3 Barycentric(vec2 P, vec2 A, vec2 B, vec2 C) {
         float dAB_x = B.x - A.x;
@@ -30,7 +33,7 @@ public static partial class VEC {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    //                                                                    "Delaunay"
+    //                                                                     "Delaunay"
     ///
     /// Test if a Point is inside of a Triangle's CircumCircle.
     ///
@@ -91,7 +94,9 @@ public static partial class VEC {
     public static vec2 Project(vec2 P, vec2 Lp, vec2 Ln) {
 
         //  Distance from LinePosition to NearestPointOnLine:
-        float DotAP_AB = ((P.x - Lp.x) * Ln.x) + ((P.y - Lp.y) * Ln.y);
+        float DotAP_AB =
+            ((P.x - Lp.x) * Ln.x) +
+            ((P.y - Lp.y) * Ln.y);
 
         return new vec2(
             Lp.x + (Ln.x * DotAP_AB),
@@ -103,7 +108,10 @@ public static partial class VEC {
     public static vec3 Project(vec3 P, vec3 Lp, vec3 Ln) {
 
         //  Distance from LinePosition to NearestPointOnLine:
-        float DotAP_AB = ((P.x - Lp.x) * Ln.x) + ((P.y - Lp.y) * Ln.y) + ((P.z - Lp.z) * Ln.z);
+        float DotAP_AB =
+            ((P.x - Lp.x) * Ln.x) +
+            ((P.y - Lp.y) * Ln.y) +
+            ((P.z - Lp.z) * Ln.z);
 
         return new vec3(
             Lp.x + (Ln.x * DotAP_AB),
@@ -126,7 +134,7 @@ public static partial class VEC {
         float DotAP_AB       = (dAP_x * dAB_x) + (dAP_y * dAB_y);
         float dAB_LengthSqrd = (dAB_x * dAB_x) + (dAB_y * dAB_y);
 
-        //  Distance from LinePointA to NearestPointOnLine, as multiple of DeltaAB.Length:
+        //  Distance from LinePointA to NearestPointOnLine as multiple of DeltaAB.Length:
         float Scaler = DotAP_AB / dAB_LengthSqrd; //  (LengthNew / LengthOld).
 
         return new vec2(
@@ -147,8 +155,8 @@ public static partial class VEC {
         float DotAP_AB       = (dAP_x * dAB_x) + (dAP_y * dAB_y) + (dAP_z * dAB_z);
         float dAB_LengthSqrd = (dAB_x * dAB_x) + (dAB_y * dAB_y) + (dAB_z * dAB_z);
 
-        //  Distance from LinePointA to NearestPointOnLine, as multiple of DeltaAB.Length:
-        float Scaler = DotAP_AB / dAB_LengthSqrd; // (LengthNew / LengthOld)
+        //  Distance from LinePointA to NearestPointOnLine as multiple of DeltaAB.Length:
+        float Scaler = DotAP_AB / dAB_LengthSqrd; //  (LengthNew / LengthOld)
 
         return new vec3(
             La.x + (dAB_x * Scaler),
