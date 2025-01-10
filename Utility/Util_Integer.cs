@@ -54,13 +54,13 @@ public static class INT {
         if (Digits == 0)
             return A;
 
-        string As = A.ToString();
+        string Astr = A.ToString();
 
         if (Digits > 0) {
-            return (As.Length <= Digits) ? 0 : Convert.ToInt32(As.Remove(As.Length-Digits, Digits)); // Truncate Right
+            return (Astr.Length <= Digits) ? 0 : Convert.ToInt32(Astr.Remove(Astr.Length-Digits, Digits)); // Truncate Right
         } else {
             Digits = -Digits;
-            return (As.Length <= Digits) ? 0 : Convert.ToInt32(As.Remove(               0, Digits)); // Truncate Left
+            return (Astr.Length <= Digits) ? 0 : Convert.ToInt32(Astr.Remove(                 0, Digits)); // Truncate Left
         }
     }
 
@@ -68,13 +68,13 @@ public static class INT {
         if (Digits == 0)
             return A;
 
-        string As = A.ToString();
+        string Astr = A.ToString();
 
         if (Digits > 0) {
-            return (As.Length <= Digits) ? 0 : Convert.ToInt64(As.Remove(As.Length-Digits, Digits)); // Truncate Right
+            return (Astr.Length <= Digits) ? 0 : Convert.ToInt64(Astr.Remove(Astr.Length-Digits, Digits)); // Truncate Right
         } else {
             Digits = -Digits;
-            return (As.Length <= Digits) ? 0 : Convert.ToInt64(As.Remove(               0, Digits)); // Truncate Left
+            return (Astr.Length <= Digits) ? 0 : Convert.ToInt64(Astr.Remove(                 0, Digits)); // Truncate Left
         }
     }
 

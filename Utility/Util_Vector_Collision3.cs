@@ -86,7 +86,7 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     ///
-    /// All  RayVs<Surface>()  functions return:  vec4( HitPosXYZ, HitDistance )
+    /// All  RayVs<Surface>()  functions return:  vec4( HitPosX, HitPosY, HitPosZ, HitDistance )
     ///
     ///                        Surface      Ray
     ///     Distance < 0.0      |-->        -->  Surface is Behind Ray.
@@ -97,7 +97,7 @@ public static partial class VEC {
     ///     Distance > 0.0      |-->        <--  Surface is InFront of Ray.
     ///
     ///
-    /// If surface has bounds & Ray-Line does not intersect, it will return:  RAY_MISS
+    /// If surface has bounds  and  Ray-Line does not intersect, it will return:  RAY_MISS
     ///
     //==========================================================================================================================================================
     public static readonly vec4 RAY_MISS = new vec4(FLOAT_NEG_INF, FLOAT_NEG_INF, FLOAT_NEG_INF, FLOAT_NEG_INF);
@@ -105,8 +105,7 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //                                                                    Ray  VS  Surface
-    //##########################################################################################################################################################
-    //##########################################################################################################################################################
+    //==========================================================================================================================================================
     ///
     /// Axis-Aligned, Plane spans YZ.
     ///
@@ -164,20 +163,24 @@ public static partial class VEC {
         vec3 H = cross(Rn, dAC);
         float Determinant = dot(dAB, H);
 
-        if (Determinant < 0f && !BackFaceTest) return RAY_MISS; //  Ray is behind Triangle.
+        if (Determinant < 0f && !BackFaceTest)
+            return RAY_MISS;
 
-        if (Determinant == 0f) return new vec4(Rp, 0f);         //  Ray is parallel to Triangle Surface.
+        if (Determinant == 0f) //  Is Ray parallel with Triangle Surface.
+            return new vec4(Rp, 0f);
 
         vec3 dAP = Rp - Ta;
         float DtrRcp = 1f/Determinant;
         float U = dot(dAP, H) * DtrRcp;
 
-        if (U < 0f || U > 1f) return RAY_MISS;                  //  Will intersection be inside of triangle?
+        if (U < 0f || U > 1f) //  Will intersection be inside of triangle?
+            return RAY_MISS;
 
         vec3 Q = cross(dAP, dAB);
         float V = dot(Rn, Q) * DtrRcp;
 
-        if (V < 0f || U+V > 1f) return RAY_MISS;                //  Will intersection be inside of triangle?
+        if (V < 0f || U+V > 1f) //  Will intersection be inside of triangle?
+            return RAY_MISS;
 
         float Distance = dot(dAC, Q) * DtrRcp;
 
@@ -187,7 +190,7 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     ///
-    /// Axis-Aligned, Quad spans YZ.
+    /// Axis-Aligned; Quad spans YZ.
     ///
     ///     RayVsQuadX(  Ray-Position,  Ray-Normal,  Ray-NormalReciprocal,    Quad-Position,  Quad-Size  )
     ///
@@ -200,7 +203,7 @@ public static partial class VEC {
 
     //==========================================================================================================================================================
     ///
-    /// Axis-Aligned, Quad spans XZ.
+    /// Axis-Aligned; Quad spans XZ.
     ///
     ///     RayVsQuadY(  Ray-Position,  Ray-Normal,  Ray-NormalReciprocal,    Quad-Position,  Quad-Size  )
     ///
@@ -213,7 +216,7 @@ public static partial class VEC {
 
     //==========================================================================================================================================================
     ///
-    /// Axis-Aligned, Quad spans XY.
+    /// Axis-Aligned; Quad spans XY.
     ///
     ///     RayVsQuadZ(  Ray-Position,  Ray-Normal,  Ray-NormalReciprocal,    Quad-Position,  Quad-Size  )
     ///
@@ -242,8 +245,8 @@ public static partial class VEC {
         //      Nope, this still lacks orientation...
         //
         //  Need 3 vec3s to define quad-plane.
-        //      Quad-Pos, Quad-Nrm, Quad-NrmTangent
-        //                Quad-Nrm, Quad-NrmTangent, Quad-NrmBiTangent
+        //      Quad_Pos, Quad_Nrm, Quad_NrmTangent
+        //                Quad_Nrm, Quad_NrmTangent, Quad_NrmBiTangent
         //
         //  Is this even something practical or useful...?
         //
@@ -253,8 +256,7 @@ public static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //                                                                    Ray  VS  Volume
-    //##########################################################################################################################################################
-    //##########################################################################################################################################################
+    //==========================================================================================================================================================
     ///
     ///     RayVsSphere(  Ray-Position,  Ray-Normal,    Sphere-Position,  Sphere-Radius  )
     ///
@@ -316,15 +318,18 @@ public static partial class VEC {
         //
         float DistNear_x = (Bp.x      - Rp.x) * Rnr.x;
         float DistFar_x  = (Bp.x+Bs.x - Rp.x) * Rnr.x;
-        if (DistNear_x > DistFar_x)  (DistNear_x, DistFar_x) = (DistFar_x, DistNear_x); //  Reorient relative to RayPos.
+        if (DistNear_x > DistFar_x)
+            (DistNear_x, DistFar_x) = (DistFar_x, DistNear_x); //  Reorient relative to RayPos.
 
         float DistNear_y = (Bp.y      - Rp.y) * Rnr.y;
         float DistFar_y  = (Bp.y+Bs.y - Rp.y) * Rnr.y;
-        if (DistNear_y > DistFar_y)  (DistNear_y, DistFar_y) = (DistFar_y, DistNear_y);
+        if (DistNear_y > DistFar_y)
+            (DistNear_y, DistFar_y) = (DistFar_y, DistNear_y);
 
         float DistNear_z = (Bp.z      - Rp.z) * Rnr.z;
         float DistFar_z  = (Bp.z+Bs.z - Rp.z) * Rnr.z;
-        if (DistNear_z > DistFar_z)  (DistNear_z, DistFar_z) = (DistFar_z, DistNear_z);
+        if (DistNear_z > DistFar_z)
+            (DistNear_z, DistFar_z) = (DistFar_z, DistNear_z);
 
         //  Select PlaneHits in Quadrant/Octant of Box:
         float DistToBackFace  = min(DistFar_x , DistFar_y , DistFar_z );
@@ -332,9 +337,9 @@ public static partial class VEC {
 
         //  Did we hit it?
         return (DistToFrontFace > DistToBackFace) ? RAY_MISS
-             : (DistToBackFace  <             0f) ? new vec4(Rp + (Rn*DistToBackFace), DistToBackFace)   //  Box is behind Ray.     @@ Invert RayNrm?
+             : (DistToBackFace  <             0f) ? new vec4(Rp + (Rn*DistToBackFace), DistToBackFace)   //  Box is behind RayPos.
              : (DistToFrontFace <=            0f) ? new vec4(Rp, 0f)                                     //  RayPos is inside Box.
-             :                                      new vec4(Rp + (Rn*DistToFrontFace), DistToFrontFace);
+                                                  : new vec4(Rp + (Rn*DistToFrontFace), DistToFrontFace);
     }
 
     //##########################################################################################################################################################
