@@ -4,13 +4,13 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Utility;
-public static class ENM {
+internal static class ENM {
     //######################################################################################################################################################
     //######################################################################################################################################################
     /// <summary>
     /// Proper "Length" method.  (zero inclusive)
     ///
-    ///           +----|--->|
+    ///           o----|--->|
     ///           0    1    2
     /// Blarg = {"A", "B", "C"}
     ///
@@ -20,7 +20,7 @@ public static class ENM {
     /// This works on Arrays, Strings, Lists, etc.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int Len<T>(this IEnumerable<T> Enmrbl) {
+    internal static int Len<T>(this IEnumerable<T> Enmrbl) {
         if (Enmrbl == null) return -1;
         return Enumerable.Count(Enmrbl) - 1;
     }
