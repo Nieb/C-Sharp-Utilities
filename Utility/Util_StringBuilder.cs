@@ -3,10 +3,10 @@ using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Utility;
-public static partial class STR {
+internal static partial class STR {
     //######################################################################################################################################################
     //######################################################################################################################################################
-    public static int CurrentLineLength(this StringBuilder StrBldr) {
+    internal static int CurrentLineLength(this StringBuilder StrBldr) {
         string STR = StrBldr.ToString();
         int IndexOfLastNewLine = STR.LastIndexOf('\n');
 
