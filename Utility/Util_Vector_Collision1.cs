@@ -1,7 +1,7 @@
 
 #if false
 namespace Utility;
-public static partial class VEC {
+internal static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //
@@ -16,7 +16,7 @@ public static partial class VEC {
     //
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static bool PointVsRange(float Point_Pos,
+    internal static bool PointVsRange(float Point_Pos,
                                     float Range_Pos, float Range_Len) => (      // Length must be positive.
             Point_Pos >= Range_Pos
         &&  Point_Pos <  Range_Pos+Range_Len
@@ -24,7 +24,7 @@ public static partial class VEC {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static bool RangeVsRange(float Range1_Pos, float Range1_Len,
+    internal static bool RangeVsRange(float Range1_Pos, float Range1_Len,
                                     float Range2_Pos, float Range2_Len) => (    // Length must be positive.
             Range1_Pos < Range2_Pos+Range2_Len
         &&  Range2_Pos < Range1_Pos+Range1_Len

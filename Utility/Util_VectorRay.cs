@@ -4,19 +4,19 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [StructLayout(LayoutKind.Sequential)]
-public struct ray : IFormattable {
+internal struct ray : IFormattable {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public vec3 Pos;
+    internal vec3 Pos;
 
-    public vec3 Nrm;
-    public vec3 Rcp;
+    internal vec3 Nrm;
+    internal vec3 Rcp;
 
-    public float Length;
+    internal float Length;
 
     //==========================================================================================================================================================
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void SetNrm(vec3 NRM) {
+    internal void SetNrm(vec3 NRM) {
         this.Nrm.x = NRM.x;
         this.Nrm.y = NRM.y;
         this.Nrm.z = NRM.z;
@@ -28,7 +28,7 @@ public struct ray : IFormattable {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public ray(vec3 POS, vec3 NRM, float LENGTH) {
+    internal ray(vec3 POS, vec3 NRM, float LENGTH) {
         this.Pos.x = POS.x;
         this.Pos.y = POS.y;
         this.Pos.z = POS.z;
@@ -44,7 +44,7 @@ public struct ray : IFormattable {
         this.Length = LENGTH;
     }
 
-    public ray(float POS_x, float POS_y, float POS_z,  float NRM_x, float NRM_y, float NRM_z,  float LENGTH) {
+    internal ray(float POS_x, float POS_y, float POS_z,  float NRM_x, float NRM_y, float NRM_z,  float LENGTH) {
         this.Pos.x = POS_x;
         this.Pos.y = POS_y;
         this.Pos.z = POS_z;
@@ -60,7 +60,7 @@ public struct ray : IFormattable {
         this.Length = LENGTH;
     }
 
-    public ray() {
+    internal ray() {
         this.Pos.x =  0f;
         this.Pos.y =  0f;
         this.Pos.z =  0f;
@@ -78,11 +78,11 @@ public struct ray : IFormattable {
 
     //==========================================================================================================================================================
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator ray( (vec3 POS, vec3 NRM, float LENGTH) t ) =>
+    internal static implicit operator ray( (vec3 POS, vec3 NRM, float LENGTH) t ) =>
         new ray(t.POS,  t.NRM,  t.LENGTH);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator ray( (float POS_x, float POS_y, float POS_z,  float NRM_x, float NRM_y, float NRM_z,  float LENGTH) t ) =>
+    internal static implicit operator ray( (float POS_x, float POS_y, float POS_z,  float NRM_x, float NRM_y, float NRM_z,  float LENGTH) t ) =>
         new ray(t.POS_x, t.POS_y, t.POS_z,  t.NRM_x, t.NRM_y, t.NRM_z,  t.LENGTH);
 
     //##########################################################################################################################################################
@@ -100,10 +100,10 @@ public struct ray : IFormattable {
     //  Operators, Logical:  ==  !=  <  >  <=  >=
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator ==(ray A, ray B) => false; //  "EqualTo"
+    internal static bool operator ==(ray A, ray B) => false; //  "EqualTo"
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator !=(ray A, ray B) => true; //  "NotEqualTo"
+    internal static bool operator !=(ray A, ray B) => true; //  "NotEqualTo"
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
@@ -111,7 +111,7 @@ public struct ray : IFormattable {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public string ToString(string FormatStr, IFormatProvider FormatProvider) {
+    internal string ToString(string FormatStr, IFormatProvider FormatProvider) {
         if (FormatStr.IsVoid())
             return this.ToString();
 
@@ -135,7 +135,7 @@ public struct ray : IFormattable {
     }
 
     //==========================================================================================================================================================
-    public override string ToString() => "( "
+    internal override string ToString() => "( "
         + "Pos: "
         + $"{(this.Pos.x .IsApproximatelyZero() ? 0f : this.Pos.x ),6:0.000}, "
         + $"{(this.Pos.y .IsApproximatelyZero() ? 0f : this.Pos.y ),6:0.000}, "
@@ -154,8 +154,8 @@ public struct ray : IFormattable {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //  Required by DotNet "object" type:
-    public override bool Equals(object obj) => false;
-    public override int GetHashCode() => HashCode.Combine(HashCode.Combine(Pos.x, Pos.y, Pos.z, Nrm.x, Nrm.y),
+    internal override bool Equals(object obj) => false;
+    internal override int GetHashCode() => HashCode.Combine(HashCode.Combine(Pos.x, Pos.y, Pos.z, Nrm.x, Nrm.y),
                                                           HashCode.Combine(Nrm.z, Rcp.x, Rcp.y, Rcp.z, Length));
 
     //##########################################################################################################################################################

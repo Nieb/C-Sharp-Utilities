@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 
 namespace Utility;
-public static partial class VEC {
+internal static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
@@ -14,18 +14,15 @@ public static partial class VEC {
     /// Returns 3 weights corresponding to a position relative to the 3 points of a triangle.
     ///     Center = (1/3, 1/3, 1/3)
     ///
-    public static vec3 Barycentric(vec2 P, vec2 A, vec2 B, vec2 C) {
-        float dAB_x = B.x - A.x;
-        float dAB_y = B.y - A.y;
-        float dAC_x = C.x - A.x;
-        float dAC_y = C.y - A.y;
-        float dAP_x = P.x - A.x;
-        float dAP_y = P.y - A.y;
+    internal static vec3 Barycentric(vec2 P, vec2 A, vec2 B, vec2 C) {
+        vec2 dAB = B-A;
+        vec2 dAC = C-A;
+        vec2 dAP = P-A;
 
-        float Scaler = 1f / (dAB_x*dAC_y - dAC_x*dAB_y);
+        float Scaler = 1f / (dAB.x*dAC.y - dAC.x*dAB.y);
 
-        float Bw = (dAP_x*dAC_y - dAC_x*dAP_y) * Scaler;
-        float Cw = (dAP_y*dAB_x - dAB_y*dAP_x) * Scaler;
+        float Bw = (dAP.x*dAC.y - dAC.x*dAP.y) * Scaler;
+        float Cw = (dAP.y*dAB.x - dAB.y*dAP.x) * Scaler;
         float Aw = 1f - Bw - Cw;
 
         return new vec3(Aw, Bw, Cw);
@@ -37,49 +34,44 @@ public static partial class VEC {
     ///
     /// Test if a Point is inside of a Triangle's CircumCircle.
     ///
-    public static bool Delaunay(vec2 P, vec2 A, vec2 B, vec2 C) {
-        float dAB_x = B.x - A.x;
-        float dAB_y = B.y - A.y;
+    internal static bool Delaunay(vec2 P, vec2 Ta, vec2 Tb, vec2 Tc) {
+        vec2 dAB = Tb-Ta;
+        vec2 dBC = Tc-Tb;
 
-        float dBC_x = C.x - B.x;
-        float dBC_y = C.y - B.y;
+        float Determinant = 2f * (dAB.x*dBC.y - dAB.y*dBC.x);
 
-        float Determinant = 2f * (dAB_x*dBC_y - dAB_y*dBC_x);
+        vec2 d;
+        vec2 CCp; //  CircumCircle Position.
 
-        float d_x, d_y;
-        float CCp_x, CCp_y; //  CircumCircle Position.
-        if (MathF.Abs(Determinant) < EPSILON) {
-            float Min_x = MathF.Min(MathF.Min(A.x, B.x), C.x);
-            float Min_y = MathF.Min(MathF.Min(A.y, B.y), C.y);
+        if (abs(Determinant) < EPSILON) {
+            //  Triangle points are Collinear, define CircumCircle by delta between furthest points.
+            vec2 Min = min(min(Ta, Tb), Tc);
+            vec2 Max = max(max(Ta, Tb), Tc);
 
-            float Max_x = MathF.Max(MathF.Max(A.x, B.x), C.x);
-            float Max_y = MathF.Max(MathF.Max(A.y, B.y), C.y);
+            CCp = (Min + Max)*0.5f;
 
-            CCp_x = (Min_x + Max_x)*0.5f;
-            CCp_y = (Min_y + Max_y)*0.5f;
+            d = CCp - Min;
 
-            d_x = CCp_x - Min_x;
-            d_y = CCp_y - Min_y;
         } else {
-            float dAC_x = C.x - A.x;
-            float dAC_y = C.y - A.y;
+            vec2 dAC = Tc-Ta;
 
-            float AB_AB = dAB_x*(A.x + B.x) + dAB_y*(A.y + B.y);
-            float AC_AC = dAC_x*(A.x + C.x) + dAC_y*(A.y + C.y);
+            float AB_AB = dAB.x*(Ta.x + Tb.x) + dAB.y*(Ta.y + Tb.y);
+            float AC_AC = dAC.x*(Ta.x + Tc.x) + dAC.y*(Ta.y + Tc.y);
 
-            CCp_x = (dAC_y*AB_AB - dAB_y*AC_AC) / Determinant;
-            CCp_y = (dAB_x*AC_AC - dAC_x*AB_AB) / Determinant;
+            CCp = new vec2(
+                (dAC.y*AB_AB - dAB.y*AC_AC) / Determinant,
+                (dAB.x*AC_AC - dAC.x*AB_AB) / Determinant
+            );
 
-            d_x = CCp_x - A.x;
-            d_y = CCp_y - A.y;
+            d = CCp - Ta;
         }
 
-        float Tri_RdsSqrd = d_x*d_x + d_y*d_y;
+        float CC_RdsSqrd = d.x*d.x + d.y*d.y;
 
-        d_x = CCp_x - P.x;
-        d_y = CCp_y - P.y;
+        d.x = CCp.x - P.x;
+        d.y = CCp.y - P.y;
 
-        return ((d_x*d_x + d_y*d_y) < Tri_RdsSqrd);
+        return ((d.x*d.x + d.y*d.y) < CC_RdsSqrd);
     }
 
     //##########################################################################################################################################################
@@ -91,7 +83,7 @@ public static partial class VEC {
     ///     Project(  Point,  Line-Position,  Line-Normal  )
     ///
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static vec2 Project(vec2 P, vec2 Lp, vec2 Ln) {
+    internal static vec2 Project(vec2 P, vec2 Lp, vec2 Ln) {
 
         //  Distance from LinePosition to NearestPointOnLine:
         float DotAP_AB =
@@ -105,7 +97,7 @@ public static partial class VEC {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static vec3 Project(vec3 P, vec3 Lp, vec3 Ln) {
+    internal static vec3 Project(vec3 P, vec3 Lp, vec3 Ln) {
 
         //  Distance from LinePosition to NearestPointOnLine:
         float DotAP_AB =
@@ -124,7 +116,7 @@ public static partial class VEC {
     ///
     ///     Project_(  Point,  Line-Point-A,  Line-Point-B  )
     ///
-    public static vec2 Project_(vec2 P, vec2 La, vec2 Lb) {
+    internal static vec2 Project_(vec2 P, vec2 La, vec2 Lb) {
         float dAP_x = P.x  - La.x;
         float dAP_y = P.y  - La.y;
 
@@ -143,7 +135,7 @@ public static partial class VEC {
         );
     }
 
-    public static vec3 Project_(vec3 P, vec3 La, vec3 Lb) {
+    internal static vec3 Project_(vec3 P, vec3 La, vec3 Lb) {
         float dAP_x = P.x - La.x;
         float dAP_y = P.y - La.y;
         float dAP_z = P.z - La.z;

@@ -3,25 +3,28 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Utility;
-[StructLayout(LayoutKind.Sequential)]
-public struct vec2 : IFormattable {
+[StructLayout(LayoutKind.Explicit, Pack=4)]
+internal struct vec2 : IFormattable {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public float x = 0f;
-    public float y = 0f;
+    [FieldOffset(0)] public float x;
+    [FieldOffset(0)] public float u;
+
+    [FieldOffset(4)] public float y;
+    [FieldOffset(4)] public float v;
 
     //==========================================================================================================================================================
-    public float u {  get => this.x;  set => this.x = value;  }
-    public float v {  get => this.y;  set => this.y = value;  }
-
     //  NOTICE: Length is computed each time it is accessed.
     public float LengthSquared => (this.x*this.x + this.y*this.y);
 
     public float Length {
         get => MathF.Sqrt(this.x*this.x + this.y*this.y);
         set {
-            if (this.x == 0f && this.y == 0f) { //  Avoid Divide-by-Zero.
+            if (this == 0f) { //  Avoid Divide-by-Zero.
                 _ = value;
+                #if DEBUG
+                    throw new ArgumentException("Can't lengthen zero vector.");
+                #endif
             } else {
                 float Scaler = value / MathF.Sqrt(this.x*this.x + this.y*this.y); //  (LengthNew / LengthOld).
                 this = new vec2(this.x*Scaler, this.y*Scaler);
@@ -31,20 +34,9 @@ public struct vec2 : IFormattable {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public vec2(float X, float Y) {
-        this.x = X;
-        this.y = Y;
-    }
-
-    public vec2(float XY) {
-        this.x = XY;
-        this.y = XY;
-    }
-
-    public vec2() {
-        this.x = 0f;
-        this.y = 0f;
-    }
+    public vec2() {}
+    public vec2(float X, float Y) { this.x = X;  this.y = Y;  }
+    public vec2(float XY        ) { this.x = XY; this.y = XY; }
 
     //==========================================================================================================================================================
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -55,7 +47,16 @@ public struct vec2 : IFormattable {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    //  Operators, Arithmetic:  +  -  *  /  %
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator bool(vec2 A) => (A.x != 0f || A.y != 0f);    //  Has Value/Magnitude/Length.
+
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    //  Operators Arithmetic:  +  -  *  /  %
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static vec2 operator +(vec2  A, vec2  B) => new vec2(A.x+B.x, A.y+B.y); //  "Addition"
@@ -95,11 +96,35 @@ public struct vec2 : IFormattable {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static vec2 operator %(float A, vec2  B) => new vec2(A  %B.x, A  %B.y);
 
-    //==========================================================================================================================================================
-    //  Operators, Binary:  &  |  ^  <<  >>
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    //  Operators Binary:  ~  <<  >>  >>>
 
-    //==========================================================================================================================================================
-    //  Operators, Logical:  ==  !=  <  >  <=  >=
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    //  Operators Logical:  !  &  |  ^
+
+    //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+    //public static bool operator !(vec2 A) => !(A.x != 0f || A.y != 0f);
+
+    //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+    //public static vec2 operator &(vec2 A, vec2 B) => B;                             //  Not interested in component-wise logic.  These satisfy && and ||.
+
+    //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+    //public static vec2 operator |(vec2 A, vec2 B) => B;
+
+    //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+    //public static vec2 operator ^(vec2 A, vec2 B) => B;
+
+    //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+    //public static bool operator  true(vec2 A) => (A.x != 0f || A.y != 0f);          //  Value/Magnitude/Length "IsNotZero"
+
+    //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+    //public static bool operator false(vec2 A) => (A.x == 0f && A.y == 0f);          //  Value/Magnitude/Length "IsZero"
+
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    //  Operators Comparison:  ==  !=  <  >  <=  >=
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator ==(vec2  A, vec2  B) => (A.x == B.x && A.y == B.y); //  "EqualTo"
@@ -133,14 +158,18 @@ public struct vec2 : IFormattable {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
     public string ToString(string FormatStr, IFormatProvider FormatProvider) {
         if (FormatStr.IsVoid())
             return this.ToString();
 
         int Padding = FormatStr.Length+1;
-        return "( " + (this.x.IsApproximatelyZero() ? 0f : this.x).ToString(FormatStr).PadLeft(Padding)
-             + ", " + (this.y.IsApproximatelyZero() ? 0f : this.y).ToString(FormatStr).PadLeft(Padding)
-             + " )";
+
+        return $"( {(this.x.IsApproximatelyZero() ? 0f : this.x).ToString(FormatStr).PadLeft(Padding)}"
+             + $", {(this.y.IsApproximatelyZero() ? 0f : this.y).ToString(FormatStr).PadLeft(Padding)} )";
     }
 
     //==========================================================================================================================================================
@@ -151,8 +180,8 @@ public struct vec2 : IFormattable {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //  Required by DotNet "object" type:
-    public override bool Equals(object obj) { if (obj is vec2 other) { return (this == other); } return false; }
-    public override int GetHashCode() => HashCode.Combine(this.x, this.y);
+    public override bool Equals(object obj) => false;
+    public override int GetHashCode() => 0;
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################

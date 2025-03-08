@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 
 namespace Utility;
-public static partial class VEC {
+internal static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //  Random is not ThreadSafe.
@@ -15,12 +15,12 @@ public static partial class VEC {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static float Random1(bool Signed = true) =>
+    internal static float Random1(bool Signed = true) =>
         Signed ? VEC.Random.NextSingle()*2f - 1f : VEC.Random.NextSingle();
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static vec2 Random2(bool Signed = true) =>
+    internal static vec2 Random2(bool Signed = true) =>
         normalize(
             new vec2(
                 Signed ? VEC.Random.NextSingle()*2f - 1f : VEC.Random.NextSingle(),
@@ -30,7 +30,7 @@ public static partial class VEC {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    public static vec3 Random3(bool Signed = true) =>
+    internal static vec3 Random3(bool Signed = true) =>
         normalize(
             new vec3(
                 Signed ? VEC.Random.NextSingle()*2f - 1f : VEC.Random.NextSingle(),
@@ -40,22 +40,22 @@ public static partial class VEC {
         );
 
     //==========================================================================================================================================================
-    public static vec3 Random3_() {
+    internal static vec3 Random3_() {
         //  Pitch  RotX  -->   Latitude(South –90  +90 North)  -->  Position|Texture Coord  Y|V
         //  Yaw    RotY  -->  Longitude(West -180 +180 East )  -->  Position|Texture Coord  X|U
 
         float Pch = (VEC.Random.NextSingle() - 0.5f) * PI;
         float Yaw = (VEC.Random.NextSingle() - 0.5f) * PI2;
 
-        //  To get even distribution, bias away from poles:
-        Pch = MathF.Asin(Pch);
+        //  To get an even distribution, bias away from poles:
+        Pch = asin(Pch);
 
-        float CosPch = MathF.Cos(Pch);
+        float CosPch = cos(Pch);
 
         return new vec3(
-             CosPch * MathF.Sin(Yaw),
-                     -MathF.Sin(Pch),
-            -CosPch * MathF.Cos(Yaw)
+             CosPch * sin(Yaw),
+                     -sin(Pch),
+            -CosPch * cos(Yaw)
         );
     }
 
@@ -64,7 +64,7 @@ public static partial class VEC {
     ///
     /// https://www.desmos.com/calculator/ct29koavbu
     ///
-    public static vec2[] Phyllotaxis2(int Count, float CircleCoverage = 1f, bool CenterPoint = true) {
+    internal static vec2[] Phyllotaxis2(int Count, float CircleCoverage = 1f, bool CenterPoint = true) {
         int iStart = (CenterPoint) ? 0 : 1;
 
         vec2[] Result = new vec2[Count];
@@ -82,7 +82,7 @@ public static partial class VEC {
     ///
     /// https://www.desmos.com/3d/nrzvi76avc
     ///
-    public static vec3[] Phyllotaxis3(int Count, float SphereCoverage = 1f, bool Poles = true) {
+    internal static vec3[] Phyllotaxis3(int Count, float SphereCoverage = 1f, bool Poles = true) {
         SphereCoverage = 1f - cos(SphereCoverage*PI);
 
         int iStart = (Poles) ?       0 :     1;

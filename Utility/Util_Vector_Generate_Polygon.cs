@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 
 namespace Utility;
-public static partial class VEC {
+internal static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     ///
@@ -13,7 +13,7 @@ public static partial class VEC {
     ///
     /// https://www.desmos.com/calculator/ljqolw7ab1
     ///
-    public static vec2[] Polygon2(int Sides, float Radius = 1f) {
+    internal static vec2[] Polygon2(int Sides, float Radius = 1f) {
         #if DEBUG
             if (Sides < 3) throw new ArgumentException("Derp?");
         #endif
@@ -29,7 +29,7 @@ public static partial class VEC {
     }
 
     //==========================================================================================================================================================
-    public static vec3[] Polygon3(int Sides, float Radius = 1f) {
+    internal static vec3[] Polygon3(int Sides, float Radius = 1f) {
         #if DEBUG
             if (Sides < 3) throw new ArgumentException("Derp?");
         #endif
