@@ -2,26 +2,25 @@ using System;
 using System.Runtime.CompilerServices;
 
 namespace Utility;
-public static class INT {
+internal static class INT {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int abs(int A) =>
+    internal static int abs(int A) =>
         (A >= 0) ? A : -A;
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int clamp(int A, int Min, int Max) =>
-        (A < Min) ? Min  :
-        (A > Max) ? Max  :  A;
+    internal static int clamp(int A, int Min, int Max) =>
+        (A < Min) ? Min :
+        (A > Max) ? Max : A;
 
     //==========================================================================================================================================================
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int wrap(int A, int Min, int Max) {
+    internal static int wrap(int A, int Min, int Max) {
         #if DEBUG
-            if (Max <= Min)
-                throw new ArgumentException("Max must be greater than Min.");
+            if (Max <= Min) throw new ArgumentException("Max must be greater than Min.");
         #endif
 
         int Range  = Max - Min;
@@ -34,13 +33,31 @@ public static class INT {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int min(int A, int B) =>
-        (A < B) ? A : B;
+    internal static int min(int A, int B) => (A < B) ? A : B;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static int min(int A, int B, int C) => (A < B) ? ((A < C) ? A : C)
+                                                            : ((B < C) ? B : C);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static int min(int A, int B, int C, int D) => (A < B) ? ((A < C) ? ((A < D) ? A : D)
+                                                                              : ((C < D) ? C : D))
+                                                                   : ((B < C) ? ((B < D) ? B : D)
+                                                                              : ((C < D) ? C : D));
 
     //==========================================================================================================================================================
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int max(int A, int B) =>
-        (A > B) ? A : B;
+    internal static int max(int A, int B) => (A > B) ? A : B;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static int max(int A, int B, int C) => (A > B) ? ((A > C) ? A : C)
+                                                            : ((B > C) ? B : C);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static int max(int A, int B, int C, int D) => (A > B) ? ((A > C) ? ((A > D) ? A : D)
+                                                                              : ((C > D) ? C : D))
+                                                                   : ((B > C) ? ((B > D) ? B : D)
+                                                                              : ((C > D) ? C : D));
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
@@ -50,7 +67,7 @@ public static class INT {
     ///     trunc(12345, -2) ==   345
     ///     trunc(12345,  2) == 123
     ///
-    public static int trunc(int A, int Digits) {
+    internal static int trunc(int A, int Digits) {
         if (Digits == 0)
             return A;
 
@@ -64,7 +81,7 @@ public static class INT {
         }
     }
 
-    public static long trunc(long A, int Digits) {
+    internal static long trunc(long A, int Digits) {
         if (Digits == 0)
             return A;
 
