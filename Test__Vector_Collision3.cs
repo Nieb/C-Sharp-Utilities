@@ -1,9 +1,8 @@
-using System;
 
 namespace TEST;
 internal static partial class Program {
     static void Test__Vector_Collision3() {
-        PRINT("\n\n[Utility.VEC -- Collision3]\n");
+        PRINT("\n[Utility.VEC -- Collision3]");
         //PRINT($"{}");
 
         //======================================================================================================================================================
@@ -41,24 +40,24 @@ internal static partial class Program {
         //======================================================================================================================================================
         RESULT("PointVsBox()", true
             && PointVsBox((1,1,1), (1,1,1), (1,1,1)) == true
-            && PointVsBox((2,2,2), (1,1,1), (1,1,1)) == false
+            && PointVsBox((2,2,2), (1,1,1), (1,1,1)) == true
 
-            && PointVsBox((2,1,1), (1,1,1), (1,1,1)) == false
-            && PointVsBox((1,2,1), (1,1,1), (1,1,1)) == false
-            && PointVsBox((1,1,2), (1,1,1), (1,1,1)) == false
-            && PointVsBox((2,2,1), (1,1,1), (1,1,1)) == false
-            && PointVsBox((1,2,2), (1,1,1), (1,1,1)) == false
-            && PointVsBox((2,1,2), (1,1,1), (1,1,1)) == false
+            && PointVsBox((2,1,1), (1,1,1), (1,1,1)) == true
+            && PointVsBox((1,2,1), (1,1,1), (1,1,1)) == true
+            && PointVsBox((1,1,2), (1,1,1), (1,1,1)) == true
+            && PointVsBox((2,2,1), (1,1,1), (1,1,1)) == true
+            && PointVsBox((1,2,2), (1,1,1), (1,1,1)) == true
+            && PointVsBox((2,1,2), (1,1,1), (1,1,1)) == true
 
-            && PointVsBox((-1,-1,-1), (-2,-2,-2), (1,1,1)) == false
+            && PointVsBox((-1,-1,-1), (-2,-2,-2), (1,1,1)) == true
             && PointVsBox((-2,-2,-2), (-2,-2,-2), (1,1,1)) == true
 
-            && PointVsBox((-2,-1,-1), (-2,-2,-2), (1,1,1)) == false
-            && PointVsBox((-1,-2,-1), (-2,-2,-2), (1,1,1)) == false
-            && PointVsBox((-1,-1,-2), (-2,-2,-2), (1,1,1)) == false
-            && PointVsBox((-2,-2,-1), (-2,-2,-2), (1,1,1)) == false
-            && PointVsBox((-1,-2,-2), (-2,-2,-2), (1,1,1)) == false
-            && PointVsBox((-2,-1,-2), (-2,-2,-2), (1,1,1)) == false
+            && PointVsBox((-2,-1,-1), (-2,-2,-2), (1,1,1)) == true
+            && PointVsBox((-1,-2,-1), (-2,-2,-2), (1,1,1)) == true
+            && PointVsBox((-1,-1,-2), (-2,-2,-2), (1,1,1)) == true
+            && PointVsBox((-2,-2,-1), (-2,-2,-2), (1,1,1)) == true
+            && PointVsBox((-1,-2,-2), (-2,-2,-2), (1,1,1)) == true
+            && PointVsBox((-2,-1,-2), (-2,-2,-2), (1,1,1)) == true
 
             && PointVsBox((0.9999999f,0.9999999f,0.9999999f), (1,1,1), (1,1,1)) == false
             && PointVsBox((1.9999999f,1.9999999f,1.9999999f), (1,1,1), (1,1,1)) == true
@@ -89,19 +88,27 @@ internal static partial class Program {
             && PointVsBox((-1.9999999f,-1.9999999f,-1.0000001f), (-2,-2,-2), (1,1,1)) == true
             && PointVsBox((-1.0000001f,-1.9999999f,-1.9999999f), (-2,-2,-2), (1,1,1)) == true
             && PointVsBox((-1.9999999f,-1.0000001f,-1.9999999f), (-2,-2,-2), (1,1,1)) == true
+
+            //  Inverted box == false, always.
+            //      Impossible for a Point to be both:
+            //          > Box_MinBounds
+            //              AND
+            //          < Box_MaxBounds
+            && PointVsBox((2,2,2), (3,3,3), (-2,-2,-2)) == false
+            && PointVsBox((4,4,4), (3,3,3), (-2,-2,-2)) == false
         );
 
         //======================================================================================================================================================
         RESULT("PointVsCylinder()", true
-            && PointVsCylinder((1,1,1), (1,0,1), 1, 2) == true
-            && PointVsCylinder((1,2,1), (1,0,1), 1, 2) == false
-            && PointVsCylinder((1,0,1), (1,0,1), 1, 2) == true
+            && PointVsCylinder((1f, 1f, 1f), (1f ,0f ,1f), 1f, 2f) == true
+            && PointVsCylinder((1f, 2f, 1f), (1f ,0f ,1f), 1f, 2f) == false
+            && PointVsCylinder((1f, 0f, 1f), (1f ,0f ,1f), 1f, 2f) == true
 
-            && PointVsCylinder((1.70f,0,1.70f), (1,0,1), 1, 2) == true
-            && PointVsCylinder((1.71f,0,1.71f), (1,0,1), 1, 2) == false
+            && PointVsCylinder((1.70f, 0f, 1.70f), (1f,0f,1f), 1f, 2f) == true
+            && PointVsCylinder((1.71f, 0f, 1.71f), (1f,0f,1f), 1f, 2f) == false
 
-            && PointVsCylinder((0.30f,0,0.30f), (1,0,1), 1, 2) == true
-            && PointVsCylinder((0.29f,0,0.29f), (1,0,1), 1, 2) == false
+            && PointVsCylinder((0.30f, 0f, 0.30f), (1f,0f,1f), 1f, 2f) == true
+            && PointVsCylinder((0.29f, 0f, 0.29f), (1f,0f,1f), 1f, 2f) == false
         );
 
         //======================================================================================================================================================

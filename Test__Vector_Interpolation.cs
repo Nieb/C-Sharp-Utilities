@@ -2,7 +2,7 @@
 namespace TEST;
 internal static partial class Program {
     static void Test__Vector_Interpolation() {
-        PRINT("\n\n[Utility.VEC -- Interpolation]\n");
+        PRINT("\n[Utility.VEC -- Interpolation]");
         //PRINT($"{}");
 
         //======================================================================================================================================================
@@ -11,67 +11,121 @@ internal static partial class Program {
             && Mix(0.5f, 1.7f, 3.4f).IsApproximately(2.55f)
             && Mix(1.0f, 1.7f, 3.4f).IsApproximately(3.4f)
 
-            //@@ more...
+            && Mix(         0.0f , new vec2(1.7f), new vec2(3.4f)).IsApproximately(new vec2(1.70f))
+            && Mix(         0.5f , new vec2(1.7f), new vec2(3.4f)).IsApproximately(new vec2(2.55f))
+            && Mix(         1.0f , new vec2(1.7f), new vec2(3.4f)).IsApproximately(new vec2(3.40f))
+            && Mix(new vec2(0.0f), new vec2(1.7f), new vec2(3.4f)).IsApproximately(new vec2(1.70f))
+            && Mix(new vec2(0.5f), new vec2(1.7f), new vec2(3.4f)).IsApproximately(new vec2(2.55f))
+            && Mix(new vec2(1.0f), new vec2(1.7f), new vec2(3.4f)).IsApproximately(new vec2(3.40f))
+
+            && Mix(         0.0f , new vec3(1.7f), new vec3(3.4f)).IsApproximately(new vec3(1.70f))
+            && Mix(         0.5f , new vec3(1.7f), new vec3(3.4f)).IsApproximately(new vec3(2.55f))
+            && Mix(         1.0f , new vec3(1.7f), new vec3(3.4f)).IsApproximately(new vec3(3.40f))
+            && Mix(new vec3(0.0f), new vec3(1.7f), new vec3(3.4f)).IsApproximately(new vec3(1.70f))
+            && Mix(new vec3(0.5f), new vec3(1.7f), new vec3(3.4f)).IsApproximately(new vec3(2.55f))
+            && Mix(new vec3(1.0f), new vec3(1.7f), new vec3(3.4f)).IsApproximately(new vec3(3.40f))
+
+            && Mix(         0.0f , new vec4(1.7f), new vec4(3.4f)).IsApproximately(new vec4(1.70f))
+            && Mix(         0.5f , new vec4(1.7f), new vec4(3.4f)).IsApproximately(new vec4(2.55f))
+            && Mix(         1.0f , new vec4(1.7f), new vec4(3.4f)).IsApproximately(new vec4(3.40f))
+            && Mix(new vec4(0.0f), new vec4(1.7f), new vec4(3.4f)).IsApproximately(new vec4(1.70f))
+            && Mix(new vec4(0.5f), new vec4(1.7f), new vec4(3.4f)).IsApproximately(new vec4(2.55f))
+            && Mix(new vec4(1.0f), new vec4(1.7f), new vec4(3.4f)).IsApproximately(new vec4(3.40f))
         );
 
         RESULT("BiMix()", true
-            && BiMix((0.0f, 0.0f), 0, 1, 2, 3).IsApproximately(0)
-            && BiMix((1.0f, 0.0f), 0, 1, 2, 3).IsApproximately(1)
-            && BiMix((0.0f, 1.0f), 0, 1, 2, 3).IsApproximately(2)
-            && BiMix((1.0f, 1.0f), 0, 1, 2, 3).IsApproximately(3)
+            && BiMix((0f, 0f), 0f, 1f, 2f, 3f).IsApproximately(0f)
+            && BiMix((1f, 0f), 0f, 1f, 2f, 3f).IsApproximately(1f)
+            && BiMix((0f, 1f), 0f, 1f, 2f, 3f).IsApproximately(2f)
+            && BiMix((1f, 1f), 0f, 1f, 2f, 3f).IsApproximately(3f)
 
-            && BiMix((0.25f, 0.25f), 0, 1, 2, 3).IsApproximately(0.75f)
-            && BiMix((0.50f, 0.25f), 0, 1, 2, 3).IsApproximately(1.00f)
-            && BiMix((0.75f, 0.25f), 0, 1, 2, 3).IsApproximately(1.25f)
-            && BiMix((0.25f, 0.50f), 0, 1, 2, 3).IsApproximately(1.25f)
-            && BiMix((0.50f, 0.50f), 0, 1, 2, 3).IsApproximately(1.50f)
-            && BiMix((0.75f, 0.50f), 0, 1, 2, 3).IsApproximately(1.75f)
-            && BiMix((0.25f, 0.75f), 0, 1, 2, 3).IsApproximately(1.75f)
-            && BiMix((0.50f, 0.75f), 0, 1, 2, 3).IsApproximately(2.00f)
-            && BiMix((0.75f, 0.75f), 0, 1, 2, 3).IsApproximately(2.25f)
+            && BiMix((0.25f, 0.25f), 0f, 1f, 2f, 3f).IsApproximately(0.75f)
+            && BiMix((0.50f, 0.25f), 0f, 1f, 2f, 3f).IsApproximately(1.00f)
+            && BiMix((0.75f, 0.25f), 0f, 1f, 2f, 3f).IsApproximately(1.25f)
+            && BiMix((0.25f, 0.50f), 0f, 1f, 2f, 3f).IsApproximately(1.25f)
+            && BiMix((0.50f, 0.50f), 0f, 1f, 2f, 3f).IsApproximately(1.50f)
+            && BiMix((0.75f, 0.50f), 0f, 1f, 2f, 3f).IsApproximately(1.75f)
+            && BiMix((0.25f, 0.75f), 0f, 1f, 2f, 3f).IsApproximately(1.75f)
+            && BiMix((0.50f, 0.75f), 0f, 1f, 2f, 3f).IsApproximately(2.00f)
+            && BiMix((0.75f, 0.75f), 0f, 1f, 2f, 3f).IsApproximately(2.25f)
 
-            //@@ more...
+            && BiMix((0f, 0f), new vec2(0f), new vec2(1f), new vec2(2f), new vec2(3f)).IsApproximately(new vec2(0f))
+            && BiMix((1f, 0f), new vec2(0f), new vec2(1f), new vec2(2f), new vec2(3f)).IsApproximately(new vec2(1f))
+            && BiMix((0f, 1f), new vec2(0f), new vec2(1f), new vec2(2f), new vec2(3f)).IsApproximately(new vec2(2f))
+            && BiMix((1f, 1f), new vec2(0f), new vec2(1f), new vec2(2f), new vec2(3f)).IsApproximately(new vec2(3f))
+
+            && BiMix((0f, 0f), new vec3(0f), new vec3(1f), new vec3(2f), new vec3(3f)).IsApproximately(new vec3(0f))
+            && BiMix((1f, 0f), new vec3(0f), new vec3(1f), new vec3(2f), new vec3(3f)).IsApproximately(new vec3(1f))
+            && BiMix((0f, 1f), new vec3(0f), new vec3(1f), new vec3(2f), new vec3(3f)).IsApproximately(new vec3(2f))
+            && BiMix((1f, 1f), new vec3(0f), new vec3(1f), new vec3(2f), new vec3(3f)).IsApproximately(new vec3(3f))
+
+            && BiMix((0f, 0f), new vec4(0f), new vec4(1f), new vec4(2f), new vec4(3f)).IsApproximately(new vec4(0f))
+            && BiMix((1f, 0f), new vec4(0f), new vec4(1f), new vec4(2f), new vec4(3f)).IsApproximately(new vec4(1f))
+            && BiMix((0f, 1f), new vec4(0f), new vec4(1f), new vec4(2f), new vec4(3f)).IsApproximately(new vec4(2f))
+            && BiMix((1f, 1f), new vec4(0f), new vec4(1f), new vec4(2f), new vec4(3f)).IsApproximately(new vec4(3f))
         );
 
         RESULT("SmoothMix()", true
-            && SmoothMix(0.0f, 1.7f, 3.4f).IsApproximately(1.7f)
-            && SmoothMix(0.5f, 1.7f, 3.4f).IsApproximately(2.55f)
-            && SmoothMix(1.0f, 1.7f, 3.4f).IsApproximately(3.4f)
+            && SmoothMix(0.0f , 1.7f, 3.4f).IsApproximately(1.7f)
+            && SmoothMix(0.25f, 1.7f, 3.4f).IsApproximately(1.965625f)
+            && SmoothMix(0.5f , 1.7f, 3.4f).IsApproximately(2.55f)
+            && SmoothMix(0.75f, 1.7f, 3.4f).IsApproximately(3.134375f)
+            && SmoothMix(1.0f , 1.7f, 3.4f).IsApproximately(3.4f)
 
-            //@@ more...
+            && SmoothMix(0.0f,  new vec2(1.7f), new vec2(3.4f)).IsApproximately(new vec2(1.7f))
+            && SmoothMix(0.25f, new vec2(1.7f), new vec2(3.4f)).IsApproximately(new vec2(1.965625f))
+            && SmoothMix(0.5f,  new vec2(1.7f), new vec2(3.4f)).IsApproximately(new vec2(2.55f))
+            && SmoothMix(0.75f, new vec2(1.7f), new vec2(3.4f)).IsApproximately(new vec2(3.134375f))
+            && SmoothMix(1.0f,  new vec2(1.7f), new vec2(3.4f)).IsApproximately(new vec2(3.4f))
+
+            && SmoothMix(0.0f,  new vec3(1.7f), new vec3(3.4f)).IsApproximately(new vec3(1.7f))
+            && SmoothMix(0.25f, new vec3(1.7f), new vec3(3.4f)).IsApproximately(new vec3(1.965625f))
+            && SmoothMix(0.5f,  new vec3(1.7f), new vec3(3.4f)).IsApproximately(new vec3(2.55f))
+            && SmoothMix(0.75f, new vec3(1.7f), new vec3(3.4f)).IsApproximately(new vec3(3.134375f))
+            && SmoothMix(1.0f,  new vec3(1.7f), new vec3(3.4f)).IsApproximately(new vec3(3.4f))
+
+            && SmoothMix(0.0f,  new vec4(1.7f), new vec4(3.4f)).IsApproximately(new vec4(1.7f))
+            && SmoothMix(0.25f, new vec4(1.7f), new vec4(3.4f)).IsApproximately(new vec4(1.965625f))
+            && SmoothMix(0.5f,  new vec4(1.7f), new vec4(3.4f)).IsApproximately(new vec4(2.55f))
+            && SmoothMix(0.75f, new vec4(1.7f), new vec4(3.4f)).IsApproximately(new vec4(3.134375f))
+            && SmoothMix(1.0f,  new vec4(1.7f), new vec4(3.4f)).IsApproximately(new vec4(3.4f))
         );
 
         //======================================================================================================================================================
         RESULT("Step()", true
-            && Step(-2.00f, -1) == 0
-            && Step(-1.50f, -1) == 0
-            && Step(-1.01f, -1) == 0
-            && Step(-1.00f, -1) == 1
-            && Step(-0.99f, -1) == 1
-            && Step(-0.50f, -1) == 1
-            && Step( 0.00f, -1) == 1
+            && Step(-2.00f, -1f) == 0f
+            && Step(-1.50f, -1f) == 0f
+            && Step(-1.01f, -1f) == 0f
+            && Step(-1.00f, -1f) == 1f
+            && Step(-0.99f, -1f) == 1f
+            && Step(-0.50f, -1f) == 1f
+            && Step( 0.00f, -1f) == 1f
 
-            && Step(0.00f, 1) == 0
-            && Step(0.50f, 1) == 0
-            && Step(0.99f, 1) == 0
-            && Step(1.00f, 1) == 1
-            && Step(1.01f, 1) == 1
-            && Step(1.50f, 1) == 1
-            && Step(2.00f, 1) == 1
+            && Step(0.00f, 1f) == 0f
+            && Step(0.50f, 1f) == 0f
+            && Step(0.99f, 1f) == 0f
+            && Step(1.00f, 1f) == 1f
+            && Step(1.01f, 1f) == 1f
+            && Step(1.50f, 1f) == 1f
+            && Step(2.00f, 1f) == 1f
         );
 
         RESULT("LinearStep()", true
-            && LinearStep(1.70f, 1.7f, 3.4f).IsApproximately(0.0f)
-            && LinearStep(2.55f, 1.7f, 3.4f).IsApproximately(0.5f)
-            && LinearStep(3.40f, 1.7f, 3.4f).IsApproximately(1.0f)
+            && LinearStep(1.70f , 1.7f, 3.4f).IsApproximately(0.0f)
+            && LinearStep(2.125f, 1.7f, 3.4f).IsApproximately(0.25f)
+            && LinearStep(2.55f , 1.7f, 3.4f).IsApproximately(0.5f)
+            && LinearStep(2.975f, 1.7f, 3.4f).IsApproximately(0.75f)
+            && LinearStep(3.40f , 1.7f, 3.4f).IsApproximately(1.0f)
 
             //@@ more...
         );
 
         RESULT("SmoothStep()", true
-            && SmoothStep(1.70f, 1.7f, 3.4f).IsApproximately(0.0f)
-            && SmoothStep(2.55f, 1.7f, 3.4f).IsApproximately(0.5f)
-            && SmoothStep(3.40f, 1.7f, 3.4f).IsApproximately(1.0f)
+            && SmoothStep(1.70f , 1.7f, 3.4f).IsApproximately(0.0f)
+            && SmoothStep(2.125f, 1.7f, 3.4f).IsApproximately(0.15625f) //   5/32
+            && SmoothStep(2.55f , 1.7f, 3.4f).IsApproximately(0.5f)
+            && SmoothStep(2.975f, 1.7f, 3.4f).IsApproximately(0.84375f) //  27/32
+            && SmoothStep(3.40f , 1.7f, 3.4f).IsApproximately(1.0f)
 
             //@@ more...
         );

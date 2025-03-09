@@ -2,7 +2,7 @@
 namespace TEST;
 internal static partial class Program {
     static void Test__Vector_Rotation() {
-        PRINT("\n\n[Utility.VEC -- Rotation]\n");
+        PRINT("\n[Utility.VEC -- Rotation]");
         //PRINT($"{}");
 
         //======================================================================================================================================================
@@ -40,7 +40,6 @@ internal static partial class Program {
         );
 
         //======================================================================================================================================================
-        PRINT("");
         RESULT("vec3 pch(P,        Theta)", true
             && pch((0, 0,-2),         0 ).IsApproximately((0, 0,-2))
             && pch((0, 0,-2), ToRad( 90)).IsApproximately((0,-2, 0))
@@ -92,7 +91,6 @@ internal static partial class Program {
         );
 
         //======================================================================================================================================================
-        PRINT("");
         RESULT("vec3 rot(P,        Axis, Theta)", true
             && rot((0, 2, 0), (SQRT3_RCP, SQRT3_RCP, SQRT3_RCP),         0 ).IsApproximately(( 0, 2, 0))
             && rot((0, 2, 0), (SQRT3_RCP, SQRT3_RCP, SQRT3_RCP), ToRad(120)).IsApproximately(( 2, 0, 0))
@@ -119,7 +117,6 @@ internal static partial class Program {
         );
 
         //======================================================================================================================================================
-        PRINT("");
         RESULT("vec3 rot(P,        ThetaVec)", true
             && rot(( 0, 1,   0), (        0,         0,         0)).IsApproximately((        0,        1,        0))
             && rot(( 0, 1,   0), (PI /SQRT3, PI /SQRT3, PI /SQRT3)).IsApproximately(( TWOTHIRD,-ONETHIRD, TWOTHIRD)) //  180 along diagonal axis

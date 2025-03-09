@@ -1,9 +1,8 @@
 
-
 namespace TEST;
 internal static partial class Program {
     static void Test__String() {
-        PRINT("\n\n[Utility.STR]\n");
+        PRINT("\n[Utility.STR]");
         //PRINT($"{}");
 
         //======================================================================================================================================================
@@ -94,11 +93,13 @@ internal static partial class Program {
         );
 
         RESULT(".IsValidEmailAddress()", true
-            && "user@sub.domain.top".IsValidEmailAddress()                       == true
-            && "user@sub.domain.top".IsValidEmailAddress("top", "domain", "sub") == true
-            && "user@sub.domain.top".IsValidEmailAddress("top", "domain"       ) == true
-            && "user@sub.domain.top".IsValidEmailAddress("top"                 ) == true
-            && "user@sub.domain.top".IsValidEmailAddress("blarg")                == false
+            && "user@sub.domain.top".IsValidEmailAddress()                         == true
+            && "user@sub.domain.top".IsValidEmailAddress("top", "domain", "sub"  ) == true
+            && "user@sub.domain.top".IsValidEmailAddress("top", "domain"         ) == true
+            && "user@sub.domain.top".IsValidEmailAddress("top"                   ) == true
+            && "user@sub.domain.top".IsValidEmailAddress("top", "domain", "blarg") == false
+            && "user@sub.domain.top".IsValidEmailAddress("top", "blarg"          ) == false
+            && "user@sub.domain.top".IsValidEmailAddress("blarg"                 ) == false
         );
 
         RESULT(".IsVoid()", true

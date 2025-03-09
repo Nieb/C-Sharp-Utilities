@@ -2,7 +2,7 @@
 namespace TEST;
 internal static partial class Program {
     static void Test__Vector_Generate() {
-        PRINT("\n\n[Utility.VEC -- Generate]\n");
+        PRINT("\n[Utility.VEC -- Generate]");
         //PRINT($"{}");
 
         //======================================================================================================================================================

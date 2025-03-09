@@ -2,7 +2,7 @@
 namespace TEST;
 internal static partial class Program {
     static void Test__Integer() {
-        PRINT("\n\n[Utility.INT]\n");
+        PRINT("\n[Utility.INT]");
         //PRINT($"{}");
 
         //======================================================================================================================================================
