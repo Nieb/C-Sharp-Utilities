@@ -64,10 +64,10 @@ internal static class INT {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     ///
-    ///     trunc(12345, -2) ==   345
-    ///     trunc(12345,  2) == 123
+    ///     trunk(12345, -2) ==   345
+    ///     trunk(12345,  2) == 123
     ///
-    internal static int trunc(int A, int Digits) {
+    internal static int trunk(int A, int Digits) {
         if (Digits == 0)
             return A;
 
@@ -81,7 +81,7 @@ internal static class INT {
         }
     }
 
-    internal static long trunc(long A, int Digits) {
+    internal static long trunk(long A, int Digits) {
         if (Digits == 0)
             return A;
 
@@ -94,6 +94,16 @@ internal static class INT {
             return (Astr.Length <= Digits) ? 0 : Convert.ToInt64(Astr.Remove(                 0, Digits)); // Truncate Left
         }
     }
+
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+
+
+    //  https://registry.khronos.org/OpenGL-Refpages/gl4/html/bitCount.xhtml            bitCount()
+    //  https://registry.khronos.org/OpenGL-Refpages/gl4/html/bitfieldExtract.xhtml     bitfieldExtract()
+    //  https://registry.khronos.org/OpenGL-Refpages/gl4/html/bitfieldReverse.xhtml     bitfieldReverse()
+    //  https://registry.khronos.org/OpenGL-Refpages/gl4/html/bitfieldInsert.xhtml      bitfieldInsert()
+
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
