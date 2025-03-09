@@ -45,8 +45,8 @@ internal static partial class VEC {
 
         if (abs(Determinant) < EPSILON) {
             //  Triangle points are Collinear, define CircumCircle by delta between furthest points.
-            vec2 Min = min(min(Ta, Tb), Tc);
-            vec2 Max = max(max(Ta, Tb), Tc);
+            vec2 Min = min(Ta, Tb, Tc);
+            vec2 Max = max(Ta, Tb, Tc);
 
             CCp = (Min + Max)*0.5f;
 
