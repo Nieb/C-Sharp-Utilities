@@ -6,6 +6,14 @@ namespace Utility;
 internal static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static float BitDec(float A) => MathF.BitDecrement(A);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static float BitInc(float A) => MathF.BitIncrement(A);
+
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
     //internal static ivec2 ivec2(int X, int Y) => new ivec2(X, Y);
     //internal static ivec2 ivec2(int XY      ) => new ivec2(XY, XY);
 
