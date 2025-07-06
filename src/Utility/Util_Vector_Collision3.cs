@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 
 namespace Utility;
-internal static partial class VEC {
+internal static class VEC_Collision3 {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
@@ -230,7 +230,7 @@ internal static partial class VEC {
         //      Quad_Pos, Quad_Nrm, Quad_NrmTangent
         //                Quad_Nrm, Quad_NrmTangent, Quad_NrmBiTangent
         //
-        //  Is this even something practical or useful...?
+        //  Is this even something useful or practical...?
         //
         return ToDo;
     }
@@ -247,11 +247,11 @@ internal static partial class VEC {
         vec3 H = cross(Rn, dAC);
         float Determinant = dot(dAB, H);
 
-        if (Determinant < 0f && !BackFaceTest)
+        if (Determinant < 0f && !BackFaceTest) //  Is Ray pointing in the same direction as SurfaceNormal?
             return RAY_MISS;
 
-        if (Determinant == 0f) //  Is Ray parallel with Triangle Surface.
-            return new vec4(Rp, 0f);
+        if (Determinant == 0f) //  Is Ray parallel with Triangle Surface?
+            return new vec4(Rp, 0f); //RAY_MISS;
 
         vec3 dAP = Rp - Ta;
         float DtrRcp = 1f/Determinant;
@@ -280,11 +280,13 @@ internal static partial class VEC {
     ///
     internal static vec4 RayVsSphere(vec3 Rp, vec3 Rn, vec3 Sp, float Sr) {
         vec4 ToDo = RAY_MISS;
-        //
+
         //  Is Ray_Pos inside the Sphere?
         //      return new vec4(Rp, 0f);
-        //
-        //  Project SpherePos onto Ray-Line,
+
+        //  Project SpherePos onto Ray-Line:
+        vec3 pSp = Rp + Rn*dot(Sp-Rp, Rn);
+
         //  is this ProjectedPoint inside the Sphere?
         //  if so, determine HitPos...
         //
@@ -307,17 +309,16 @@ internal static partial class VEC {
         //                              /:
         //                             / :
         //                            /  V
-        //
+
         return ToDo;
     }
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    ///
-    ///     RayVsBox(  Ray-Position,  Ray-Normal,  Ray-NormalReciprocal,  Box-Position,  Box-Size  )
-    ///
+    //
+    //      RayVsBox(  Ray-Position,  Ray-Normal,  Ray-NormalReciprocal,  Box-Position,  Box-Size  )
+    //
     internal static vec4 RayVsBox(vec3 Rp, vec3 Rn, vec3 Rnr, vec3 Bp, vec3 Bs) {
-        //
         //  Distance to bounding planes from RayPos along RayNrm,
         //  for 3 Axes, Near & Far, 6 total.
         //
@@ -334,24 +335,17 @@ internal static partial class VEC {
         //       DistNearX  ^
         //               DistFarX
         //
-        float DistNear_x = (Bp.x      - Rp.x) * Rnr.x;
-        float DistFar_x  = (Bp.x+Bs.x - Rp.x) * Rnr.x;
-        if (DistNear_x > DistFar_x)
-            (DistNear_x, DistFar_x) = (DistFar_x, DistNear_x); //  Reorient relative to RayPos.
+        vec3 DistNear = (Bp    - Rp) * Rnr;
+        vec3 DistFar  = (Bp+Bs - Rp) * Rnr;
 
-        float DistNear_y = (Bp.y      - Rp.y) * Rnr.y;
-        float DistFar_y  = (Bp.y+Bs.y - Rp.y) * Rnr.y;
-        if (DistNear_y > DistFar_y)
-            (DistNear_y, DistFar_y) = (DistFar_y, DistNear_y);
-
-        float DistNear_z = (Bp.z      - Rp.z) * Rnr.z;
-        float DistFar_z  = (Bp.z+Bs.z - Rp.z) * Rnr.z;
-        if (DistNear_z > DistFar_z)
-            (DistNear_z, DistFar_z) = (DistFar_z, DistNear_z);
+        //  Reorient (swap) relative to RayPos:
+        if (DistNear.x > DistFar.x)  (DistNear.x, DistFar.x) = (DistFar.x, DistNear.x);
+        if (DistNear.y > DistFar.y)  (DistNear.y, DistFar.y) = (DistFar.y, DistNear.y);
+        if (DistNear.z > DistFar.z)  (DistNear.z, DistFar.z) = (DistFar.z, DistNear.z);
 
         //  Select PlaneHits in Quadrant/Octant of Box:
-        float DistToBackFace  = min(DistFar_x , DistFar_y , DistFar_z );
-        float DistToFrontFace = max(DistNear_x, DistNear_y, DistNear_z);
+        float DistToBackFace  = min(DistFar.x , DistFar.y , DistFar.z );
+        float DistToFrontFace = max(DistNear.x, DistNear.y, DistNear.z);
 
         //  Did we hit it?
         return (DistToFrontFace > DistToBackFace) ? RAY_MISS
@@ -362,138 +356,86 @@ internal static partial class VEC {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    ///
-    /// 3D Grid Traversal
-    ///
-    ///     Ray vs Voxel Tile/Chunk
-    ///
-    internal static vec4 RayVsVoxel(vec3 Ray_Pos, vec3 Ray_Nrm, vec3 Ray_NrmRecip,    vec3 Tile_Pos, vec3 Tile_Size, int[] Voxel) {
-        //==========================================================================================================================================================
+    //
+    //  3D Grid Traversal
+    //
+    //      (vec4 Result, int Hitside) = RayVsVoxelChunk(  Ray-Position,  Ray-Normal,  Ray-NormalReciprocal,  VoxelChunk-Position,  VoxelChunk-Size,)
+    //
+    //          HitSide:
+    //                   X    Y              Z
+    //              -    1    2    -    -    5    6    -
+    //                  / \  / \            / \  / \
+    //                 /   \/   \          /   \/   \
+    //                /    /\    \        /    /\    \
+    //               /    /  \    \      /    /  \    \
+    //              0    1    2    3    4    5    6    7
+    //             -x   -Y   +x   +Y   -z        +z
+    //
+    //  Todo:
+    //      Result is in VoxelChunk's local space?  Should not be.
+    //
+    //      Travel/Step should occur at end of loop, otherwise first voxel will be skipped?
+    //          "Ray_Travel" was called "Ray_LenNext"
+    //
+    //      Currently, input-param RayPos must start at bounds of VoxelChunk....?
+    //
+    internal static (vec4, int) RayVsVoxelChunk(vec3 Rp, vec3 Rn, vec3 Rnr,    vec3 Vp, ivec3 Vs, uint[] Voxel) {
         #if DEBUG && false
-            if (Tile_Size.x * Tile_Size.y * Tile_Size.z != Voxel.Length) {
+            if (Vs.x * Vs.y * Vs.z != Voxel.Length) {
                 //...
             }
         #endif
 
         //==========================================================================================================================================================
-        //  Offset RayPos into Tile's local space:
-        Ray_Pos = Ray_Pos - Tile_Pos;
+        //  Offset RayPos into VoxelChunk's local space:
+        Rp = Rp - Vp;
 
         ivec3 Ray_StepDir = new ivec3(
-            (Ray_Nrm.x < 0f) ? -1 : 1,
-            (Ray_Nrm.y < 0f) ? -1 : 1,
-            (Ray_Nrm.z < 0f) ? -1 : 1
+            (Rn.x < 0f) ? -1 : 1,
+            (Rn.y < 0f) ? -1 : 1,
+            (Rn.z < 0f) ? -1 : 1
         );
-        vec3 Ray_StepDist = abs(Ray_NrmRecip); //  abs(1f / Ray_Nrm);
+        vec3 Ray_StepDist = abs(Rnr); //abs(1f / Rn);
 
         ivec3 Ray_Coord = new ivec3(
-            (Ray_Nrm.x < 0f) ? (int)floor(Ray_Pos.x + EPSILON) : (int)floor(Ray_Pos.x - EPSILON),
-            (Ray_Nrm.y < 0f) ? (int)floor(Ray_Pos.y + EPSILON) : (int)floor(Ray_Pos.y - EPSILON),
-            (Ray_Nrm.z < 0f) ? (int)floor(Ray_Pos.z + EPSILON) : (int)floor(Ray_Pos.z - EPSILON)
+            (Rn.x < 0f) ? (int)floor(Rp.x + EPSILON) : (int)floor(Rp.x - EPSILON),
+            (Rn.y < 0f) ? (int)floor(Rp.y + EPSILON) : (int)floor(Rp.y - EPSILON),
+            (Rn.z < 0f) ? (int)floor(Rp.z + EPSILON) : (int)floor(Rp.z - EPSILON)
         );
-        vec3 Ray_LenNext = new vec3(
-            (Ray_Nrm.x < 0f) ? (Ray_Pos.x     - Ray_Coord.x) * Ray_StepDist.x
-                             : (Ray_Coord.x+1 - Ray_Pos.x  ) * Ray_StepDist.x,
-            (Ray_Nrm.y < 0f) ? (Ray_Pos.y     - Ray_Coord.y) * Ray_StepDist.y
-                             : (Ray_Coord.y+1 - Ray_Pos.y  ) * Ray_StepDist.y,
-            (Ray_Nrm.z < 0f) ? (Ray_Pos.z     - Ray_Coord.z) * Ray_StepDist.z
-                             : (Ray_Coord.z+1 - Ray_Pos.z  ) * Ray_StepDist.z
+        vec3 Ray_Travel = new vec3(
+            (Rn.x < 0f)  ?  (Rp.x - Ray_Coord.x) * Ray_StepDist.x  :  (Ray_Coord.x+1 - Rp.x) * Ray_StepDist.x,
+            (Rn.y < 0f)  ?  (Rp.y - Ray_Coord.y) * Ray_StepDist.y  :  (Ray_Coord.y+1 - Rp.y) * Ray_StepDist.y,
+            (Rn.z < 0f)  ?  (Rp.z - Ray_Coord.z) * Ray_StepDist.z  :  (Ray_Coord.z+1 - Rp.z) * Ray_StepDist.z
         );
-
-        //PRINT($"    Ray_Pos: {Ray_Pos}");
-        //PRINT($"     Ray_LenNext: {Ray_LenNext}");
-        //PRINT($"  Ray_Coord Start: {Ray_Coord}");
 
         //======================================================================================================================================================
-        const int VOX_Empty = -1;
-        vec4  Result;
         float HitDist = 0f;
         int   HitSide = -1;
-        //          -X+  -Y+            -Z+
-        //      -    1    2    -    -    5    6    -    -    9   10    -
-        //          / \  / \            / \  / \            / \  / \
-        //         /   \/   \          /   \/   \          /   \/   \
-        //        /    /\    \        /    /\    \        /    /\    \
-        //       /    /  \    \      /    /  \    \      /    /  \    \
-        //      0    1    2    3    4    5    6    7    8    9   10   11
-        //     -x   -Y   +x   +Y   -z        +z
-        //
+
         while (true) {
-            //  Which axis has a closer point on Ray?
-            if      (Ray_LenNext.x < Ray_LenNext.y && Ray_LenNext.x < Ray_LenNext.z) { HitDist = Ray_LenNext.x;  HitSide = 1-Ray_StepDir.x;  Ray_Coord.x += Ray_StepDir.x;  Ray_LenNext.x += Ray_StepDist.x; }
-            else if (Ray_LenNext.y < Ray_LenNext.x && Ray_LenNext.y < Ray_LenNext.z) { HitDist = Ray_LenNext.y;  HitSide = 2-Ray_StepDir.y;  Ray_Coord.y += Ray_StepDir.y;  Ray_LenNext.y += Ray_StepDist.y; }
-            else                                                                     { HitDist = Ray_LenNext.z;  HitSide = 5-Ray_StepDir.z;  Ray_Coord.z += Ray_StepDir.z;  Ray_LenNext.z += Ray_StepDist.z; }
+            //  Which Axis has a closer GridStep along Ray?
+            if      (Ray_Travel.x < Ray_Travel.y && Ray_Travel.x < Ray_Travel.z) {HitDist = Ray_Travel.x;  Ray_Travel.x += Ray_StepDist.x;  Ray_Coord.x += Ray_StepDir.x;  HitSide = 1-Ray_StepDir.x;}
+            else if (Ray_Travel.y < Ray_Travel.x && Ray_Travel.y < Ray_Travel.z) {HitDist = Ray_Travel.y;  Ray_Travel.y += Ray_StepDist.y;  Ray_Coord.y += Ray_StepDir.y;  HitSide = 2-Ray_StepDir.y;}
+            else                                                                 {HitDist = Ray_Travel.z;  Ray_Travel.z += Ray_StepDist.z;  Ray_Coord.z += Ray_StepDir.z;  HitSide = 5-Ray_StepDir.z;}
 
-            //  Are we still inside the bounds of the Voxel Tile?
-            if ((Ray_Coord.x >= 0 && Ray_Coord.x <= Tile_Size.x) && (Ray_Coord.y >= 0 && Ray_Coord.y <= Tile_Size.y) && (Ray_Coord.z >= 0 && Ray_Coord.z <= Tile_Size.z)) {
-                //PRINT($"        [ {Ray_Coord.x}, {Ray_Coord.y}, {Ray_Coord.z} ]");
-                if (Voxel[Ray_Coord.x + Ray_Coord.y*(int)round(Tile_Size.y) + Ray_Coord.z*(int)round(Tile_Size.z)] != VOX_Empty) {
-                    Result = new vec4(Ray_Pos + (Ray_Nrm*HitDist), HitDist);
+            //  Are we still inside the bounds of the VoxelChunk?
+            bool dewit =
+                (Ray_Coord.x >= 0 && Ray_Coord.x <= Vs.x) &&
+                (Ray_Coord.y >= 0 && Ray_Coord.y <= Vs.y) &&
+                (Ray_Coord.z >= 0 && Ray_Coord.z <= Vs.z);
 
-                    #if DEBUG && false
-                        if      (HitSide = 0) DrawCircleX(Result, 0.0625, 12, RGBA(255, 68, 68,255));
-                        else if (HitSide = 1) DrawCircleY(Result, 0.0625, 12, RGBA(  0,255,  0,255));
-                        else if (HitSide = 2) DrawCircleX(Result, 0.0625, 12, RGBA(255, 68, 68,255));
-                        else if (HitSide = 3) DrawCircleY(Result, 0.0625, 12, RGBA(  0,255,  0,255));
-                        else if (HitSide = 4) DrawCircleZ(Result, 0.0625, 12, RGBA(  0,112,255,255));
-                        else if (HitSide = 6) DrawCircleZ(Result, 0.0625, 12, RGBA(  0,112,255,255));
-                    #endif
+            if (dewit) {
+                int iVox = Ray_Coord.x
+                         + Ray_Coord.y * Vs.y
+                         + Ray_Coord.z * Vs.z;
 
-                    break;
-                }
+                if ((Voxel[iVox] & 0xFF000000) != 0) //  if (Alpha != 0)    Assuming: AaBbGgRr  (Alpha,Blue,Green,Red)
+                    return (new vec4(Rp + (Rn*HitDist), HitDist), HitSide);
 
-            } else { //  We hit the bounds of the Voxel Tile.
-                #if DEBUG && false
-                    Result = new vec4(Ray_Pos + (Ray_Nrm*HitDist), HitDist);
-
-                    if      (HitSide = 0) DrawCircleX(Result, 0.0625, 12, RGBA(192, 52, 52,255));
-                    else if (HitSide = 1) DrawCircleY(Result, 0.0625, 12, RGBA(  0,192,  0,255));
-                    else if (HitSide = 2) DrawCircleX(Result, 0.0625, 12, RGBA(192, 52, 52,255));
-                    else if (HitSide = 3) DrawCircleY(Result, 0.0625, 12, RGBA(  0,192,  0,255));
-                    else if (HitSide = 4) DrawCircleZ(Result, 0.0625, 12, RGBA(  0, 96,192,255));
-                    else if (HitSide = 6) DrawCircleZ(Result, 0.0625, 12, RGBA(  0, 96,192,255));
-
-                    break;
-                #else
-                    Result = RAY_MISS;
-
-                    break;
-                #endif
+            } else {
+                return (RAY_MISS, -1); //  We hit/exited the bounds of the VoxelChunk.
             }
         }
-
-        //==========================================================================================================================================================
-        #if DEBUG && false
-            PRINT($"    RayStep End: {Ray_Coord}");
-            PRINT($"         Result: {Result}");
-
-            if (GetRawMouseWheelDelta() < 0) {
-                /*
-                if      (HitSide = 0 && Ray_Coord.x > 0       ) Voxel[ Ray_Coord.x-1, Ray_Coord.y  , Ray_Coord.z   ] = ABGR(Random(64,192), Random(64,192), Random(64,192), 255); // -X
-                else if (HitSide = 1 && Ray_Coord.y > 0       ) Voxel[ Ray_Coord.x  , Ray_Coord.y-1, Ray_Coord.z   ] = ABGR(Random(64,192), Random(64,192), Random(64,192), 255); // -Y
-                else if (HitSide = 2 && Ray_Coord.x < TileSize) Voxel[ Ray_Coord.x+1, Ray_Coord.y  , Ray_Coord.z   ] = ABGR(Random(64,192), Random(64,192), Random(64,192), 255); // +X
-                else if (HitSide = 3 && Ray_Coord.y < TileSize) Voxel[ Ray_Coord.x  , Ray_Coord.y+1, Ray_Coord.z   ] = ABGR(Random(64,192), Random(64,192), Random(64,192), 255); // +Y
-                else if (HitSide = 4 && Ray_Coord.z > 0       ) Voxel[ Ray_Coord.x  , Ray_Coord.y  , Ray_Coord.z-1 ] = ABGR(Random(64,192), Random(64,192), Random(64,192), 255); // -Z
-                else if (HitSide = 6 && Ray_Coord.z < TileSize) Voxel[ Ray_Coord.x  , Ray_Coord.y  , Ray_Coord.z+1 ] = ABGR(Random(64,192), Random(64,192), Random(64,192), 255); // +Z
-                */
-                if      (HitSide == 0 && Ray_Coord.x > 0       ) Voxel[ Ray_Coord.x-1, Ray_Coord.y  , Ray_Coord.z   ] = VOX_Grey; // -X
-                else if (HitSide == 1 && Ray_Coord.y > 0       ) Voxel[ Ray_Coord.x  , Ray_Coord.y-1, Ray_Coord.z   ] = VOX_Grey; // -Y
-                else if (HitSide == 2 && Ray_Coord.x < TileSize) Voxel[ Ray_Coord.x+1, Ray_Coord.y  , Ray_Coord.z   ] = VOX_Grey; // +X
-                else if (HitSide == 3 && Ray_Coord.y < TileSize) Voxel[ Ray_Coord.x  , Ray_Coord.y+1, Ray_Coord.z   ] = VOX_Grey; // +Y
-                else if (HitSide == 4 && Ray_Coord.z > 0       ) Voxel[ Ray_Coord.x  , Ray_Coord.y  , Ray_Coord.z-1 ] = VOX_Grey; // -Z
-                else if (HitSide == 6 && Ray_Coord.z < TileSize) Voxel[ Ray_Coord.x  , Ray_Coord.y  , Ray_Coord.z+1 ] = VOX_Grey; // +Z
-
-                UpdateTileMesh();
-
-            } else if (GetRawMouseWheelDelta() > 0) {
-                if (Ray_Coord.x >= 0 && Ray_Coord.x <= TileSize && Ray_Coord.y >= 0 && Ray_Coord.y <= TileSize && Ray_Coord.z >= 0 && Ray_Coord.z <= TileSize) {
-                    Voxel[ Ray_Coord.x, Ray_Coord.y, Ray_Coord.z ] = VOX_Empty;
-                    UpdateTileMesh();
-                }
-            }
-        #endif
-
-        return Result;
     }
 
     //##########################################################################################################################################################

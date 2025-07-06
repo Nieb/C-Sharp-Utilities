@@ -147,7 +147,7 @@ internal struct ivec3 : IFormattable {
         if (FormatStr.IsVoid())
             return this.ToString();
 
-        int Padding = FormatStr.Length+1;
+        int Padding = FormatStr.Length;
 
         return $"( {this.x.ToString(FormatStr).PadLeft(Padding)}"
              + $", {this.y.ToString(FormatStr).PadLeft(Padding)}"

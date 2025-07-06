@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 
 namespace Utility;
-internal static partial class VEC {
+internal static class VEC_Interpolation {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //
@@ -59,30 +59,28 @@ internal static partial class VEC {
     //          :  :
     //          C..D
     //
-    //    GLSL: -
-    //
     internal static float BiMix(vec2 V, float A, float B, float C, float D) {
-        vec2 iV = 1f - V;
-        return (A * iV.x*iV.y) + (B * V.x*iV.y)
-             + (C * iV.x* V.y) + (D * V.x* V.y);
+        vec2 iV = (1f - V);
+        return A*(iV.x*iV.y) + B*(V.x*iV.y)
+             + C*(iV.x* V.y) + D*(V.x* V.y);
     }
 
     internal static vec2 BiMix(vec2 V, vec2 A, vec2 B, vec2 C, vec2 D) {
-        vec2 iV = 1f - V;
-        return (A * iV.x*iV.y) + (B * V.x*iV.y)
-             + (C * iV.x* V.y) + (D * V.x* V.y);
+        vec2 iV = (1f - V);
+        return A*(iV.x*iV.y) + B*(V.x*iV.y)
+             + C*(iV.x* V.y) + D*(V.x* V.y);
     }
 
     internal static vec3 BiMix(vec2 V, vec3 A, vec3 B, vec3 C, vec3 D) {
-        vec2 iV = 1f - V;
-        return (A * iV.x*iV.y) + (B * V.x*iV.y)
-             + (C * iV.x* V.y) + (D * V.x* V.y);
+        vec2 iV = (1f - V);
+        return A*(iV.x*iV.y) + B*(V.x*iV.y)
+             + C*(iV.x* V.y) + D*(V.x* V.y);
     }
 
     internal static vec4 BiMix(vec2 V, vec4 A, vec4 B, vec4 C, vec4 D) {
-        vec2 iV = 1f - V;
-        return (A * iV.x*iV.y) + (B * V.x*iV.y)
-             + (C * iV.x* V.y) + (D * V.x* V.y);
+        vec2 iV = (1f - V);
+        return A*(iV.x*iV.y) + B*(V.x*iV.y)
+             + C*(iV.x* V.y) + D*(V.x* V.y);
     }
 
     //##########################################################################################################################################################
@@ -95,8 +93,6 @@ internal static partial class VEC {
     //  )
     //
     //  OUTPUT: A..B
-    //
-    //    GLSL: -
     //
     internal static float SmoothMix(float V, float A, float B) {
         float dAB = B - A;
@@ -135,9 +131,7 @@ internal static partial class VEC {
     //      B: any      ...
     //  )
     //
-    //      V: 0..1,
-    //      A: any,
-    //      B: any
+    //  OUTPUT: A..B
     //
     internal static vec2 Slerp(float V, vec2 A, vec2 B) {
         float ThetaAB = acos( dot(A,B) );
@@ -206,8 +200,6 @@ internal static partial class VEC {
     //
     //  OUTPUT: 0..1
     //
-    //    GLSL: -
-    //
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static float LinearStep(float V, float A, float B) => clamp((V-A) / (B-A));
 
@@ -236,6 +228,9 @@ internal static partial class VEC {
     //              Smooth Hermite-interpolation between 0 & 1 when Edge0 < X < Edge1.
     //
     //          https://registry.khronos.org/OpenGL-Refpages/gl4/html/smoothstep.xhtml
+    //
+    //  -2*(x^3) + 3*(x^2)
+    //   x*x * (-2*x + 3)
     //
     internal static float SmoothStep(float V)                   {  V = clamp(V);              return V*V * (3f - 2f*V);  }
     internal static float SmoothStep(float V, float A, float B) {  V = clamp((V-A) / (B-A));  return V*V * (3f - 2f*V);  }
@@ -267,6 +262,10 @@ internal static partial class VEC {
     //          Or, in a way, more inline with the sharp/abrupt bends of LinearStep,
     //          albeit with a shorter middle transition than LinearStep (the part around 0.5).
     //
+    //  6*(x^5) - 15*(x^4) + 10*(x^3)
+    //
+    //   x*x*x * ((6*x - 15)*x + 10)
+    //
     internal static float SharpStep(float V)                   {  V = clamp(V);              return V*V*V * ((6f*V - 15f)*V + 10f);  }
     internal static float SharpStep(float V, float A, float B) {  V = clamp((V-A) / (B-A));  return V*V*V * ((6f*V - 15f)*V + 10f);  }
 
@@ -280,6 +279,8 @@ internal static partial class VEC {
 
     //==========================================================================================================================================================
     //
+    //  AKA: "SmoothestStep()"
+    //
     //  SharperStep(
     //      V: any,     Value to weight between A and B.
     //      A: any,     ...
@@ -288,19 +289,17 @@ internal static partial class VEC {
     //
     //  OUTPUT: 0..1
     //
-    //  AKA: "SmoothestStep()"
-    //
     internal static float SharperStep(float V, float A, float B) {
         if (B == A)
             return (V > B) ? 1f : 0f;
 
         V = clamp((V-A) / (B-A));
 
-        float V2 = V  * V;
-        float V3 = V2 * V;
-        float V4 = V3 * V;
+        float VV   = V   * V;
+        float VVV  = VV  * V;
+        float VVVV = VVV * V;
 
-        return V4 * (-20f*V3 + 70f*V2 - 84f*V + 35f);
+        return VVVV * (-20f*VVV + 70f*VV - 84f*V + 35f);
     }
 
     //##########################################################################################################################################################

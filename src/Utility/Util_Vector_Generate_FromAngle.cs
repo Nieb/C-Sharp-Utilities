@@ -2,11 +2,11 @@ using System;
 using System.Runtime.CompilerServices;
 
 namespace Utility;
-internal static partial class VEC {
+internal static partial class VEC_Generate {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //
-    //  The starting orientations for these are designed around being practical, not academically "correct".
+    //  The starting orientations for these are designed around being practical, not "correct".
     //
     //  Theta in Radians.
     //  Positive rotations are Clockwise.
@@ -23,7 +23,10 @@ internal static partial class VEC {
     ///     (360) == ( 0, 1)
     ///
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static vec2 FromAng(float Theta) => new vec2( MathF.Sin(Theta), MathF.Cos(Theta) );
+    internal static vec2 FromAng(float Theta) => (
+        sin(Theta),
+        cos(Theta)
+    );
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
@@ -38,7 +41,11 @@ internal static partial class VEC {
     ///     (360) == ( 0, 0,-1)
     ///
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static vec3 FromPch(float Theta) => new vec3( 0f, -MathF.Sin(Theta), -MathF.Cos(Theta) );
+    internal static vec3 FromPch(float Theta) => (
+        0f,
+        -sin(Theta),
+        -cos(Theta)
+    );
 
     //==========================================================================================================================================================
     ///
@@ -52,7 +59,11 @@ internal static partial class VEC {
     ///     (360) == ( 0, 0,-1)
     ///
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static vec3 FromYaw(float Theta) => new vec3( MathF.Sin(Theta), 0f, -MathF.Cos(Theta) );
+    internal static vec3 FromYaw(float Theta) => (
+        sin(Theta),
+        0f,
+        -cos(Theta)
+    );
 
     //==========================================================================================================================================================
     ///
@@ -66,7 +77,11 @@ internal static partial class VEC {
     ///     (360) == ( 0, 1, 0)
     ///
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static vec3 FromRol(float Theta) => new vec3( MathF.Sin(Theta), MathF.Cos(Theta), 0f );
+    internal static vec3 FromRol(float Theta) => (
+        sin(Theta),
+        cos(Theta),
+        0f
+    );
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
@@ -84,12 +99,12 @@ internal static partial class VEC {
     ///
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static vec3 FromPchYaw(float Pch, float Yaw) {
-        float CosPch = MathF.Cos(Pch);
+        float CosPch = cos(Pch);
 
-        return new vec3(
-             CosPch * MathF.Sin(Yaw),
-                     -MathF.Sin(Pch),
-            -CosPch * MathF.Cos(Yaw)
+        return (
+             CosPch * sin(Yaw),
+                     -sin(Pch),
+            -CosPch * cos(Yaw)
         );
     }
 
@@ -98,7 +113,7 @@ internal static partial class VEC {
     ///
     /// Rotation Vector3(Pitch, Yaw, 0)
     ///   FROM
-    /// Pointing Vector3(X, Y, Z)  normalized
+    /// Pointing Vector3(X, Y, Z)
     ///
     ///     ( 0, 0,-1) == (  0,  0, 0)
     ///     ( 0,-1, 0) == ( 90,  0, 0)
@@ -117,9 +132,9 @@ internal static partial class VEC {
         float Pch = atan2(-Vn.y, sqrt(Vn.x*Vn.x + Vn.z*Vn.z));
 
         float Yaw = (abs(Pch) >= (PIH-EPSILON)) ? 0f
-                                                : wrap(atan2(Vn.x, Vn.z), 0f, PI2);
+                                                : wrap(atan2(Vn.x, Vn.z), 0f, PI2); //-PI, PI);
 
-        return new vec3(Pch, Yaw, 0f);
+        return (Pch, Yaw, 0f);
     }
 
     //##########################################################################################################################################################

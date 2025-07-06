@@ -43,14 +43,14 @@ internal static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static float cos(float A)  => MathF.Cos(A);
+    internal static float  cos(float A) => MathF.Cos(A);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static float acos(float A) => MathF.Acos(A);
 
     //==========================================================================================================================================================
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static float sin(float A)  => MathF.Sin(A);
+    internal static float  sin(float A) => MathF.Sin(A);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static float asin(float A) => MathF.Asin(A);
@@ -61,7 +61,7 @@ internal static partial class VEC {
 
     //==========================================================================================================================================================
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static float tan(float A)  => MathF.Tan(A);
+    internal static float  tan(float A) => MathF.Tan(A);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static float atan(float A) => MathF.Atan(A);
@@ -74,21 +74,21 @@ internal static partial class VEC {
     //##########################################################################################################################################################
     //                                                                    "Hyperbolic"
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static float cosh(float A)  => MathF.Cosh(A);
+    internal static float  cosh(float A) => MathF.Cosh(A);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static float acosh(float A) => MathF.Acosh(A);
 
     //==========================================================================================================================================================
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static float sinh(float A)  => MathF.Sinh(A);
+    internal static float  sinh(float A) => MathF.Sinh(A);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static float asinh(float A) => MathF.Asinh(A);
 
     //==========================================================================================================================================================
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static float tanh(float A)  => MathF.Tanh(A);
+    internal static float  tanh(float A) => MathF.Tanh(A);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static float atanh(float A) => MathF.Atanh(A);

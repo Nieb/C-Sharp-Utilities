@@ -1,7 +1,8 @@
 
 
+
 namespace Utility;
-internal static partial class VEC {
+internal static class VEC_Rotation {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
@@ -42,6 +43,9 @@ internal static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
+    //
+    //
+    //
     internal static vec3 pch(vec3 P, float Theta) {
         if (Theta == 0f)
             return P;
@@ -150,18 +154,28 @@ internal static partial class VEC {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    ///
-    /// rot(vec3 P,             vec3 Axis, float Theta)  Rotate "Point", around  ZERO  , on "Axis", by "Theta".
-    /// rot(vec3 P, vec3 Pivot, vec3 Axis, float Theta)  Rotate "Point", around "Pivot", on "Axis", by "Theta".
-    ///
-    /// rot(vec3 P,                        vec3  Theta)  Rotate "Point", around  ZERO  , on/by "Theta(Pitch, Yaw, Roll)".
-    /// rot(vec3 P, vec3 Pivot,            vec3  Theta)  Rotate "Point", around "Pivot", on/by "Theta(Pitch, Yaw, Roll)".
-    ///
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    //
+    //  rot(vec3 P,             vec3 Axis, float Theta)  Rotate "Point", around  ZERO  , on "Axis", by "Theta".
+    //  rot(vec3 P, vec3 Pivot, vec3 Axis, float Theta)  Rotate "Point", around "Pivot", on "Axis", by "Theta".
+    //
+    //  rot(vec3 P,                        vec3  Theta)  Rotate "Point", around  ZERO  , on/by "Theta(Pitch, Yaw, Roll)".
+    //  rot(vec3 P, vec3 Pivot,            vec3  Theta)  Rotate "Point", around "Pivot", on/by "Theta(Pitch, Yaw, Roll)".
+    //
+    //      ADD 16 (12+, 4-)
+    //      MUL 21
+    //      COS 1
+    //      SIN 1
+    //
     internal static vec3 rot(vec3 P, vec3 Axis, float Theta) {
         if (Theta == 0f)
             return P;
 
-        Theta = -Theta; //  Theta is clockwise.
+        //  'Theta' is clockwise:
+        Theta = -Theta;
 
         //  DewIt:
         float  CosT = cos(Theta);
@@ -173,9 +187,11 @@ internal static partial class VEC {
 
         float Axx_iCosT = Axis.x * Axis.x*iCosT;
         float Axy_iCosT = Axis.x * Ay_iCosT;
-        float Ayy_iCosT = Axis.y * Ay_iCosT;
         float Axz_iCosT = Axis.x * Az_iCosT;
+
+        float Ayy_iCosT = Axis.y * Ay_iCosT;
         float Ayz_iCosT = Axis.y * Az_iCosT;
+
         float Azz_iCosT = Axis.z * Az_iCosT;
 
         float Ax_SinT = Axis.x * SinT;
@@ -197,7 +213,8 @@ internal static partial class VEC {
         //  'Point' localized to 'Pivot'.
         vec3 d = P - Pivot;
 
-        Theta = -Theta; //  Theta is clockwise.
+        //  'Theta' is clockwise:
+        Theta = -Theta;
 
         //  DewIt:
         float  CosT = cos(Theta);
@@ -209,9 +226,11 @@ internal static partial class VEC {
 
         float Axx_iCosT = Axis.x * Axis.x*iCosT;
         float Axy_iCosT = Axis.x * Ay_iCosT;
-        float Ayy_iCosT = Axis.y * Ay_iCosT;
         float Axz_iCosT = Axis.x * Az_iCosT;
+
+        float Ayy_iCosT = Axis.y * Ay_iCosT;
         float Ayz_iCosT = Axis.y * Az_iCosT;
+
         float Azz_iCosT = Axis.z * Az_iCosT;
 
         float Ax_SinT = Axis.x * SinT;
@@ -227,42 +246,42 @@ internal static partial class VEC {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    ///
-    /// https://www.desmos.com/3d/twldzidh0g
-    ///
+    //
+    //  https://www.desmos.com/3d/taev4ge4ks
+    //
     internal static vec3 rot(vec3 P, vec3 ThetaV) {
         if (ThetaV == 0f)
             return P;
 
-        ThetaV = -ThetaV; //  Theta is clockwise.
+        //  'Theta' is clockwise:
+        ThetaV = -ThetaV;
 
-        //  Derive rotation Theta (length of ThetaV):
+        //  Derive rotation 'Theta' (length of ThetaV):
         float Theta = sqrt(ThetaV.x*ThetaV.x + ThetaV.y*ThetaV.y + ThetaV.z*ThetaV.z);
 
-        //  Derive rotation Axis (ThetaV normalized):
-        float ThetaRcp = 1f / Theta;
-        float Axis_x = ThetaV.x * ThetaRcp;
-        float Axis_y = ThetaV.y * ThetaRcp;
-        float Axis_z = ThetaV.z * ThetaRcp;
+        //  Derive rotation 'Axis' (ThetaV normalized):
+        vec3 Axis = ThetaV * (1f / Theta);
 
         //  DewIt:
         float  CosT = cos(Theta);
         float iCosT = 1f - CosT;
         float  SinT = sin(Theta);
 
-        float Ay_iCosT = Axis_y * iCosT;
-        float Az_iCosT = Axis_z * iCosT;
+        float Ay_iCosT = Axis.y * iCosT;
+        float Az_iCosT = Axis.z * iCosT;
 
-        float Axx_iCosT = Axis_x * Axis_x*iCosT;
-        float Axy_iCosT = Axis_x * Ay_iCosT;
-        float Ayy_iCosT = Axis_y * Ay_iCosT;
-        float Axz_iCosT = Axis_x * Az_iCosT;
-        float Ayz_iCosT = Axis_y * Az_iCosT;
-        float Azz_iCosT = Axis_z * Az_iCosT;
+        float Axx_iCosT = Axis.x * Axis.x*iCosT;
+        float Axy_iCosT = Axis.x * Ay_iCosT;
+        float Axz_iCosT = Axis.x * Az_iCosT;
 
-        float Ax_SinT = Axis_x * SinT;
-        float Ay_SinT = Axis_y * SinT;
-        float Az_SinT = Axis_z * SinT;
+        float Ayy_iCosT = Axis.y * Ay_iCosT;
+        float Ayz_iCosT = Axis.y * Az_iCosT;
+
+        float Azz_iCosT = Axis.z * Az_iCosT;
+
+        float Ax_SinT = Axis.x * SinT;
+        float Ay_SinT = Axis.y * SinT;
+        float Az_SinT = Axis.z * SinT;
 
         return new vec3(
             P.x*(Axx_iCosT +    CosT)  +  P.y*(Axy_iCosT - Az_SinT)  +  P.z*(Axz_iCosT + Ay_SinT),
@@ -276,17 +295,17 @@ internal static partial class VEC {
         if (ThetaV == 0f)
             return P;
 
-        //  'Point' localized to 'Pivot'.
+        //  'Point' localized to 'Pivot':
         vec3 d = P - Pivot;
 
-        ThetaV = -ThetaV; //  Theta is clockwise.
+        //  'Theta' is clockwise:
+        ThetaV = -ThetaV;
 
-        //  Derive rotation Theta (length of ThetaV):
+        //  Derive rotation 'Theta' (length of ThetaV):
         float Theta = sqrt(ThetaV.x*ThetaV.x + ThetaV.y*ThetaV.y + ThetaV.z*ThetaV.z);
 
-        //  Derive rotation Axis (ThetaV normalized):
-        float ThetaRcp = 1f / Theta;
-        vec3 Axis = ThetaV * ThetaRcp;
+        //  Derive rotation 'Axis' (ThetaV normalized):
+        vec3 Axis = ThetaV * (1f / Theta);
 
         //  DewIt:
         float  CosT = cos(Theta);
@@ -298,9 +317,11 @@ internal static partial class VEC {
 
         float Axx_iCosT = Axis.x * Axis.x*iCosT;
         float Axy_iCosT = Axis.x * Ay_iCosT;
-        float Ayy_iCosT = Axis.y * Ay_iCosT;
         float Axz_iCosT = Axis.x * Az_iCosT;
+
+        float Ayy_iCosT = Axis.y * Ay_iCosT;
         float Ayz_iCosT = Axis.y * Az_iCosT;
+
         float Azz_iCosT = Axis.z * Az_iCosT;
 
         float Ax_SinT = Axis.x * SinT;

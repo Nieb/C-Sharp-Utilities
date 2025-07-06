@@ -173,21 +173,6 @@ internal static partial class VEC {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    //                                                                 "Fractional" Part
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static float fract(float A) => (A - MathF.Truncate(A));
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static vec2 fract(vec2 A) => new vec2( A.x-MathF.Truncate(A.x),  A.y-MathF.Truncate(A.y) );
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static vec3 fract(vec3 A) => new vec3( A.x-MathF.Truncate(A.x),  A.y-MathF.Truncate(A.y),  A.z-MathF.Truncate(A.z) );
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static vec4 fract(vec4 A) => new vec4( A.x-MathF.Truncate(A.x),  A.y-MathF.Truncate(A.y),  A.z-MathF.Truncate(A.z),  A.w-MathF.Truncate(A.w) );
-
-    //##########################################################################################################################################################
-    //##########################################################################################################################################################
     //                                                                "Fused Multiply Add"
     ///
     ///
@@ -226,14 +211,14 @@ internal static partial class VEC {
     //##########################################################################################################################################################
     //                                                                      "Invert"                Additive Inverse
     //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //internal static vec2 inv(vec2 A) => new vec2(-A.x, -A.y      );
+    //internal static vec2 inv(vec2 A) => new vec2(-A.x, -A.y);
     //[MethodImpl(MethodImplOptions.AggressiveInlining)]
     //internal static vec3 inv(vec3 A) => new vec3(-A.x, -A.y, -A.z);
 
     //==========================================================================================================================================================
     //                                                                    "Complement"              Complimentary Inverse
     //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-    //internal static vec2 cmp(vec2 A) => new vec2(1f-A.x, 1f-A.y        );
+    //internal static vec2 cmp(vec2 A) => new vec2(1f-A.x, 1f-A.y);
     //[MethodImpl(MethodImplOptions.AggressiveInlining)]
     //internal static vec3 cmp(vec3 A) => new vec3(1f-A.x, 1f-A.y, 1f-A.z);
 
@@ -262,36 +247,36 @@ internal static partial class VEC {
 
     //[MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static float min(float A, float B, float C) => (A < B) ? ((A < C) ? A : C)
-                                                                  : ((B < C) ? B : C);
+                                                                    : ((B < C) ? B : C);
 
     //[MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static float min(float A, float B, float C, float D) => (A < B) ? ((A < C) ? ((A < D) ? A : D)
-                                                                                      : ((C < D) ? C : D))
-                                                                           : ((B < C) ? ((B < D) ? B : D)
-                                                                                      : ((C < D) ? C : D));
+                                                                                        : ((C < D) ? C : D))
+                                                                             : ((B < C) ? ((B < D) ? B : D)
+                                                                                        : ((C < D) ? C : D));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static vec2 min(vec2 A, float B) => new vec2( (A.x < B  ) ? A.x : B  ,  (A.y < B  ) ? A.y : B   );
+    internal static vec2 min(vec2 A, float B)                 => new vec2( (A.x < B  ) ? A.x : B  ,  (A.y < B  ) ? A.y : B   );
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static vec2 min(vec2 A, vec2  B) => new vec2( (A.x < B.x) ? A.x : B.x,  (A.y < B.y) ? A.y : B.y );
+    internal static vec2 min(vec2 A, vec2  B)                 => new vec2( (A.x < B.x) ? A.x : B.x,  (A.y < B.y) ? A.y : B.y );
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static vec2 min(vec2 A, vec2  B, vec2 C)         => new vec2( min(A.x, B.x, C.x),      min(A.y, B.y, C.y)      );
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static vec2 min(vec2 A, vec2  B, vec2 C, vec2 D) => new vec2( min(A.x, B.x, C.x, D.x), min(A.y, B.y, C.y, D.y) );
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static vec3 min(vec3 A, float B) => new vec3( (A.x < B  ) ? A.x : B  ,  (A.y < B  ) ? A.y : B  ,  (A.z < B  ) ? A.z : B   );
+    internal static vec3 min(vec3 A, float B)                 => new vec3( (A.x < B  ) ? A.x : B  ,  (A.y < B  ) ? A.y : B  ,  (A.z < B  ) ? A.z : B   );
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static vec3 min(vec3 A, vec3  B) => new vec3( (A.x < B.x) ? A.x : B.x,  (A.y < B.y) ? A.y : B.y,  (A.z < B.z) ? A.z : B.z );
+    internal static vec3 min(vec3 A, vec3  B)                 => new vec3( (A.x < B.x) ? A.x : B.x,  (A.y < B.y) ? A.y : B.y,  (A.z < B.z) ? A.z : B.z );
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static vec3 min(vec3 A, vec3  B, vec3 C)         => new vec3( min(A.x, B.x, C.x),      min(A.y, B.y, C.y),      min(A.z, B.z, C.z)      );
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static vec3 min(vec3 A, vec3  B, vec3 C, vec3 D) => new vec3( min(A.x, B.x, C.x, D.x), min(A.y, B.y, C.y, D.y), min(A.z, B.z, C.z, D.z) );
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static vec4 min(vec4 A, float B) => new vec4( (A.x < B  ) ? A.x : B  ,  (A.y < B  ) ? A.y : B  ,  (A.z < B  ) ? A.z : B  ,  (A.w < B  ) ? A.w : B   );
+    internal static vec4 min(vec4 A, float B)                 => new vec4( (A.x < B  ) ? A.x : B  ,  (A.y < B  ) ? A.y : B  ,  (A.z < B  ) ? A.z : B  ,  (A.w < B  ) ? A.w : B   );
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static vec4 min(vec4 A, vec4  B) => new vec4( (A.x < B.x) ? A.x : B.x,  (A.y < B.y) ? A.y : B.y,  (A.z < B.z) ? A.z : B.z,  (A.w < B.w) ? A.w : B.w );
+    internal static vec4 min(vec4 A, vec4  B)                 => new vec4( (A.x < B.x) ? A.x : B.x,  (A.y < B.y) ? A.y : B.y,  (A.z < B.z) ? A.z : B.z,  (A.w < B.w) ? A.w : B.w );
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static vec4 min(vec4 A, vec4  B, vec4 C)         => new vec4( min(A.x, B.x, C.x),      min(A.y, B.y, C.y),      min(A.z, B.z, C.z),      min(A.w, B.w, C.w)      );
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -312,36 +297,36 @@ internal static partial class VEC {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static float max(float A, float B, float C) => (A > B) ? ((A > C) ? A : C)
-                                                                  : ((B > C) ? B : C);
+                                                                    : ((B > C) ? B : C);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static float max(float A, float B, float C, float D) => (A > B) ? ((A > C) ? ((A > D) ? A : D)
-                                                                                      : ((C > D) ? C : D))
-                                                                           : ((B > C) ? ((B > D) ? B : D)
-                                                                                      : ((C > D) ? C : D));
+                                                                                        : ((C > D) ? C : D))
+                                                                             : ((B > C) ? ((B > D) ? B : D)
+                                                                                        : ((C > D) ? C : D));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static vec2 max(vec2 A, float B) => new vec2( (A.x > B  ) ? A.x : B  ,  (A.y > B  ) ? A.y : B   );
+    internal static vec2 max(vec2 A, float B)                 => new vec2( (A.x > B  ) ? A.x : B  ,  (A.y > B  ) ? A.y : B   );
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static vec2 max(vec2 A, vec2  B) => new vec2( (A.x > B.x) ? A.x : B.x,  (A.y > B.y) ? A.y : B.y );
+    internal static vec2 max(vec2 A, vec2  B)                 => new vec2( (A.x > B.x) ? A.x : B.x,  (A.y > B.y) ? A.y : B.y );
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static vec2 max(vec2 A, vec2  B, vec2 C)         => new vec2( max(A.x, B.x, C.x),      max(A.y, B.y, C.y)      );
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static vec2 max(vec2 A, vec2  B, vec2 C, vec2 D) => new vec2( max(A.x, B.x, C.x, D.x), max(A.y, B.y, C.y, D.y) );
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static vec3 max(vec3 A, float B) => new vec3( (A.x > B  ) ? A.x : B  ,  (A.y > B  ) ? A.y : B  ,  (A.z > B  ) ? A.z : B   );
+    internal static vec3 max(vec3 A, float B)                 => new vec3( (A.x > B  ) ? A.x : B  ,  (A.y > B  ) ? A.y : B  ,  (A.z > B  ) ? A.z : B   );
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static vec3 max(vec3 A, vec3  B) => new vec3( (A.x > B.x) ? A.x : B.x,  (A.y > B.y) ? A.y : B.y,  (A.z > B.z) ? A.z : B.z );
+    internal static vec3 max(vec3 A, vec3  B)                 => new vec3( (A.x > B.x) ? A.x : B.x,  (A.y > B.y) ? A.y : B.y,  (A.z > B.z) ? A.z : B.z );
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static vec3 max(vec3 A, vec3  B, vec3 C)         => new vec3( max(A.x, B.x, C.x),      max(A.y, B.y, C.y),      max(A.z, B.z, C.z)      );
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static vec3 max(vec3 A, vec3  B, vec3 C, vec3 D) => new vec3( max(A.x, B.x, C.x, D.x), max(A.y, B.y, C.y, D.y), max(A.z, B.z, C.z, D.z) );
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static vec4 max(vec4 A, float B) => new vec4( (A.x > B  ) ? A.x : B  ,  (A.y > B  ) ? A.y : B  ,  (A.z > B  ) ? A.z : B  ,  (A.w > B  ) ? A.w : B   );
+    internal static vec4 max(vec4 A, float B)                 => new vec4( (A.x > B  ) ? A.x : B  ,  (A.y > B  ) ? A.y : B  ,  (A.z > B  ) ? A.z : B  ,  (A.w > B  ) ? A.w : B   );
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static vec4 max(vec4 A, vec4  B) => new vec4( (A.x > B.x) ? A.x : B.x,  (A.y > B.y) ? A.y : B.y,  (A.z > B.z) ? A.z : B.z,  (A.w > B.w) ? A.w : B.w );
+    internal static vec4 max(vec4 A, vec4  B)                 => new vec4( (A.x > B.x) ? A.x : B.x,  (A.y > B.y) ? A.y : B.y,  (A.z > B.z) ? A.z : B.z,  (A.w > B.w) ? A.w : B.w );
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static vec4 max(vec4 A, vec4  B, vec4 C)         => new vec4( max(A.x, B.x, C.x),      max(A.y, B.y, C.y),      max(A.z, B.z, C.z),      max(A.w, B.w, C.w)      );
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -349,6 +334,9 @@ internal static partial class VEC {
 
     //==========================================================================================================================================================
     //                                                                 "Maximum" Magnitude
+    //
+    //  maxmag(A, B) == max(abs(A), abs(B))
+    //
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static float maxmag(float A, float B) => MathF.MaxMagnitude(A, B);
 
@@ -416,21 +404,26 @@ internal static partial class VEC {
     //==========================================================================================================================================================
     //                                                                   "Exponential"
     //
-    //  exp(x) == e^x
+    //  exp(x)  ==  pow(e, x)  ==  pow(2.718~, x)
     //
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static float exp(float A) => MathF.Exp(A);
 
     //==========================================================================================================================================================
     //                                                                    "Logarithm"
+    //
+    //    log(x)  ==   e^x  ==  2.718^x
+    //   log2(x)  ==   2^x
+    //  log10(x)  ==  10^x
+    //
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static float log(float A) => MathF.Log(A);     //   e^x
+    internal static float log(float A) => MathF.Log(A);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static float log2(float A) => MathF.Log2(A);   //   2^x
+    internal static float log2(float A) => MathF.Log2(A);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static float log10(float A) => MathF.Log10(A); //  10^x
+    internal static float log10(float A) => MathF.Log10(A);
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
@@ -523,7 +516,7 @@ internal static partial class VEC {
                                          : new vec3(  MathF.Round(A.x/RoundTo)*RoundTo,  MathF.Round(A.y/RoundTo)*RoundTo,  MathF.Round(A.z/RoundTo)*RoundTo  );
 
     //==========================================================================================================================================================
-    //                                                                      "Floor"                                     Each component rounded down.
+    //                                                                      "Floor"                                     Each component rounded down to nearest integer.
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static float floor(float A) => MathF.Floor(A);
 
@@ -534,7 +527,7 @@ internal static partial class VEC {
     internal static vec3 floor(vec3 A) => new vec3( MathF.Floor(A.x),  MathF.Floor(A.y),  MathF.Floor(A.z));
 
     //==========================================================================================================================================================
-    //                                                                      "Ceiling"                                   Each component rounded up.
+    //                                                                      "Ceiling"                                   Each component rounded up to nearest integer.
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static float ceil(float A) => MathF.Ceiling(A);
 
@@ -544,8 +537,9 @@ internal static partial class VEC {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static vec3 ceil(vec3 A) => new vec3( MathF.Ceiling(A.x),  MathF.Ceiling(A.y),  MathF.Ceiling(A.z) );
 
-    //==========================================================================================================================================================
-    //                                                                     "Truncate"
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    //                                                              "Truncate" or Integer Part
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static float trunc(float A) => MathF.Truncate(A);
 
@@ -555,6 +549,20 @@ internal static partial class VEC {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static vec3 trunc(vec3 A) => new vec3( MathF.Truncate(A.x),  MathF.Truncate(A.y),  MathF.Truncate(A.z) );
 
+    //==========================================================================================================================================================
+    //                                                                 "Fractional" Part
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static float fract(float A) => (A - MathF.Truncate(A));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static vec2 fract(vec2 A) => new vec2( A.x-MathF.Truncate(A.x),  A.y-MathF.Truncate(A.y) );
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static vec3 fract(vec3 A) => new vec3( A.x-MathF.Truncate(A.x),  A.y-MathF.Truncate(A.y),  A.z-MathF.Truncate(A.z) );
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static vec4 fract(vec4 A) => new vec4( A.x-MathF.Truncate(A.x),  A.y-MathF.Truncate(A.y),  A.z-MathF.Truncate(A.z),  A.w-MathF.Truncate(A.w) );
+
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //                                                                       "Sign"
@@ -563,10 +571,10 @@ internal static partial class VEC {
 
   //[MethodImpl(MethodImplOptions.AggressiveInlining)]
   //internal static vec2 sign(vec2 A) => new vec2( MathF.Sign(A.x),  MathF.Sign(A.y) );
-  //
+
   //[MethodImpl(MethodImplOptions.AggressiveInlining)]
   //internal static vec3 sign(vec3 A) => new vec3( MathF.Sign(A.x),  MathF.Sign(A.y),  MathF.Sign(A.z) );
-  //
+
   //[MethodImpl(MethodImplOptions.AggressiveInlining)]
   //internal static vec4 sign(vec4 A) => new vec4( MathF.Sign(A.x),  MathF.Sign(A.y),  MathF.Sign(A.z),  MathF.Sign(A.w) );
 
@@ -580,13 +588,13 @@ internal static partial class VEC {
     //                                                                      "Square"
   //[MethodImpl(MethodImplOptions.AggressiveInlining)]
   //internal static float square(float A) => (A * A);
-  //
+
   //[MethodImpl(MethodImplOptions.AggressiveInlining)]
   //internal static vec2 square(vec2 A) => new vec2( (A.x * A.x),  (A.y * A.y) );
-  //
+
   //[MethodImpl(MethodImplOptions.AggressiveInlining)]
   //internal static vec3 square(vec3 A) => new vec3( (A.x * A.x),  (A.y * A.y),  (A.z * A.z) );
-  //
+
   //[MethodImpl(MethodImplOptions.AggressiveInlining)]
   //internal static vec4 square(vec4 A) => new vec4( (A.x * A.x),  (A.y * A.y),  (A.z * A.z),  (A.w * A.w) );
 
@@ -597,13 +605,12 @@ internal static partial class VEC {
 
   //[MethodImpl(MethodImplOptions.AggressiveInlining)]
   //internal static vec2 sqrt(vec2 A) => new vec2( MathF.Sqrt(A.x),  MathF.Sqrt(A.y) );
-  //
+
   //[MethodImpl(MethodImplOptions.AggressiveInlining)]
   //internal static vec3 sqrt(vec3 A) => new vec3( MathF.Sqrt(A.x),  MathF.Sqrt(A.y),  MathF.Sqrt(A.z) );
-  //
+
   //[MethodImpl(MethodImplOptions.AggressiveInlining)]
   //internal static vec4 sqrt(vec4 A) => new vec4( MathF.Sqrt(A.x),  MathF.Sqrt(A.y),  MathF.Sqrt(A.z),  MathF.Sqrt(A.w) );
-
 
     //==========================================================================================================================================================
     //                                                                    "Cube Root"
@@ -612,10 +619,10 @@ internal static partial class VEC {
 
   //[MethodImpl(MethodImplOptions.AggressiveInlining)]
   //internal static vec2 cbrt(vec2 A) => new vec2( MathF.Cbrt(A.x),  MathF.Cbrt(A.y) );
-  //
+
   //[MethodImpl(MethodImplOptions.AggressiveInlining)]
   //internal static vec3 cbrt(vec3 A) => new vec3( MathF.Cbrt(A.x),  MathF.Cbrt(A.y),  MathF.Cbrt(A.z) );
-  //
+
   //[MethodImpl(MethodImplOptions.AggressiveInlining)]
   //internal static vec4 cbrt(vec4 A) => new vec4( MathF.Cbrt(A.x),  MathF.Cbrt(A.y),  MathF.Cbrt(A.z),  MathF.Cbrt(A.w) );
 

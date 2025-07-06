@@ -1,9 +1,8 @@
 using System;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace Utility;
-internal static partial class VEC {
+internal static partial class VEC_Geometry {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

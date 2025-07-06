@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 
 namespace Utility;
-internal static partial class VEC {
+internal static class VEC_Collision2 {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     ///
@@ -31,27 +31,20 @@ internal static partial class VEC {
     ///     PointVsLine(  Point,  Line-PointA,  Line-PointB,  Tolerance  )
     ///
     internal static bool PointVsLine(vec2 P, vec2 La, vec2 Lb, float Tolerance) {
-        float dAP_x =  P.x - La.x;
-        float dAP_y =  P.y - La.y;
+        vec2 dAP = P  - La;
+        vec2 dAB = Lb - La;
 
-        float dAB_x = Lb.x - La.x;
-        float dAB_y = Lb.y - La.y;
-
-        float DotPB           = (dAP_x * dAB_x) + (dAP_y * dAB_y);
-        float Line_LengthSqrd = (dAB_x * dAB_x) + (dAB_y * dAB_y);
-
-        //  Get distance to NearestPointOnLine from Line-PointA as multiple of DeltaAB:
-        float Scaler = DotPB / Line_LengthSqrd;
+        //  Distance from LinePointA to NearestPointOnLine, as multiple of DeltaAB:
+        float Scaler = dot(dAP, dAB) / dot(dAB, dAB);
 
         //  Is ProjectedPoint going to be between Line-PointA and Line-PointB:
         if (Scaler < 0f || Scaler >= 1f)
             return false;
 
         //  Point <---> ProjectedPoint:
-        float dPP_x = dAP_x - (dAB_x * Scaler);
-        float dPP_y = dAP_y - (dAB_y * Scaler);
+        vec2 dPP = dAP - dAB*Scaler;
 
-        return (dPP_x*dPP_x + dPP_y*dPP_y < Tolerance*Tolerance);
+        return (dPP.x*dPP.x + dPP.y*dPP.y) < (Tolerance*Tolerance);
     }
 
 
@@ -66,8 +59,8 @@ internal static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static bool PointVsPoint(vec2 Pa, vec2 Pb, float Threshold) =>
-        PointVsCircle(Pa, Pb, Threshold);
+    internal static bool PointVsPoint(vec2 Pa, vec2 Pb, float Tolerance) =>
+        PointVsCircle(Pa, Pb, Tolerance);
 
     //==========================================================================================================================================================
     ///
@@ -75,9 +68,8 @@ internal static partial class VEC {
     ///
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static bool PointVsCircle(vec2 P, vec2 Cp, float Cr) {
-        float d_x = P.x - Cp.x;
-        float d_y = P.y - Cp.y;
-        return (d_x*d_x + d_y*d_y) < (Cr*Cr);
+        vec2 d = P - Cp;
+        return dot(d,d) < (Cr*Cr);
     }
 
     //##########################################################################################################################################################
@@ -97,16 +89,14 @@ internal static partial class VEC {
     ///
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static bool PointVsRect(vec2 P, vec2 Rp, vec2 Rs) => (
-           P.x <  Rp.x+Rs.x
-        && P.x >= Rp.x
-        && P.y <  Rp.y+Rs.y
+           P.x >= Rp.x
         && P.y >= Rp.y
+        && P.x <  Rp.x+Rs.x
+        && P.y <  Rp.y+Rs.y
     );
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    ///
-    /// https://www.desmos.com/calculator/8jfeiiyuap
     ///
     /// Weinding is Anti-Clockwise.
     ///
@@ -118,60 +108,64 @@ internal static partial class VEC {
     ///         @-------@   +X
     ///        B         C
     ///
+    /// https://www.desmos.com/calculator/8jfeiiyuap
+    ///
     ///     PointVsTriangle(  Point,  TrianglePointA,  TrianglePointB,  TrianglePointC  )
     ///
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static bool PointVsTriangle(vec2 P, vec2 Ta, vec2 Tb, vec2 Tc) {
-        float dPA_x = Ta.x - P.x,    dPA_y = Ta.y - P.y;
-        float dPB_x = Tb.x - P.x,    dPB_y = Tb.y - P.y;
-        float dPC_x = Tc.x - P.x,    dPC_y = Tc.y - P.y;
+        vec2 dPA = Ta - P;
+        vec2 dPB = Tb - P;
+        vec2 dPC = Tc - P;
 
-        return (dPA_x*dPB_y >= dPA_y*dPB_x)
-            && (dPB_x*dPC_y >= dPB_y*dPC_x)
-            && (dPC_x*dPA_y >= dPC_y*dPA_x);
+        return (dPA.x*dPB.y >= dPA.y*dPB.x)
+            && (dPB.x*dPC.y >= dPB.y*dPC.x)
+            && (dPC.x*dPA.y >= dPC.y*dPA.x);
     }
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    ///
-    /// https://www.desmos.com/calculator/eyeuk0o9oj
-    ///
-    /// "Irregular Quadrilateral"
-    /// Quad must be convex.
-    /// Weinding is Anti-Clockwise.
-    ///
-    ///     B
-    ///      @---___
-    ///   +Y  \     `--___
-    ///        \          `--___    A
-    ///         \               `--@
-    ///          \                /
-    ///           \              /
-    ///            \            /
-    ///             \     __---@
-    ///              @--``      D
-    ///             C              +X
-    ///
-    ///     PointVsQuad(  Point,  QuadPointA,  QuadPointB,  QuadPointC,  QuadPointD  )
-    ///
+    //
+    //  "Irregular Quadrilateral"
+    //      Quad must be convex.
+    //      Weinding is Anti-Clockwise.
+    //
+    //      B
+    //       @---___
+    //    +Y  \     `--___
+    //         \          `--___    A
+    //          \               `--@
+    //           \                /
+    //            \              /
+    //             \            /
+    //              \     __---@
+    //               @--``      D
+    //              C              +X
+    //
+    //  https://www.desmos.com/calculator/eyeuk0o9oj
+    //
+    //      PointVsQuad(  Point,  QuadPointA,  QuadPointB,  QuadPointC,  QuadPointD  )
+    //
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static bool PointVsQuad(vec2 P, vec2 Qa, vec2 Qb, vec2 Qc, vec2 Qd) {
-        float dPA_x = Qa.x - P.x,    dPA_y = Qa.y - P.y;
-        float dPB_x = Qb.x - P.x,    dPB_y = Qb.y - P.y;
-        float dPC_x = Qc.x - P.x,    dPC_y = Qc.y - P.y;
-        float dPD_x = Qd.x - P.x,    dPD_y = Qd.y - P.y;
+        vec2 dPA = Qa - P;
+        vec2 dPB = Qb - P;
+        vec2 dPC = Qc - P;
+        vec2 dPD = Qd - P;
 
-        return (dPA_x*dPB_y >= dPA_y*dPB_x)
-            && (dPB_x*dPC_y >= dPB_y*dPC_x)
-            && (dPC_x*dPD_y >= dPC_y*dPD_x)
-            && (dPD_x*dPA_y >= dPD_y*dPA_x);
+        return (dPA.x*dPB.y >= dPA.y*dPB.x)
+            && (dPB.x*dPC.y >= dPB.y*dPC.x)
+            && (dPC.x*dPD.y >= dPC.y*dPD.x)
+            && (dPD.x*dPA.y >= dPD.y*dPA.x);
     }
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    ///
-    /// Polygon must be convex.
-    ///
+    //
+    //  "Irregular Polygon"
+    //      Polygon must be convex.
+    //      Weinding is Anti-Clockwise.
+    //
     internal static bool PointVsPolygon(vec2 P, vec2[] Poly) {
         #if DEBUG
             if (Poly.Length < 3) throw new ArgumentException("Derp?");

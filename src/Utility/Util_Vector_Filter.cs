@@ -1,7 +1,7 @@
 
 
 namespace Utility;
-internal static partial class VEC {
+internal static partial class VEC_Filter {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     ///
@@ -20,22 +20,21 @@ internal static partial class VEC {
     ///
     /// "Rational-Decay based Soft-Limiter"
     ///
-    ///     https://www.desmos.com/calculator/xqd7xruqk5
+    ///     https://www.desmos.com/calculator/cs73ninsvh
     ///
     ///     V: 0 to INF
     ///     T: 0 to 1
     ///
     ///   out: 0 to 1
     ///
-    internal static float Limiter_RD(float V, float T) {
+    internal static float Limiter_RatDec(float V, float T) {
         if (V <= T) {
             return V;
         } else {
-            float  Tsq = T * T;
-            float iTsq = 1f - T;
-                  iTsq *= iTsq;
+            float  TT = T * T;
+            float iTT = 1f - T;  iTT *= iTT;
 
-            return 1f - iTsq/(iTsq + V - Tsq);
+            return 1f - iTT/(iTT + V - TT);
         }
     }
 
@@ -69,46 +68,48 @@ internal static partial class VEC {
     ///
     ///     "Localized Limiter" ?
     ///     "Localized Amp" ?
-    ///
+    /// Δ
     ///
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    const float Filter_BlendScale = 256f;
-    const float ViewMaxY = 256f;
+    private const float Filter_BlendScale = 256f;
+    private const float ViewMaxY = 256f;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    internal static float AmpThresh(float x, float ThresholdY, float Multiplier) {
-        float dX = x - ThresholdY;
+    internal static float AmpThresh_v3(float V, float T, float M) {
+        float d = V - T;
 
-        float blend = 1f/(1f + pow(2f, -dX * Filter_BlendScale));
+        float blend = 1f/(1f + pow(2f, -d * Filter_BlendScale));
 
-        return (dX > 0f) ? ThresholdY + Mix(blend, dX, dX*Multiplier)
-                         : x;
+        return (d > 0f) ? T + Mix(blend, d, d*M)
+                        : V;
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    internal static float AmpThresh_v2(float x, float ThresholdY, float Multiplier) {
-        float dX = x - ThresholdY;
+    internal static float AmpThresh_v2(float V, float T, float M) {
+        float d = V - T;
 
-        float blend = 1f/(1f + pow(2f,-dX*Filter_BlendScale));
+        float blend = 1f/(1f + pow(2f,-d*Filter_BlendScale));
         blend = max(0f, blend*2f - 1f);
 
-        return ThresholdY + Mix(blend, dX, dX*Multiplier);
+        return T + Mix(blend, d, d*M);
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    internal static float AmpThresh_v1(float x, float ThresholdY, float Multiplier) {
-        float dX = x - ThresholdY;
+    internal static float AmpThresh_v1(float V, float T, float M) {
+        float d = V - T;
 
-        float blend = dX / abs(ThresholdY-ViewMaxY);
+        float blend = d / abs(T-ViewMaxY);
 
-        return ((dX > 0f) ? ThresholdY + dX*Multiplier*blend : x);
+        return (d > 0f) ? T + d*M*blend
+                        : V;
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    internal static float AmpThresh_v0(float x, float ThresholdY, float Multiplier) {
-        float dX = x - ThresholdY;
+    internal static float AmpThresh_v0(float V, float T, float M) {
+        float d = V - T;
 
-        return ((dX > 0f) ? ThresholdY + dX*Multiplier : x);
+        return (d > 0f) ? T + d*M
+                        : V;
     }
 
     //##########################################################################################################################################################

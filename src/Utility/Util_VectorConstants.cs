@@ -86,31 +86,52 @@ internal static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    internal static readonly vec2 ZERO2 = new vec2(0f, 0f);
-    internal static readonly vec2 ONE2  = new vec2(1f, 1f);
+    internal static readonly vec2 ZERO2 = (0f, 0f);
+    internal static readonly vec2 ONE2  = (1f, 1f);
 
-    internal static readonly vec2 AXIS2_X = new vec2(1f, 0f);
-    internal static readonly vec2 AXIS2_Y = new vec2(0f, 1f);
+    internal static readonly vec2 AXIS2_X = (1f, 0f);
+    internal static readonly vec2 AXIS2_Y = (0f, 1f);
 
-    internal static readonly vec2 AXIS2_XY = new vec2(SQRT2_RCP, SQRT2_RCP);
-
-    //==========================================================================================================================================================
-    internal static readonly vec3 ZERO3 = new vec3(0f, 0f, 0f);
-    internal static readonly vec3 ONE3  = new vec3(1f, 1f, 1f);
-
-    internal static readonly vec3 AXIS3_X = new vec3(1f, 0f, 0f);
-    internal static readonly vec3 AXIS3_Y = new vec3(0f, 1f, 0f);
-    internal static readonly vec3 AXIS3_Z = new vec3(0f, 0f, 1f);
-
-    internal static readonly vec3 AXIS3_XY = new vec3(SQRT2_RCP, SQRT2_RCP,        0f);
-    internal static readonly vec3 AXIS3_YZ = new vec3(       0f, SQRT2_RCP, SQRT2_RCP);
-    internal static readonly vec3 AXIS3_XZ = new vec3(SQRT2_RCP,        0f, SQRT2_RCP);
-
-    internal static readonly vec3 AXIS3_XYZ = new vec3(SQRT3_RCP, SQRT3_RCP, SQRT3_RCP);
+    internal static readonly vec2 AXIS2_XY = (SQRT2_RCP, SQRT2_RCP);
 
     //==========================================================================================================================================================
-    internal static readonly vec4 ZERO4 = new vec4(0f, 0f, 0f, 0f);
-    internal static readonly vec4 ONE4  = new vec4(1f, 1f, 1f, 1f);
+    internal static readonly vec3 ZERO3 = (0f, 0f, 0f);
+    internal static readonly vec3 ONE3  = (1f, 1f, 1f);
+
+    internal static readonly vec3 AXIS3_X = (1f, 0f, 0f);
+    internal static readonly vec3 AXIS3_Y = (0f, 1f, 0f);
+    internal static readonly vec3 AXIS3_Z = (0f, 0f, 1f);
+
+    internal static readonly vec3 AXIS3_XY = (SQRT2_RCP, SQRT2_RCP,        0f);
+    internal static readonly vec3 AXIS3_YZ = (       0f, SQRT2_RCP, SQRT2_RCP);
+    internal static readonly vec3 AXIS3_XZ = (SQRT2_RCP,        0f, SQRT2_RCP);
+
+    internal static readonly vec3 AXIS3_XYZ = (SQRT3_RCP, SQRT3_RCP, SQRT3_RCP);
+
+    //==========================================================================================================================================================
+    internal static readonly vec4 ZERO4 = (0f, 0f, 0f, 0f);
+    internal static readonly vec4 ONE4  = (1f, 1f, 1f, 1f);
+
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    //internal static readonly ivec4 CLR_Blk = (  0,   0,   0, 255);
+    //internal static readonly ivec4 CLR_Gry = (128, 128, 128, 255);    (0.5f, 0.5f, 0.5f, 1f)    0x808080FF    0xFF808080
+    //internal static readonly ivec4 CLR_Wht = (255, 255, 255, 255);
+
+    //==========================================================================================================================================================
+    //internal static readonly ivec4 CLR_Red = (255,   0,   0, 255);
+    //internal static readonly ivec4 CLR_Ylw = (255, 255,   0, 255);
+    //internal static readonly ivec4 CLR_Grn = (  0, 255,   0, 255);
+    //internal static readonly ivec4 CLR_Cyn = (  0, 255, 255, 255);
+    //internal static readonly ivec4 CLR_Blu = (  0,   0, 255, 255);
+    //internal static readonly ivec4 CLR_Vlt = (255,   0, 255, 255);
+
+    //==========================================================================================================================================================
+    //internal static readonly ivec4 CLR_AxisX = (247,  31,   0, 255); //  Red-ish.
+    //internal static readonly ivec4 CLR_AxisY = (103, 255,   0, 255); //  Green-ish.
+    //internal static readonly ivec4 CLR_AxisZ = (  0, 128, 255, 255); //  Blue-ish.
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################

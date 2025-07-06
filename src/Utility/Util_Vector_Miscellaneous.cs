@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 
 namespace Utility;
-internal static partial class VEC {
+internal static class VEC_Miscellaneous {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
@@ -48,15 +48,15 @@ internal static partial class VEC {
             vec2 Min = min(Ta, Tb, Tc);
             vec2 Max = max(Ta, Tb, Tc);
 
-            CCp = (Min + Max)*0.5f;
+            CCp = (Min+Max) * 0.5f;
 
             d = CCp - Min;
 
         } else {
             vec2 dAC = Tc-Ta;
 
-            float AB_AB = dAB.x*(Ta.x + Tb.x) + dAB.y*(Ta.y + Tb.y);
-            float AC_AC = dAC.x*(Ta.x + Tc.x) + dAC.y*(Ta.y + Tc.y);
+            float AB_AB = dot(dAB, Ta+Tb); //dAB.x*(Ta.x + Tb.x) + dAB.y*(Ta.y + Tb.y);
+            float AC_AC = dot(dAC, Ta+Tc); //dAC.x*(Ta.x + Tc.x) + dAC.y*(Ta.y + Tc.y);
 
             CCp = new vec2(
                 (dAC.y*AB_AB - dAB.y*AC_AC) / Determinant,
@@ -66,12 +66,11 @@ internal static partial class VEC {
             d = CCp - Ta;
         }
 
-        float CC_RdsSqrd = d.x*d.x + d.y*d.y;
+        float CC_RdsSqrd = dot(d,d); //d.x*d.x + d.y*d.y;
 
-        d.x = CCp.x - P.x;
-        d.y = CCp.y - P.y;
+        d = CCp - P;
 
-        return ((d.x*d.x + d.y*d.y) < CC_RdsSqrd);
+        return (dot(d,d) < CC_RdsSqrd);
     }
 
     //##########################################################################################################################################################
@@ -83,78 +82,31 @@ internal static partial class VEC {
     ///     Project(  Point,  Line-Position,  Line-Normal  )
     ///
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static vec2 Project(vec2 P, vec2 Lp, vec2 Ln) {
-
-        //  Distance from LinePosition to NearestPointOnLine:
-        float DotAP_AB =
-            ((P.x - Lp.x) * Ln.x) +
-            ((P.y - Lp.y) * Ln.y);
-
-        return new vec2(
-            Lp.x + (Ln.x * DotAP_AB),
-            Lp.y + (Ln.y * DotAP_AB)
-        );
-    }
+    internal static vec2 Project(vec2 P, vec2 Lp, vec2 Ln) => Lp + Ln*dot(P-Lp, Ln);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static vec3 Project(vec3 P, vec3 Lp, vec3 Ln) {
-
-        //  Distance from LinePosition to NearestPointOnLine:
-        float DotAP_AB =
-            ((P.x - Lp.x) * Ln.x) +
-            ((P.y - Lp.y) * Ln.y) +
-            ((P.z - Lp.z) * Ln.z);
-
-        return new vec3(
-            Lp.x + (Ln.x * DotAP_AB),
-            Lp.y + (Ln.y * DotAP_AB),
-            Lp.z + (Ln.z * DotAP_AB)
-        );
-    }
+    internal static vec3 Project(vec3 P, vec3 Lp, vec3 Ln) => Lp + Ln*dot(P-Lp, Ln);
 
     //==========================================================================================================================================================
     ///
     ///     Project_(  Point,  Line-Point-A,  Line-Point-B  )
     ///
     internal static vec2 Project_(vec2 P, vec2 La, vec2 Lb) {
-        float dAP_x = P.x  - La.x;
-        float dAP_y = P.y  - La.y;
+        vec2 dAB = Lb - La;
 
-        float dAB_x = Lb.x - La.x;
-        float dAB_y = Lb.y - La.y;
+        //  Distance from LinePointA to NearestPointOnLine as multiple of dAB.Length:
+        float Scaler = dot(P-La, dAB) / dot(dAB, dAB);
 
-        float DotAP_AB       = (dAP_x * dAB_x) + (dAP_y * dAB_y);
-        float dAB_LengthSqrd = (dAB_x * dAB_x) + (dAB_y * dAB_y);
-
-        //  Distance from LinePointA to NearestPointOnLine as multiple of DeltaAB.Length:
-        float Scaler = DotAP_AB / dAB_LengthSqrd; //  (LengthNew / LengthOld).
-
-        return new vec2(
-            La.x + (dAB_x * Scaler),
-            La.y + (dAB_y * Scaler)
-        );
+        return La + (dAB * Scaler);
     }
 
     internal static vec3 Project_(vec3 P, vec3 La, vec3 Lb) {
-        float dAP_x = P.x - La.x;
-        float dAP_y = P.y - La.y;
-        float dAP_z = P.z - La.z;
+        vec3 dAB = Lb - La;
 
-        float dAB_x = Lb.x - La.x;
-        float dAB_y = Lb.y - La.y;
-        float dAB_z = Lb.z - La.z;
+        //  Distance from LinePointA to NearestPointOnLine as multiple of dAB.Length:
+        float Scaler = dot(P-La, dAB) / dot(dAB, dAB);
 
-        float DotAP_AB       = (dAP_x * dAB_x) + (dAP_y * dAB_y) + (dAP_z * dAB_z);
-        float dAB_LengthSqrd = (dAB_x * dAB_x) + (dAB_y * dAB_y) + (dAB_z * dAB_z);
-
-        //  Distance from LinePointA to NearestPointOnLine as multiple of DeltaAB.Length:
-        float Scaler = DotAP_AB / dAB_LengthSqrd; //  (LengthNew / LengthOld)
-
-        return new vec3(
-            La.x + (dAB_x * Scaler),
-            La.y + (dAB_y * Scaler),
-            La.z + (dAB_z * Scaler)
-        );
+        return La + (dAB * Scaler);
     }
 
     //##########################################################################################################################################################

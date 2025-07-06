@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 
 namespace Utility;
-internal static partial class VEC {
+internal static partial class VEC_Generate {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //  Random is not ThreadSafe.
@@ -16,15 +16,15 @@ internal static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     internal static float Random1(bool Signed = true) =>
-        Signed ? VEC.Random.NextSingle()*2f - 1f : VEC.Random.NextSingle();
+        (Signed) ? Random.NextSingle()*2f - 1f : Random.NextSingle();
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     internal static vec2 Random2(bool Signed = true) =>
         normalize(
             new vec2(
-                Signed ? VEC.Random.NextSingle()*2f - 1f : VEC.Random.NextSingle(),
-                Signed ? VEC.Random.NextSingle()*2f - 1f : VEC.Random.NextSingle()
+                (Signed) ? Random.NextSingle()*2f - 1f : Random.NextSingle(),
+                (Signed) ? Random.NextSingle()*2f - 1f : Random.NextSingle()
             )
         );
 
@@ -33,9 +33,9 @@ internal static partial class VEC {
     internal static vec3 Random3(bool Signed = true) =>
         normalize(
             new vec3(
-                Signed ? VEC.Random.NextSingle()*2f - 1f : VEC.Random.NextSingle(),
-                Signed ? VEC.Random.NextSingle()*2f - 1f : VEC.Random.NextSingle(),
-                Signed ? VEC.Random.NextSingle()*2f - 1f : VEC.Random.NextSingle()
+                (Signed) ? Random.NextSingle()*2f - 1f : Random.NextSingle(),
+                (Signed) ? Random.NextSingle()*2f - 1f : Random.NextSingle(),
+                (Signed) ? Random.NextSingle()*2f - 1f : Random.NextSingle()
             )
         );
 
@@ -44,8 +44,8 @@ internal static partial class VEC {
         //  Pitch  RotX  -->   Latitude(South –90  +90 North)  -->  Position|Texture Coord  Y|V
         //  Yaw    RotY  -->  Longitude(West -180 +180 East )  -->  Position|Texture Coord  X|U
 
-        float Pch = (VEC.Random.NextSingle() - 0.5f) * PI;
-        float Yaw = (VEC.Random.NextSingle() - 0.5f) * PI2;
+        float Pch = (Random.NextSingle() - 0.5f) * PI;
+        float Yaw = (Random.NextSingle() - 0.5f) * PI2;
 
         //  To get an even distribution, bias away from poles:
         Pch = asin(Pch);
@@ -65,7 +65,7 @@ internal static partial class VEC {
     /// https://www.desmos.com/calculator/ct29koavbu
     ///
     internal static vec2[] Phyllotaxis2(int Count, float CircleCoverage = 1f, bool CenterPoint = true) {
-        int iStart = (CenterPoint) ? 0 : 1;
+        int iStart = CenterPoint ? 0 : 1;
 
         vec2[] Result = new vec2[Count];
 
