@@ -1,6 +1,19 @@
-﻿
+﻿global using Utility;
+global using static Utility.ENM;
+global using static Utility.INT;
+global using static Utility.STR;
+global using static Utility.VEC;
+global using static Utility.VEC_Color;
+global using static Utility.VEC_Collision2;
+global using static Utility.VEC_Collision3;
+global using static Utility.VEC_Filter;
+global using static Utility.VEC_Geometry;
+global using static Utility.VEC_Generate;
+global using static Utility.VEC_Interpolation;
+global using static Utility.VEC_Miscellaneous;
+global using static Utility.VEC_Rotation;
 
-namespace TEST;
+namespace UtilityTest;
 internal static partial class Program {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
@@ -12,6 +25,9 @@ internal static partial class Program {
         #if false
             PRINT($"\n\n{BAR}\n{BAR}");
             Test__Intrinsics();
+        #endif
+        #if false
+            Gen__TurboColor();
         #endif
         #if false
             //PRINT($"{BAR}\n{BAR}");
@@ -41,9 +57,6 @@ internal static partial class Program {
             PRINT($"\n                                   {Time.Seconds,10:0.0000000}\n");
             //PRINT($"\n\n\n\n{Time}\n");
         #endif
-
-        Gen__TurboColor();
-
     }
     //##########################################################################################################################################################
     //##########################################################################################################################################################
