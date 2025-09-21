@@ -1,5 +1,5 @@
 
-namespace TEST;
+namespace UtilityTest;
 internal static partial class Program {
     static void Test__Vector_Interpolation() {
         PRINT("\n[Utility.VEC -- Interpolation]");

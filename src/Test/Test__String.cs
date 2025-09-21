@@ -1,5 +1,5 @@
 
-namespace TEST;
+namespace UtilityTest;
 internal static partial class Program {
     static void Test__String() {
         PRINT("\n[Utility.STR]");
@@ -12,7 +12,7 @@ internal static partial class Program {
         );
 
         //======================================================================================================================================================
-        RESULT("ToBool()", true
+        RESULT(".ToBool()", true
             && "true".ToBool() == true
             && "True".ToBool() == true
             && "TRUE".ToBool() == true
@@ -29,11 +29,11 @@ internal static partial class Program {
             && "blarg".ToBool() == false
         );
 
-        //RESULT("ToDateTime()", true
+        //RESULT(".ToDateTime()", true
         //    && "".ToDateTime() == System.DateTime.MinValue
         //);
 
-        RESULT("ToIpAddress()", true
+        RESULT(".ToIpAddress()", true
             && ""               .ToIpAddress().Equals(new System.Net.IPAddress(0))
             && " "              .ToIpAddress().Equals(new System.Net.IPAddress(0))
             && "blarg"          .ToIpAddress().Equals(new System.Net.IPAddress(0))
@@ -44,7 +44,7 @@ internal static partial class Program {
             && "255.255.255.255".ToIpAddress().Equals(new System.Net.IPAddress(new byte[] { 0xFF, 0xFF, 0xFF, 0xFF }))
         );
 
-        RESULT("ToNameValueCollection()", true
+        RESULT(".ToNameValueCollection()", true
             && "ABC=123, def=Xyz, G=456, H=1.414, i=0, ABC=789".ToNameValueCollection()["ABC"] == "123,789"
             && "ABC=123, def=Xyz, G=456, H=1.414, i=0, ABC=789".ToNameValueCollection()["def"] == "Xyz"
             && "ABC=123, def=Xyz, G=456, H=1.414, i=0, ABC=789".ToNameValueCollection()["G"]   == "456"
@@ -58,13 +58,13 @@ internal static partial class Program {
             && ByteArrayToString(new byte[] { 0xFF, 0xCC, 0xAA, 0x99, 0x77, 0x55, 0x33, 0x11 }, 3) == "FF CC AA \n99 77 55 \n33 11 "
         );
 
-        RESULT(".EnumerableToString()", true
+        RESULT("EnumerableToString()", true
             && EnumerableToString(new string[] { "Aa", "Bb", "Cc", "Dd", "Ee", "Ff", "Gg", "Hh", "Ii" }) == "Aa, Bb, Cc, Dd, Ee, Ff, Gg, Hh, Ii"
             && EnumerableToString("AaBbCcDdEeFfGgHhIi")                                                  == "A, a, B, b, C, c, D, d, E, e, F, f, G, g, H, h, I, i"
             && EnumerableToString(new int[] { 1, 2, 3 })                                                 == "1, 2, 3"
         );
 
-        RESULT(".IntToBinaryString()", true
+        RESULT("IntToBinaryString()", true
             && IntToBinaryString((sbyte )                 0x7F) ==                                                                "01111111"
             && IntToBinaryString((short )               0x7FFF) ==                                                       "01111111_11111111"
             && IntToBinaryString((int   )          0x7FFF_FFFF) ==                                     "01111111_11111111_11111111_11111111"

@@ -1,5 +1,5 @@
 
-namespace TEST;
+namespace UtilityTest;
 internal static partial class Program {
     static void Test__Vector_Rotation() {
         PRINT("\n[Utility.VEC -- Rotation]");
@@ -103,10 +103,10 @@ internal static partial class Program {
             && rot((0, 2, 0), (SQRT2_RCP, 0, SQRT2_RCP), ToRad( 270)).IsApproximately((-SQRT2, 0, SQRT2))
 
             && rot((0, 1, 0), (SQRT2_RCP, 0, SQRT2_RCP), ToRad(  45)).IsApproximately((0.5f,SQRT2_RCP,-0.5f))
-            && rot((0, 1, 0), (SQRT2_RCP, 0, SQRT2_RCP), ToRad(  45)).Length.IsApproximately(1)
+            && rot((0, 1, 0), (SQRT2_RCP, 0, SQRT2_RCP), ToRad(  45)).length.IsApproximately(1)
 
             && rot((0, 2, 0), (SQRT2_RCP, 0, SQRT2_RCP), ToRad(  45)).IsApproximately((1,SQRT2,-1))
-            && rot((0, 2, 0), (SQRT2_RCP, 0, SQRT2_RCP), ToRad(  45)).Length.IsApproximately(2)
+            && rot((0, 2, 0), (SQRT2_RCP, 0, SQRT2_RCP), ToRad(  45)).length.IsApproximately(2)
         );
 
         RESULT("vec3 rot(P, Pivot, Axis, Theta)", true
@@ -122,12 +122,12 @@ internal static partial class Program {
             && rot(( 0, 1,   0), (PI /SQRT3, PI /SQRT3, PI /SQRT3)).IsApproximately(( TWOTHIRD,-ONETHIRD, TWOTHIRD)) //  180 along diagonal axis
             && rot(( 0, 2,   0), (PI2/SQRT3, PI2/SQRT3, PI2/SQRT3)).IsApproximately((        0,        2,        0)) //  360 along diagonal axis
 
-            && rot(( 0, 1,   0), (PI /SQRT3, PI /SQRT3, PI /SQRT3)).Length.IsApproximately(1)
-            && rot(( 0, 2,   0), (PI /SQRT3, PI /SQRT3, PI /SQRT3)).Length.IsApproximately(2)
-            && rot(( 0, 0,  PI), (PI /SQRT3, PI /SQRT3, PI /SQRT3)).Length.IsApproximately(PI)
-            && rot(( 0, 0, PI2), (PI2/SQRT3, PI2/SQRT3, PI2/SQRT3)).Length.IsApproximately(PI2)
-            && rot(( 0, 0, PI3), (PI3/SQRT3, PI3/SQRT3, PI3/SQRT3)).Length.IsApproximately(PI3)
-            && rot(( 0, 0, PI4), (PI4/SQRT3, PI4/SQRT3, PI4/SQRT3)).Length.IsApproximately(PI4)
+            && rot(( 0, 1,   0), (PI /SQRT3, PI /SQRT3, PI /SQRT3)).length.IsApproximately(1)
+            && rot(( 0, 2,   0), (PI /SQRT3, PI /SQRT3, PI /SQRT3)).length.IsApproximately(2)
+            && rot(( 0, 0,  PI), (PI /SQRT3, PI /SQRT3, PI /SQRT3)).length.IsApproximately(PI)
+            && rot(( 0, 0, PI2), (PI2/SQRT3, PI2/SQRT3, PI2/SQRT3)).length.IsApproximately(PI2)
+            && rot(( 0, 0, PI3), (PI3/SQRT3, PI3/SQRT3, PI3/SQRT3)).length.IsApproximately(PI3)
+            && rot(( 0, 0, PI4), (PI4/SQRT3, PI4/SQRT3, PI4/SQRT3)).length.IsApproximately(PI4)
 
             && rot((-SQRT2_RCP, 0, SQRT2_RCP), (PI /SQRT3, PI /SQRT3, PI /SQRT3)).IsApproximately(( SQRT2_RCP, 0,-SQRT2_RCP)) //  180 along diagonal axis
             && rot((-SQRT2_RCP, 0, SQRT2_RCP), (PI2/SQRT3, PI2/SQRT3, PI2/SQRT3)).IsApproximately((-SQRT2_RCP, 0, SQRT2_RCP)) //  360 along diagonal axis
@@ -170,12 +170,12 @@ internal static partial class Program {
 
             && rot((5,6,5), (5,5,5), (PIH/SQRT2,         0, PIH/SQRT2)).IsApproximately((5+SQRT2_RCP        ,5                  ,5-SQRT2_RCP        ))
 
-            && (rot((5,6,5    ), (5,5,5), (PI /SQRT3, PI /SQRT3, PI /SQRT3)) - (5,5,5)).Length.IsApproximately(1)
-            && (rot((5,7,5    ), (5,5,5), (PI /SQRT3, PI /SQRT3, PI /SQRT3)) - (5,5,5)).Length.IsApproximately(2)
-            && (rot((5,5,5+PI ), (5,5,5), (PI /SQRT3, PI /SQRT3, PI /SQRT3)) - (5,5,5)).Length.IsApproximately(PI)
-            && (rot((5,5,5+PI2), (5,5,5), (PI2/SQRT3, PI2/SQRT3, PI2/SQRT3)) - (5,5,5)).Length.IsApproximately(PI2)
-            && (rot((5,5,5+PI3), (5,5,5), (PI3/SQRT3, PI3/SQRT3, PI3/SQRT3)) - (5,5,5)).Length.IsApproximately(PI3)
-            && (rot((5,5,5+PI4), (5,5,5), (PI4/SQRT3, PI4/SQRT3, PI4/SQRT3)) - (5,5,5)).Length.IsApproximately(PI4)
+            && (rot((5,6,5    ), (5,5,5), (PI /SQRT3, PI /SQRT3, PI /SQRT3)) - (5,5,5)).length.IsApproximately(1)
+            && (rot((5,7,5    ), (5,5,5), (PI /SQRT3, PI /SQRT3, PI /SQRT3)) - (5,5,5)).length.IsApproximately(2)
+            && (rot((5,5,5+PI ), (5,5,5), (PI /SQRT3, PI /SQRT3, PI /SQRT3)) - (5,5,5)).length.IsApproximately(PI)
+            && (rot((5,5,5+PI2), (5,5,5), (PI2/SQRT3, PI2/SQRT3, PI2/SQRT3)) - (5,5,5)).length.IsApproximately(PI2)
+            && (rot((5,5,5+PI3), (5,5,5), (PI3/SQRT3, PI3/SQRT3, PI3/SQRT3)) - (5,5,5)).length.IsApproximately(PI3)
+            && (rot((5,5,5+PI4), (5,5,5), (PI4/SQRT3, PI4/SQRT3, PI4/SQRT3)) - (5,5,5)).length.IsApproximately(PI4)
         );
 
         //======================================================================================================================================================

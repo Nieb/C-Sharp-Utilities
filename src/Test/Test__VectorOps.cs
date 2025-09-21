@@ -1,8 +1,8 @@
 
-namespace TEST;
+namespace UtilityTest;
 internal static partial class Program {
     static void Test__VectorBasicOps() {
-        PRINT("\n[Utility.VEC BasicOps]");
+        PRINT("\n[Utility.VEC Ops]");
         //PRINT($"{}");
 
         //======================================================================================================================================================
@@ -16,9 +16,17 @@ internal static partial class Program {
 
         //======================================================================================================================================================
         RESULT("avg()", true
-            &&    avg(0f,1f      ) == 0.5f    &&    avg((0f,0f), (1f,1f)                  ) == (0.5f, 0.5f)    &&    avg((0f,0f,0f), (1f,1f,1f)                        ) == (0.5f, 0.5f, 0.5f)
-            &&    avg(0f,1f,2f   ) == 1.0f    &&    avg((0f,0f), (1f,1f), (2f,2f)         ) == (1.0f, 1.0f)    &&    avg((0f,0f,0f), (1f,1f,1f), (2f,2f,2f)            ) == (1.0f, 1.0f, 1.0f)
-            &&    avg(0f,1f,2f,3f) == 1.5f    &&    avg((0f,0f), (1f,1f), (2f,2f), (3f,3f)) == (1.5f, 1.5f)    &&    avg((0f,0f,0f), (1f,1f,1f), (2f,2f,2f), (3f,3f,3f)) == (1.5f, 1.5f, 1.5f)
+            && avg(0f,1f      ) == 0.5f
+            && avg(0f,1f,2f   ) == 1.0f
+            && avg(0f,1f,2f,3f) == 1.5f
+
+            && avg((0f,0f), (1f,1f)                  ) == (0.5f, 0.5f)
+            && avg((0f,0f), (1f,1f), (2f,2f)         ) == (1.0f, 1.0f)
+            && avg((0f,0f), (1f,1f), (2f,2f), (3f,3f)) == (1.5f, 1.5f)
+
+            && avg((0f,0f,0f), (1f,1f,1f)                        ) == (0.5f, 0.5f, 0.5f)
+            && avg((0f,0f,0f), (1f,1f,1f), (2f,2f,2f)            ) == (1.0f, 1.0f, 1.0f)
+            && avg((0f,0f,0f), (1f,1f,1f), (2f,2f,2f), (3f,3f,3f)) == (1.5f, 1.5f, 1.5f)
         );
 
         //======================================================================================================================================================
@@ -50,6 +58,40 @@ internal static partial class Program {
             && wrap( 6f, 0f, 4f) == 2f
             && wrap( 7f, 0f, 4f) == 3f
             && wrap( 8f, 0f, 4f) == 0f
+        );
+
+        //======================================================================================================================================================
+        RESULT("distance(A,B)", true
+            && distance((-1f, -1f), ( 1f,  1f)) == (2f * SQRT2)
+            && distance(( 1f,  1f), (-1f, -1f)) == (2f * SQRT2)
+
+            && distance((-1f,  1f), ( 1f, -1f)) == (2f * SQRT2)
+            && distance(( 1f, -1f), (-1f,  1f)) == (2f * SQRT2)
+
+            && distance((-1f, -1f, -1f), ( 1f,  1f,  1f)) == (2f * SQRT3)
+            && distance(( 1f,  1f,  1f), (-1f, -1f, -1f)) == (2f * SQRT3)
+
+            && distance((-1f, -1f,  1f), ( 1f,  1f, -1f)) == (2f * SQRT3)
+            && distance(( 1f,  1f, -1f), (-1f, -1f,  1f)) == (2f * SQRT3)
+
+            && distance((-1f,  1f, -1f), ( 1f, -1f,  1f)) == (2f * SQRT3)
+            && distance(( 1f, -1f,  1f), (-1f,  1f, -1f)) == (2f * SQRT3)
+
+            && distance(( 1f, -1f, -1f), (-1f,  1f,  1f)) == (2f * SQRT3)
+            && distance((-1f,  1f,  1f), ( 1f, -1f, -1f)) == (2f * SQRT3)
+        );
+
+        //======================================================================================================================================================
+        RESULT("normalize(A)", true
+            && normalize((-5f, -5f)) == (-SQRT2_RCP,-SQRT2_RCP)
+            && normalize((-1f, -1f)) == (-SQRT2_RCP,-SQRT2_RCP)
+            && normalize(( 1f,  1f)) == ( SQRT2_RCP, SQRT2_RCP)
+            && normalize(( 5f,  5f)) == ( SQRT2_RCP, SQRT2_RCP)
+
+            && normalize((-5f, -5f, -5f)) == (-SQRT3_RCP,-SQRT3_RCP,-SQRT3_RCP)
+            && normalize((-1f, -1f, -1f)) == (-SQRT3_RCP,-SQRT3_RCP,-SQRT3_RCP)
+            && normalize(( 1f,  1f,  1f)) == ( SQRT3_RCP, SQRT3_RCP, SQRT3_RCP)
+            && normalize(( 5f,  5f,  5f)) == ( SQRT3_RCP, SQRT3_RCP, SQRT3_RCP)
         );
 
         //======================================================================================================================================================
@@ -150,43 +192,49 @@ internal static partial class Program {
             && round(-2.0f, 0.5f) == -2.0f
             && round(-1.9f, 0.5f) == -2.0f
             && round(-1.8f, 0.5f) == -2.0f
+
             && round(-1.7f, 0.5f) == -1.5f
             && round(-1.6f, 0.5f) == -1.5f
             && round(-1.5f, 0.5f) == -1.5f
             && round(-1.4f, 0.5f) == -1.5f
             && round(-1.3f, 0.5f) == -1.5f
+
             && round(-1.2f, 0.5f) == -1.0f
             && round(-1.1f, 0.5f) == -1.0f
             && round(-1.0f, 0.5f) == -1.0f
             && round(-0.9f, 0.5f) == -1.0f
             && round(-0.8f, 0.5f) == -1.0f
+
             && round(-0.7f, 0.5f) == -0.5f
             && round(-0.6f, 0.5f) == -0.5f
             && round(-0.5f, 0.5f) == -0.5f
             && round(-0.4f, 0.5f) == -0.5f
             && round(-0.3f, 0.5f) == -0.5f
+
             && round(-0.2f, 0.5f) == -0.0f
             && round(-0.1f, 0.5f) == -0.0f
-
             && round( 0.0f, 0.5f) == 0.0f
-
             && round( 0.1f, 0.5f) == 0.0f
             && round( 0.2f, 0.5f) == 0.0f
+
             && round( 0.3f, 0.5f) == 0.5f
             && round( 0.4f, 0.5f) == 0.5f
             && round( 0.5f, 0.5f) == 0.5f
             && round( 0.6f, 0.5f) == 0.5f
             && round( 0.7f, 0.5f) == 0.5f
+
             && round( 0.8f, 0.5f) == 1.0f
             && round( 0.9f, 0.5f) == 1.0f
             && round( 1.0f, 0.5f) == 1.0f
             && round( 1.1f, 0.5f) == 1.0f
             && round( 1.2f, 0.5f) == 1.0f
+
             && round( 1.3f, 0.5f) == 1.5f
             && round( 1.4f, 0.5f) == 1.5f
             && round( 1.5f, 0.5f) == 1.5f
             && round( 1.6f, 0.5f) == 1.5f
             && round( 1.7f, 0.5f) == 1.5f
+
             && round( 1.8f, 0.5f) == 2.0f
             && round( 1.9f, 0.5f) == 2.0f
             && round( 2.0f, 0.5f) == 2.0f

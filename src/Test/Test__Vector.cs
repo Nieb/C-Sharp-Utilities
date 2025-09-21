@@ -1,5 +1,5 @@
 
-namespace TEST;
+namespace UtilityTest;
 internal static partial class Program {
     static void Test__Vector() {
         PRINT("\n[Utility.VEC]");
@@ -90,6 +90,65 @@ internal static partial class Program {
             && new vec4(1f, 1f, 1f, 1f)
         );
 
+        //======================================================================================================================================================
+        #if false
+
+            PRINT($"");
+            PRINT($"{BitCast.ToFloat(0x3EAAAAABu):F98}");
+            PRINT($"{ONETHIRD:F98}");
+            PRINT($"");
+            PRINT($"{IntToBinaryString(0x3EAAAAABu)}");
+            PRINT($"{IntToBinaryString(BitCast.ToUint(ONETHIRD))}");
+            PRINT($"");
+            PRINT($"");
+            PRINT($"{BitCast.ToFloat(0x3F2AAAABu):F98}");
+            PRINT($"{TWOTHIRD:F98}");
+            PRINT($"{IntToBinaryString(0x3F2AAAABu)}");
+            PRINT($"{IntToBinaryString(BitCast.ToUint(TWOTHIRD))}");
+            PRINT($"");
+            PRINT($"");
+            PRINT($"");
+            PRINT($"{0.000000000000123456f:F98}");
+
+        #endif
+        //======================================================================================================================================================
+        #if false
+
+            bvec4 A = 0xFF_CC_99_33u;
+            PRINT($"");
+            PRINT($"    A: {A:x}");
+            PRINT($"  A.x: {A.x:x}");
+            PRINT($"  A.y: {A.y:x}");
+            PRINT($"  A.z: {A.z:x}");
+            PRINT($"  A.w: {A.w:x}");
+
+            uint  B = A;
+            PRINT($"");
+            PRINT($"    B: {B:x}");
+
+            bvec4 C = B - 0x11111111u;
+            PRINT($"");
+            PRINT($"    C: {C:x}");
+            C.x += 0x11;
+            C.y += 0x11;
+            C.z += 0x11;
+            C.w += 0x11;
+            PRINT($"    C: {C:x}");
+
+            bvec4 D = new bvec4(0xFF, 0xCC, 0x99, 0x33);
+            PRINT($"");
+            PRINT($"    D: {D:x}");
+
+            bvec4 E = (0xFF, 0xCC, 0x99, 0x33);
+            PRINT($"");
+            PRINT($"    E: {E:x}");
+            E = E.ByteFlip;
+            PRINT($"    E: {E:x}");
+
+            //uint S = 0b_0101_0101; // = 0x55 =  85
+            //uint Z = 0b_1010_1010; // = 0xAA = 170
+
+        #endif
         //======================================================================================================================================================
     }
 }
