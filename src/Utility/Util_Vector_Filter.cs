@@ -1,33 +1,34 @@
-
+using System.Runtime.CompilerServices;
 
 namespace Utility;
 internal static partial class VEC_Filter {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    ///
-    /// "Hard-Limiter"
-    ///
-    ///     V: 0 to INF
-    ///     T: 0 to 1
-    ///
-    ///   out: 0 to 1
-    ///
-    internal static float Limiter_Clip(float V, float T) {
+    //
+    //  "Hard-Limiter"
+    //
+    //      V: 0 to ∞
+    //      T: 0 to 1
+    //
+    //    out: 0 to 1
+    //
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static float HardLimit(float V, float T) {
         return (V > T) ? T : V;
     }
 
     //==========================================================================================================================================================
-    ///
-    /// "Rational-Decay based Soft-Limiter"
-    ///
-    ///     https://www.desmos.com/calculator/cs73ninsvh
-    ///
-    ///     V: 0 to INF
-    ///     T: 0 to 1
-    ///
-    ///   out: 0 to 1
-    ///
-    internal static float Limiter_RatDec(float V, float T) {
+    //
+    //  "Rational-Decay based Soft-Limiter"
+    //
+    //      https://www.desmos.com/calculator/cs73ninsvh
+    //
+    //      V: 0 to ∞
+    //      T: 0 to 1
+    //
+    //    out: 0 to 1
+    //
+    internal static float SoftLimit(float V, float T) {
         if (V <= T) {
             return V;
         } else {
@@ -39,15 +40,15 @@ internal static partial class VEC_Filter {
     }
 
     //==========================================================================================================================================================
-    ///
-    /// "Sigmoid based Soft-Limiter"
-    ///
-    ///     V: 0 to INF
-    ///     T: 0 to 1
-    ///
-    ///   out: 0 to 1
-    ///
-    internal static float Limiter_Sigmoid(float V, float T) {
+    //
+    //  "Sigmoid based Soft-Limiter"
+    //
+    //      V: 0 to ∞
+    //      T: 0 to 1
+    //
+    //    out: 0 to 1
+    //
+    internal static float SoftLimit_Sigmoid(float V, float T) {
         if (V <= T) {
             return V;
         } else {
@@ -63,13 +64,13 @@ internal static partial class VEC_Filter {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    ///
-    /// Scale values that exceed a threshold...
-    ///
-    ///     "Localized Limiter" ?
-    ///     "Localized Amp" ?
-    /// Δ
-    ///
+    //
+    //  Scale values that exceed a threshold...
+    //
+    //      "Localized Limiter" ?
+    //      "Localized Amp" ?
+    //  Δ
+    //
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     private const float Filter_BlendScale = 256f;
     private const float ViewMaxY = 256f;
@@ -114,44 +115,64 @@ internal static partial class VEC_Filter {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    ///
-    /// https://www.desmos.com/calculator/ff9bdz0qui
-    ///
-    ///     Dlt -> "Delta"
-    ///     Pos -> "Position"
-    ///     Rds -> "Radius"
-    ///     Fal -> "Falloff"
-    ///
-    internal static float Notch(float V, float Dlt, float Pos, float Rds, float Fal) {
+    //
+    //              |- - - - - - - F - - - - - - -|  R
+    //      |                                        |
+    //  Y=1 +--------____                            V
+    //      |            ----
+    //                       ---
+    //      |                   --
+    //                            -
+    //      |                      -
+    //                              --
+    //      |                         ---
+    //                                   ----____
+    //  Y=0 +                                    ------------------------
+    //    X=0
+    //
+    //  R^(-(x/R)^F);
+    //
+    internal static float Notch(float x, float R, float F) => pow(R,-pow(x/R,F));
+
+    //==========================================================================================================================================================
+    //
+    //  https://www.desmos.com/calculator/ff9bdz0qui
+    //
+    //      Notch(  x,  Delta, Position, Radius, Falloff  )
+    //
+    internal static float Notch(float x, float d, float P, float R, float F) {
         float Result;
 
-        Result = abs(V - Pos) / Rds;
+        Result = abs(x - P) / R;
 
-        Result = pow(Result, Fal);
+        Result = pow(Result, F);
 
-        Result = 1f + Dlt * pow(Rds, -Result);
+        Result = 1f + d * pow(R, -Result);
 
         return Result;
     }
 
     //==========================================================================================================================================================
-    ///
-    /// With wrapping.
-    ///
-    internal static float Notch(float V, float Dlt, float Pos, float Rds, float Fal, float Domain) {
+    //
+    //  With wrapping.
+    //
+    //      Notch(  x,  Delta, Position, Radius, Falloff, Domain  )
+    //
+    internal static float Notch(float x, float d, float P, float R, float F, float D) {
         float Result;
 
-        Result = abs(V - Pos) / Rds;
+        Result = abs(x - P) / R;
 
-        //  Wrap:
-        float m1 = Domain/Rds;
-        float m2 = m1 * 0.5f;
-        Result = ((Result + m2) % m1) - m2;
-        Result = abs(Result);
+        /* Wrap */ {
+            float m  = D/R;
+            float mh = m * 0.5f;
+            Result = ((Result + mh) % m) - mh;
+            Result = abs(Result);
+        }
 
-        Result = pow(Result, Fal);
+        Result = pow(Result, F);
 
-        Result = 1f + Dlt*pow(Rds, -Result);
+        Result = 1f + d * pow(R, -Result);
 
         return Result;
     }

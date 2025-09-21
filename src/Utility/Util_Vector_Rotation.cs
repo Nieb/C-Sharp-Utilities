@@ -9,6 +9,21 @@ internal static class VEC_Rotation {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
+    //                                                                   "Rotate Left"
+    //
+    //  Rotate 90 degrees Anti-Clockwise.
+    //
+    [Impl(AggressiveInlining)] internal static vec2 rotl(vec2 P) => new vec2(-P.y, P.x);
+
+    //==========================================================================================================================================================
+    //                                                                   "Rotate Right"
+    //
+    //   Rotate 90 degrees Clockwise.
+    //
+    [Impl(AggressiveInlining)] internal static vec2 rotr(vec2 P) => new vec2(P.y, -P.x);
+
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
     internal static vec2 rot(vec2 P, float Theta) {
         if (Theta == 0.0f)
             return P;
@@ -211,7 +226,7 @@ internal static class VEC_Rotation {
             return P;
 
         //  'Point' localized to 'Pivot'.
-        vec3 d = P - Pivot;
+        vec3 dPP = P - Pivot;
 
         //  'Theta' is clockwise:
         Theta = -Theta;
@@ -224,13 +239,13 @@ internal static class VEC_Rotation {
         float Ay_iCosT = Axis.y * iCosT;
         float Az_iCosT = Axis.z * iCosT;
 
-        float Axx_iCosT = Axis.x * Axis.x*iCosT;
+        float Axx_iCosT = Axis.x * Axis.x * iCosT;
         float Axy_iCosT = Axis.x * Ay_iCosT;
-        float Axz_iCosT = Axis.x * Az_iCosT;
 
         float Ayy_iCosT = Axis.y * Ay_iCosT;
         float Ayz_iCosT = Axis.y * Az_iCosT;
 
+        float Axz_iCosT = Axis.x * Az_iCosT;
         float Azz_iCosT = Axis.z * Az_iCosT;
 
         float Ax_SinT = Axis.x * SinT;
@@ -238,9 +253,9 @@ internal static class VEC_Rotation {
         float Az_SinT = Axis.z * SinT;
 
         return new vec3(
-            Pivot.x  +  d.x*(Axx_iCosT +    CosT)  +  d.y*(Axy_iCosT - Az_SinT)  +  d.z*(Axz_iCosT + Ay_SinT),
-            Pivot.y  +  d.x*(Axy_iCosT + Az_SinT)  +  d.y*(Ayy_iCosT +    CosT)  +  d.z*(Ayz_iCosT - Ax_SinT),
-            Pivot.z  +  d.x*(Axz_iCosT - Ay_SinT)  +  d.y*(Ayz_iCosT + Ax_SinT)  +  d.z*(Azz_iCosT +    CosT)
+            Pivot.x  +  dPP.x*(Axx_iCosT +    CosT)  +  dPP.y*(Axy_iCosT - Az_SinT)  +  dPP.z*(Axz_iCosT + Ay_SinT),
+            Pivot.y  +  dPP.x*(Axy_iCosT + Az_SinT)  +  dPP.y*(Ayy_iCosT +    CosT)  +  dPP.z*(Ayz_iCosT - Ax_SinT),
+            Pivot.z  +  dPP.x*(Axz_iCosT - Ay_SinT)  +  dPP.y*(Ayz_iCosT + Ax_SinT)  +  dPP.z*(Azz_iCosT +    CosT)
         );
     }
 
@@ -296,7 +311,7 @@ internal static class VEC_Rotation {
             return P;
 
         //  'Point' localized to 'Pivot':
-        vec3 d = P - Pivot;
+        vec3 dPP = P - Pivot;
 
         //  'Theta' is clockwise:
         ThetaV = -ThetaV;
@@ -329,9 +344,9 @@ internal static class VEC_Rotation {
         float Az_SinT = Axis.z * SinT;
 
         return new vec3(
-            Pivot.x  +  d.x*(Axx_iCosT +    CosT)  +  d.y*(Axy_iCosT - Az_SinT)  +  d.z*(Axz_iCosT + Ay_SinT),
-            Pivot.y  +  d.x*(Axy_iCosT + Az_SinT)  +  d.y*(Ayy_iCosT +    CosT)  +  d.z*(Ayz_iCosT - Ax_SinT),
-            Pivot.z  +  d.x*(Axz_iCosT - Ay_SinT)  +  d.y*(Ayz_iCosT + Ax_SinT)  +  d.z*(Azz_iCosT +    CosT)
+            Pivot.x  +  dPP.x*(Axx_iCosT +    CosT)  +  dPP.y*(Axy_iCosT - Az_SinT)  +  dPP.z*(Axz_iCosT + Ay_SinT),
+            Pivot.y  +  dPP.x*(Axy_iCosT + Az_SinT)  +  dPP.y*(Ayy_iCosT +    CosT)  +  dPP.z*(Ayz_iCosT - Ax_SinT),
+            Pivot.z  +  dPP.x*(Axz_iCosT - Ay_SinT)  +  dPP.y*(Ayz_iCosT + Ax_SinT)  +  dPP.z*(Azz_iCosT +    CosT)
         );
     }
 

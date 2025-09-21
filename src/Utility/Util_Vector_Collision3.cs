@@ -1,6 +1,9 @@
 using System;
 using System.Runtime.CompilerServices;
 
+using static Utility.FLT;
+using static Utility.VEC;
+
 namespace Utility;
 internal static class VEC_Collision3 {
     //##########################################################################################################################################################
@@ -9,23 +12,16 @@ internal static class VEC_Collision3 {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    ///
-    ///               @    1
-    ///           |
-    ///     ------+---@--  0
-    ///
-    ///               @   -1
-    ///
-    ///     WhichSideOfPlane(  Point,  Plane-Position,  Plane-Normal  )
-    ///
-    //internal static int PointVsPlane(vec3 V, vec3 Pp, vec3 Pn) {
-    internal static int WhichSideOfPlane(vec3 V, vec3 Pp, vec3 Pn) {
-        float Determinant = (Pn.x*(V.x-Pp.x) + Pn.y*(V.y-Pp.y) + Pn.z*(V.z-Pp.z)); // dot(Pn, V-Pp)
-
-        return (Determinant > 0f) ?  1
-             : (Determinant < 0f) ? -1
-                                  :  0;
-    }
+    //
+    //                @    P > 0
+    //            |
+    //      ------+---@--  P = 0
+    //
+    //                @    P < 0
+    //
+    //      WhichSideOfPlane(  Point,  Plane-Position,  Plane-Normal  )
+    //
+    internal static float WhichSideOfPlane(vec3 Pnt, vec3 Pp, vec3 Pn) => dot(Pn, Pnt-Pp);
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
@@ -36,13 +32,7 @@ internal static class VEC_Collision3 {
     //
     //  PointVsSphere(  Point,  Sphere-Position,  Sphere-Radius  )
     //
-    internal static bool PointVsSphere(vec3 P, vec3 Sp, float Sr) {
-        float d_x = Sp.x - P.x;
-        float d_y = Sp.y - P.y;
-        float d_z = Sp.z - P.z;
-
-        return (d_x*d_x + d_y*d_y + d_z*d_z) <= (Sr*Sr);
-    }
+    internal static bool PointVsSphere(vec3 P, vec3 Sp, float Sr) => dot(Sp-P) <= (Sr*Sr);
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
@@ -51,51 +41,38 @@ internal static class VEC_Collision3 {
     //
     //      Axis-Aligned-Box
     //
-    //      Inverted box == false   always
+    //      Inverted box == false
     //          Impossible for a Point to be both:
-    //              > Box_MinBounds
+    //              > Box_BoundsMin
     //                  AND
-    //              < Box_MaxBounds
+    //              < Box_BoundsMax
     //
     //
-    //                     BoxSiz
-    //       +Y *--------@
+    //       +Y            BoxSize
+    //          *--------@
     //          |        |
     //          |        |
     //          |        |
-    //          @--------* +X
-    //    BoxPos
+    //          @--------*
+    //    BoxPos           +X
     //
     //
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static bool PointVsBox(vec3 P, vec3 Bp, vec3 Bs) => (P >= Bp  &&  P <= Bp+Bs);
-/*
     internal static bool PointVsBox(vec3 P, vec3 Bp, vec3 Bs) => (
-           P.x >= Bp.x
-        && P.y >= Bp.y
-        && P.z >= Bp.z
-
-        && P.x <  Bp.x + Bs.x
-        && P.y <  Bp.y + Bs.y
-        && P.z <  Bp.z + Bs.z
+           P >= Bp
+        && P <= Bp+Bs
     );
-*/
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    ///
-    ///     PointVsCylinder(  Point,  Cylinder-Position,  Cylinder-Radius,  Cylinder-Height  )
-    ///
-    internal static bool PointVsCylinder(vec3 P, vec3 Cp, float Cr, float Ch) {
-        //  Is Point below or above Cylinder?
-        if (P.y < Cp.y || P.y >= Cp.y+Ch)
-            return false;
-
-        //  Is Point inside of Cylinder-Radius?
-        float d_x = P.x - Cp.x;
-        float d_z = P.z - Cp.z;
-        return (d_x*d_x + d_z*d_z) <= (Cr*Cr);
-    }
+    //
+    //  PointVsCylinder(  Point,  Cylinder-Position,  Cylinder-Radius,  Cylinder-Height  )
+    //
+    internal static bool PointVsCylinder(vec3 P, vec3 Cp, float Cr, float Ch) => (
+           P.y >= Cp.y                  //  Is Point in same vertical space as Cylinder?
+        && P.y <= Cp.y+Ch
+        && dot(P.xz - Cp.xz) <= (Cr*Cr) //  Is Point inside of Cylinder-Radius?
+    );
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
@@ -103,123 +80,101 @@ internal static class VEC_Collision3 {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    ///
-    /// All  RayVsSurface()  functions return:  vec4( HitPosX, HitPosY, HitPosZ, HitDistance )
-    ///
-    ///                        Surface      Ray
-    ///     Distance < 0.0      |-->        -->  Surface is Behind Ray.
-    ///
-    ///     Distance = 0.0      |-->         |   Ray is parallel to surface plane.
-    ///                                      V
-    ///
-    ///     Distance > 0.0      |-->        <--  Surface is InFront of Ray.
-    ///
-    ///
-    /// If surface has bounds  and  Ray-Line does not intersect, it will return:  RAY_MISS
-    ///
+    //
+    //  All  RayVsSurface()  functions return:  vec4( HitPosX, HitPosY, HitPosZ, HitDistance )      **  Should these only return HitDistance ???
+    //                                                                                              **  HitPos isn't always needed, and is easy to calculate:
+    //                         Surface      Ray                                                             RayPos + (RayNrm * Distance)
+    //      Distance < 0.0      |-->        -->  Surface is Behind Ray.
+    //
+    //
+    //      Distance = 0.0      |-->         |   Ray is parallel to surface plane.                  **  'Distance = 0' should be 'RayPos is inside Volume',
+    //                                       V                                                          'parallel to surface' should be 'RAY_MISS'.
+    //
+    //      Distance > 0.0      |-->        <--  Surface is InFront of Ray.
+    //
+    //
+    //  If surface has bounds  and  Ray-Line does not intersect, it will return:  RAY_MISS
+    //
     //==========================================================================================================================================================
-    internal static readonly vec4 RAY_MISS = new vec4(FLOAT_NEG_INF, FLOAT_NEG_INF, FLOAT_NEG_INF, FLOAT_NEG_INF);
+    internal static readonly float RAY_MISS = FLOAT_NEG_INF;
+
+    internal static readonly vec4 RAY_MISS___ = new vec4(FLOAT_NEG_INF, FLOAT_NEG_INF, FLOAT_NEG_INF, FLOAT_NEG_INF);
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //                                                                    Ray  VS  Surface
-    //==========================================================================================================================================================
-    ///
-    /// Axis-Aligned, Plane spans YZ.
-    ///
-    ///     RayVsPlaneX(  Ray-Position,  Ray-Normal,  Ray-NormalReciprocal,    Plane-Position  )
-    ///
-    internal static vec4 RayVsPlaneX(vec3 Rp, vec3 Rn, vec3 Rnr, float Pp_x) {
-        float Distance = (Pp_x - Rp.x) * Rnr.x;
-        return new vec4(Rp + (Rn*Distance), Distance);
-    }
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    //
+    //  Axis-Aligned Plane.
+    //
+    //      RayVsPlaneX(  Ray-Position,  Ray-Normal,    Plane-PositionX  )  Plane spans YZ.
+    //      RayVsPlaneY(  Ray-Position,  Ray-Normal,    Plane-PositionY  )  Plane spans XZ.
+    //      RayVsPlaneZ(  Ray-Position,  Ray-Normal,    Plane-PositionZ  )  Plane spans XY.
+    //
+    internal static float RayVsPlaneX(vec3 Rp, vec3 Rn, float Pp_x) => (Pp_x - Rp.x) / Rn.x;
+    internal static float RayVsPlaneY(vec3 Rp, vec3 Rn, float Pp_y) => (Pp_y - Rp.y) / Rn.y;
+    internal static float RayVsPlaneZ(vec3 Rp, vec3 Rn, float Pp_z) => (Pp_z - Rp.z) / Rn.z;
 
     //==========================================================================================================================================================
-    ///
-    /// Axis-Aligned, Plane spans XZ.
-    ///
-    ///     RayVsPlaneY(  Ray-Position,  Ray-Normal,  Ray-NormalReciprocal,    Plane-Position  )
-    ///
-    internal static vec4 RayVsPlaneY(vec3 Rp, vec3 Rn, vec3 Rnr, float Pp_y) {
-        float Distance = (Pp_y - Rp.y) * Rnr.y;
-        return new vec4(Rp + (Rn*Distance), Distance);
-    }
-
-    //==========================================================================================================================================================
-    ///
-    /// Axis-Aligned, Plane spans XY.
-    ///
-    ///     RayVsPlaneZ(  Ray-Position,  Ray-Normal,  Ray-NormalReciprocal,    Plane-Position  )
-    ///
-    internal static vec4 RayVsPlaneZ(vec3 Rp, vec3 Rn, vec3 Rnr, float Pp_z) {
-        float Distance = (Pp_z - Rp.z) * Rnr.z;
-        return new vec4(Rp + (Rn*Distance), Distance);
-    }
-
-    //==========================================================================================================================================================
-    ///
-    ///     RayVsPlane(  Ray-Position,  Ray-Normal,    Plane-Position,  Plane-Normal  )
-    ///
-    internal static vec4 RayVsPlane(vec3 Rp, vec3 Rn, vec3 Pp, vec3 Pn) {
-        float WhichSide         =  dot(Pn, Rp-Pp);
-        float Dot_RayNrm_PlnNrm = -dot(Rn, Pn);
-
-        float Distance = WhichSide / Dot_RayNrm_PlnNrm;
-
-        return new vec4(Rp + (Rn*Distance), Distance);
-    }
+    //
+    //      RayVsPlane(  Ray-Position,  Ray-Normal,    Plane-Position,  Plane-Normal  )
+    //
+    internal static float RayVsPlane(vec3 Rp, vec3 Rn, vec3 Pp, vec3 Pn) => dot(Pn, Rp-Pp) / -dot(Rn, Pn);
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    ///
-    /// Axis-Aligned; Quad spans YZ.
-    ///
-    ///     RayVsQuadX(  Ray-Position,  Ray-Normal,  Ray-NormalReciprocal,    Quad-Position,  Quad-Size  )
-    ///
+    //
+    //  Axis-Aligned; Quad spans YZ.
+    //
+    //      RayVsQuadX(  Ray-Position,  Ray-Normal,  Ray-NormalReciprocal,    Quad-Position,  Quad-Size  )
+    //
     internal static vec4 RayVsQuadX(vec3 Rp, vec3 Rn, vec3 Rnr,    vec3 Qp, vec2 Qs) {
         float Distance = (Qp.x - Rp.x) * Rnr.x;
         vec3 Hp = Rp + (Rn*Distance); //  HitPosition
         return (Hp.z >= Qp.z && Hp.z < Qp.z+Qs.x
-            &&  Hp.y >= Qp.y && Hp.y < Qp.y+Qs.y) ? new vec4(Hp, Distance) : RAY_MISS;
+            &&  Hp.y >= Qp.y && Hp.y < Qp.y+Qs.y) ? new vec4(Hp, Distance) : RAY_MISS___;
     }
 
     //==========================================================================================================================================================
-    ///
-    /// Axis-Aligned; Quad spans XZ.
-    ///
-    ///     RayVsQuadY(  Ray-Position,  Ray-Normal,  Ray-NormalReciprocal,    Quad-Position,  Quad-Size  )
-    ///
+    //
+    //  Axis-Aligned; Quad spans XZ.
+    //
+    //      RayVsQuadY(  Ray-Position,  Ray-Normal,  Ray-NormalReciprocal,    Quad-Position,  Quad-Size  )
+    //
     internal static vec4 RayVsQuadY(vec3 Rp, vec3 Rn, vec3 Rnr,    vec3 Qp, vec2 Qs) {
         float Distance = (Qp.y - Rp.y) * Rnr.y;
         vec3 Hp = Rp + (Rn*Distance); //  HitPosition
         return (Hp.x >= Qp.x && Hp.x < Qp.x+Qs.x
-            &&  Hp.z >= Qp.z && Hp.z < Qp.z+Qs.y) ? new vec4(Hp, Distance) : RAY_MISS;
+            &&  Hp.z >= Qp.z && Hp.z < Qp.z+Qs.y) ? new vec4(Hp, Distance) : RAY_MISS___;
     }
 
     //==========================================================================================================================================================
-    ///
-    /// Axis-Aligned; Quad spans XY.
-    ///
-    ///     RayVsQuadZ(  Ray-Position,  Ray-Normal,  Ray-NormalReciprocal,    Quad-Position,  Quad-Size  )
-    ///
+    //
+    //  Axis-Aligned; Quad spans XY.
+    //
+    //      RayVsQuadZ(  Ray-Position,  Ray-Normal,  Ray-NormalReciprocal,    Quad-Position,  Quad-Size  )
+    //
     internal static vec4 RayVsQuadZ(vec3 Rp, vec3 Rn, vec3 Rnr,    vec3 Qp, vec2 Qs) {
         float Distance = (Qp.z - Rp.z) * Rnr.z;
         vec3 Hp = Rp + (Rn*Distance); //  HitPosition
         return (Hp.x >= Qp.x && Hp.x < Qp.x+Qs.x
-            &&  Hp.y >= Qp.y && Hp.y < Qp.y+Qs.y) ? new vec4(Hp, Distance) : RAY_MISS;
+            &&  Hp.y >= Qp.y && Hp.y < Qp.y+Qs.y) ? new vec4(Hp, Distance) : RAY_MISS___;
     }
 
     //==========================================================================================================================================================
-    ///
-    ///     RayVsQuad(  Ray-Position,  Ray-Normal,    Quad-Position,  Quad-Normal,  Quad-???  )
-    ///
+    //
+    //      RayVsQuad(  Ray-Position,  Ray-Normal,    Quad-Position,  Quad-Normal,  Quad-???  )
+    //
     internal static vec4 RayVsQuad(vec3 Rp, vec3 Rn,    vec3 Qp, vec3 Qn, vec3 Qnt) {
         float WhichSide =  dot(Qn, Rp-Qp);
         float Dot_RnPn  = -dot(Rn, Qn);
+
         float Distance  = WhichSide / Dot_RnPn;
+
         vec3 HitPos = Rp + (Rn*Distance);
 
-        vec4 ToDo = RAY_MISS;
+        vec4 ToDo = RAY_MISS___;
         //
         //  Hmm, how to express Quad orientation...
         //
@@ -237,89 +192,112 @@ internal static class VEC_Collision3 {
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    ///
-    ///     RayVsTriangle(  Ray-Position,  Ray-Normal,    Triangle-PointA,  Triangle-PointB,  Triangle-PointC,    BackFaceTest  )
-    ///
-    internal static vec4 RayVsTriangle(vec3 Rp, vec3 Rn,   vec3 Ta, vec3 Tb, vec3 Tc,   bool BackFaceTest = true) {
+    //
+    //      RayVsTriangle(  Ray-Position,  Ray-Normal,    Triangle-PointA,  Triangle-PointB,  Triangle-PointC,    BackFaceTest  )
+    //
+    internal static float RayVsTriangle(vec3 Rp, vec3 Rn,   vec3 Ta, vec3 Tb, vec3 Tc,   bool BackFaceTest = true) {
         vec3 dAB = Tb - Ta;
         vec3 dAC = Tc - Ta;
 
         vec3 H = cross(Rn, dAC);
         float Determinant = dot(dAB, H);
 
-        if (Determinant < 0f && !BackFaceTest) //  Is Ray pointing in the same direction as SurfaceNormal?
+        //  Is Ray pointing in the same direction as SurfaceNormal?
+        if (Determinant < 0f && !BackFaceTest)
             return RAY_MISS;
 
-        if (Determinant == 0f) //  Is Ray parallel with Triangle Surface?
-            return new vec4(Rp, 0f); //RAY_MISS;
+        //  Is Ray coplanar with Triangle Surface?
+        if (Determinant == 0f)
+            return RAY_MISS;
 
         vec3 dAP = Rp - Ta;
         float DtrRcp = 1f/Determinant;
         float U = dot(dAP, H) * DtrRcp;
 
-        if (U < 0f || U > 1f) //  Will intersection be inside of triangle?
+        //  Will intersection be inside of triangle?
+        if (U < 0f || U > 1f)
             return RAY_MISS;
 
         vec3 Q = cross(dAP, dAB);
         float V = dot(Rn, Q) * DtrRcp;
 
-        if (V < 0f || U+V > 1f) //  Will intersection be inside of triangle?
+        //  Will intersection be inside of triangle?
+        if (V < 0f || U+V > 1f)
             return RAY_MISS;
 
-        float Distance = dot(dAC, Q) * DtrRcp;
-
-        return new vec4((Rp + Rn*Distance), Distance);
+        return dot(dAC, Q) * DtrRcp;
     }
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //                                                                    Ray  VS  Volume
-    //==========================================================================================================================================================
-    ///
-    ///     RayVsSphere(  Ray-Position,  Ray-Normal,    Sphere-Position,  Sphere-Radius  )
-    ///
-    internal static vec4 RayVsSphere(vec3 Rp, vec3 Rn, vec3 Sp, float Sr) {
-        vec4 ToDo = RAY_MISS;
+    //##########################################################################################################################################################
+    //##########################################################################################################################################################
+    //
+    //  Geometric solution.
+    //
+    //      RayVsSphere(  Ray-Position,  Ray-Normal,    Sphere-Position,  Sphere-Radius  )
+    //
+    internal static float RayVsSphere(vec3 Rp, vec3 Rn, vec3 Sp, float Sr) {
+        vec3 dRS = Sp - Rp;
 
-        //  Is Ray_Pos inside the Sphere?
-        //      return new vec4(Rp, 0f);
+        float SrSr = Sr * Sr;
 
-        //  Project SpherePos onto Ray-Line:
-        vec3 pSp = Rp + Rn*dot(Sp-Rp, Rn);
+        //  Distance from RayPos to ProjectedPoint:
+        float sP = dot(dRS, Rn);
 
-        //  is this ProjectedPoint inside the Sphere?
-        //  if so, determine HitPos...
-        //
-        //                            \  @
-        //                             \ :
-        //                              \:
-        //                               X
-        //                               :\
-        //                               : \
-        //                               :  \
-        //                               :   |
-        //                               :   |
-        //          0------------------->0   |
-        //                               :   |
-        //                               :   |
-        //                               :  /
-        //                               : /
-        //                               :/
-        //                               X
-        //                              /:
-        //                             / :
-        //                            /  V
+        //  Distance from RayPos to SpherePos, squared:
+        float sS = dot(dRS, dRS);
 
-        return ToDo;
+        //  Compare:
+        float dS = sS - sP*sP;
+
+        //  Is ProjectedPoint inside Sphere?
+        if (dS > SrSr)
+            return RAY_MISS;
+
+        dS = sqrt(SrSr - dS);
+
+        return sP - dS;
+
+        //float s0 = sP - dS; vec3 HitPos0 = Rp + (Rn * s0);
+        //float s1 = sP + dS; vec3 HitPos1 = Rp + (Rn * s1);
+        //return new vec4(HitPos0, s0);
     }
 
+    //==========================================================================================================================================================
+    //
+    //  Analytic solution.
+    //
+    //      RayVsSphere(  Ray-Position,  Ray-Normal,    Sphere-Position,  Sphere-Radius  )
+    //
+    internal static vec4 RayVsSphere_(vec3 Rp, vec3 Rn, vec3 Sp, float Sr) {
+        vec3 dSR = Rp - Sp;
+
+        float a =      dot( Rn, Rn );
+        float b = 2f * dot( Rn, dSR);
+        float c =      dot(dSR, dSR) - Sr*Sr;
+
+        float Qn = sqrt(b*b - 4f*a*c);
+        float Qd = 2f * a;
+
+        float s0 = (-b - Qn) / Qd;
+        float s1 = (-b + Qn) / Qd;
+
+        vec3 HitPos0 = Rp + (Rn * s0);
+        vec3 HitPos1 = Rp + (Rn * s1);
+
+        return new vec4(HitPos0, s0);
+    }
+
+
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //
-    //      RayVsBox(  Ray-Position,  Ray-Normal,  Ray-NormalReciprocal,  Box-Position,  Box-Size  )
+    //      RayVsBox(  Ray-Position,  Ray-Normal,  Box-Position,  Box-Size  )
     //
-    internal static vec4 RayVsBox(vec3 Rp, vec3 Rn, vec3 Rnr, vec3 Bp, vec3 Bs) {
-        //  Distance to bounding planes from RayPos along RayNrm,
+    internal static float RayVsBox(vec3 Rp, vec3 Rn, vec3 Bp, vec3 Bs) {
+        //  Distance to bounding-planes from RayPos along RayNrm,
         //  for 3 Axes, Near & Far, 6 total.
         //
         //       +Y  |      |                                          +Y  -Z
@@ -335,23 +313,23 @@ internal static class VEC_Collision3 {
         //       DistNearX  ^
         //               DistFarX
         //
-        vec3 DistNear = (Bp    - Rp) * Rnr;
-        vec3 DistFar  = (Bp+Bs - Rp) * Rnr;
+        vec3 dNear = (Bp    - Rp) / Rn; //  Note: DivByZero == -∞|∞
+        vec3 dFar  = (Bp+Bs - Rp) / Rn; //        is desired in cases where ray is coplanar with an axis-plane.
 
         //  Reorient (swap) relative to RayPos:
-        if (DistNear.x > DistFar.x)  (DistNear.x, DistFar.x) = (DistFar.x, DistNear.x);
-        if (DistNear.y > DistFar.y)  (DistNear.y, DistFar.y) = (DistFar.y, DistNear.y);
-        if (DistNear.z > DistFar.z)  (DistNear.z, DistFar.z) = (DistFar.z, DistNear.z);
+        (dNear.x, dFar.x) = (dNear.x > dFar.x) ? (dFar.x, dNear.x) : (dNear.x, dFar.x);
+        (dNear.y, dFar.y) = (dNear.y > dFar.y) ? (dFar.y, dNear.y) : (dNear.y, dFar.y);
+        (dNear.z, dFar.z) = (dNear.z > dFar.z) ? (dFar.z, dNear.z) : (dNear.z, dFar.z);
 
         //  Select PlaneHits in Quadrant/Octant of Box:
-        float DistToBackFace  = min(DistFar.x , DistFar.y , DistFar.z );
-        float DistToFrontFace = max(DistNear.x, DistNear.y, DistNear.z);
+        float DistToFrontFace = max(dNear.x, dNear.y, dNear.z);
+        float DistToBackFace  = min(dFar.x , dFar.y , dFar.z );
 
         //  Did we hit it?
         return (DistToFrontFace > DistToBackFace) ? RAY_MISS
-             : (DistToBackFace  <             0f) ? new vec4(Rp + (Rn*DistToBackFace), DistToBackFace)   //  Box is behind RayPos.
-             : (DistToFrontFace <=            0f) ? new vec4(Rp, 0f)                                     //  RayPos is inside Box.
-                                                  : new vec4(Rp + (Rn*DistToFrontFace), DistToFrontFace);
+             : (DistToBackFace  <             0f) ? DistToBackFace  //  Box is behind RayPos.
+             : (DistToFrontFace <=            0f) ? 0f              //  RayPos is inside Box.
+                                                  : DistToFrontFace;
     }
 
     //##########################################################################################################################################################
@@ -359,7 +337,7 @@ internal static class VEC_Collision3 {
     //
     //  3D Grid Traversal
     //
-    //      (vec4 Result, int Hitside) = RayVsVoxelChunk(  Ray-Position,  Ray-Normal,  Ray-NormalReciprocal,  VoxelChunk-Position,  VoxelChunk-Size,)
+    //      (vec4 Result, int HitSide) = RayVsVoxelChunk(  Ray-Position,  Ray-Normal,  Ray-NormalReciprocal,  VoxelChunk-Position,  VoxelChunk-Size,)
     //
     //          HitSide:
     //                   X    Y              Z
@@ -375,15 +353,17 @@ internal static class VEC_Collision3 {
     //      Result is in VoxelChunk's local space?  Should not be.
     //
     //      Travel/Step should occur at end of loop, otherwise first voxel will be skipped?
-    //          "Ray_Travel" was called "Ray_LenNext"
+    //          "Ray_Travel" was called "Ray_LenNext"...
     //
-    //      Currently, input-param RayPos must start at bounds of VoxelChunk....?
+    //      Currently, input-param RayPos must start at/within bounds of VoxelChunk....?
     //
     internal static (vec4, int) RayVsVoxelChunk(vec3 Rp, vec3 Rn, vec3 Rnr,    vec3 Vp, ivec3 Vs, uint[] Voxel) {
-        #if DEBUG && false
-            if (Vs.x * Vs.y * Vs.z != Voxel.Length) {
-                //...
-            }
+        #if DEBUG || true
+        {
+            int VolumeCompare = (Vs.x * Vs.y * Vs.z) - Voxel.Length;
+            if      (VolumeCompare < 0) throw new ArgumentException("Derp?  Voxel-Volume is less than Voxel.Length.");
+            else if (VolumeCompare > 0) throw new ArgumentException("Derp?  Voxel-Volume is greater than Voxel.Length.");
+        }
         #endif
 
         //==========================================================================================================================================================
@@ -419,21 +399,29 @@ internal static class VEC_Collision3 {
             else                                                                 {HitDist = Ray_Travel.z;  Ray_Travel.z += Ray_StepDist.z;  Ray_Coord.z += Ray_StepDir.z;  HitSide = 5-Ray_StepDir.z;}
 
             //  Are we still inside the bounds of the VoxelChunk?
-            bool dewit =
-                (Ray_Coord.x >= 0 && Ray_Coord.x <= Vs.x) &&
-                (Ray_Coord.y >= 0 && Ray_Coord.y <= Vs.y) &&
-                (Ray_Coord.z >= 0 && Ray_Coord.z <= Vs.z);
+            bool BoundsCheck = (
+                Ray_Coord.x >= 0 && Ray_Coord.x <= Vs.x &&
+                Ray_Coord.y >= 0 && Ray_Coord.y <= Vs.y &&
+                Ray_Coord.z >= 0 && Ray_Coord.z <= Vs.z
+            );
 
-            if (dewit) {
+            if (BoundsCheck) {
                 int iVox = Ray_Coord.x
                          + Ray_Coord.y * Vs.y
                          + Ray_Coord.z * Vs.z;
 
                 if ((Voxel[iVox] & 0xFF000000) != 0) //  if (Alpha != 0)    Assuming: AaBbGgRr  (Alpha,Blue,Green,Red)
-                    return (new vec4(Rp + (Rn*HitDist), HitDist), HitSide);
+                    return (
+                        new vec4(Rp + (Rn*HitDist), HitDist),
+                        HitSide
+                    );
 
             } else {
-                return (RAY_MISS, -1); //  We hit/exited the bounds of the VoxelChunk.
+                //  We hit/exited the bounds of the VoxelChunk:
+                return (
+                    RAY_MISS___,
+                    -1
+                );
             }
         }
     }

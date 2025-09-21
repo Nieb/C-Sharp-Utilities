@@ -1,32 +1,27 @@
 
-
 namespace Utility;
+using v1 = float;
+using v2 = vec2;
+using v3 = vec3;
+using v4 = vec4;
+
 internal static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    //##########################################################################################################################################################
-    //##########################################################################################################################################################
-    internal const float FLOAT_NaN      = System.Single.NaN;
+    internal const float EPSILISH  = 0.0001f;
+    internal const float EPSILON   = 0.000001f;
 
-    internal const float FLOAT_NEG_INF  = System.Single.NegativeInfinity;
-    internal const float FLOAT_MIN      = System.Single.MinValue;
-    internal const float FLOAT_NEG_ZERO = System.Single.NegativeZero;
-    internal const float FLOAT_MAX      = System.Single.MaxValue;
-    internal const float FLOAT_INF      = System.Single.PositiveInfinity;
+    internal const float EPS1 = 0.1f;
+    internal const float EPS2 = 0.01f;
+    internal const float EPS3 = 0.001f;
+    internal const float EPS4 = 0.0001f;
+    internal const float EPS5 = 0.00001f;
+    internal const float EPS  = 0.000001f;
 
-    //##########################################################################################################################################################
-    //##########################################################################################################################################################
-    //##########################################################################################################################################################
-    //##########################################################################################################################################################
-    internal const float EPSILON  = 0.000001f;
-    internal const float EPSILISH = 0.0001f;
-
-    //##########################################################################################################################################################
     //##########################################################################################################################################################
     internal const float ONETHIRD  =  0.33333333333333333333333333333333333333333333333333f;      //  1/3
     internal const float TWOTHIRD  =  0.66666666666666666666666666666666666666666666666666f;      //  2/3
 
-    //##########################################################################################################################################################
     //##########################################################################################################################################################
     internal const float TO_DEG    = 57.29577951308232087679815481410517033240547246656432f;      //  (180/pi)
     internal const float TO_RAD    =  0.01745329251994329576923690768488612713442871888542f;      //  (pi/180)
@@ -43,14 +38,21 @@ internal static partial class VEC {
   //internal const float TWO_SQRT3 =  0.26794919243112270647255365849412763305719474618962f;      //  2 - sqrt(3)
 
     //==========================================================================================================================================================
-    internal const float PIQ       =  0.78539816339744830961566084581987572104929234984378f;      //  pi / 4   (Radians ==  45 Degrees)
-    internal const float PIH       =  1.57079632679489661923132169163975144209858469968755f;      //  pi / 2   (Radians ==  90 Degrees)
-    internal const float PI        =  3.14159265358979323846264338327950288419716939937511f;      //  pi       (Radians == 180 Degrees)
-    internal const float PI1H      =  4.71238898038468985769396507491925432629575409906266f;      //  pi * 1.5 (Radians == 270 Degrees)
-    internal const float PI2       =  6.28318530717958647692528676655900576839433879875021f;      //  pi * 2   (Radians == 360 Degrees)  SurfaceArea of Unit-HemiSphere.  (2pi * r * h)
-    internal const float TAU       =  6.28318530717958647692528676655900576839433879875021f;      //
-    internal const float PI3       =  9.42477796076937971538793014983850865259150819812532f;      //  pi * 3   (Radians == 540 Degrees)
-    internal const float PI4       = 12.56637061435917295385057353311801153678867759750042f;      //  pi * 4   (Radians == 720 Degrees)  SurfaceArea of Unit-Sphere.      (4pi * r^2)
+    internal const float PIE       =  0.39269908169872415480783042290993786052464617492189f;      //  pi / 8   (Radians ==  22.5 Degrees)
+    internal const float PIQ       =  0.78539816339744830961566084581987572104929234984378f;      //  pi / 4   (Radians ==  45   Degrees)
+    internal const float PIH       =  1.57079632679489661923132169163975144209858469968755f;      //  pi / 2   (Radians ==  90   Degrees)
+
+    internal const float PI        =  3.14159265358979323846264338327950288419716939937511f;      //  pi       (Radians == 180   Degrees)
+  //internal const float PI_4_3    =  4.18879020478639098461685784437267051226289253250014f;      //  pi * 4/3
+    internal const float PI1H      =  4.71238898038468985769396507491925432629575409906266f;      //  pi * 3/2 (Radians == 270   Degrees)
+    internal const float PI2       =  6.28318530717958647692528676655900576839433879875021f;      //  pi * 2   (Radians == 360   Degrees)   SurfaceArea of Unit-HemiSphere.  (2pi * r * h)
+  //internal const float TAU       =  6.28318530717958647692528676655900576839433879875021f;      //
+    internal const float PI3       =  9.42477796076937971538793014983850865259150819812532f;      //  pi * 3   (Radians == 540   Degrees)
+    internal const float PI4       = 12.56637061435917295385057353311801153678867759750042f;      //  pi * 4   (Radians == 720   Degrees)   SurfaceArea of Unit-Sphere.      (4pi * r^2)
+    internal const float PI5       = 15.70796326794896619231321691639751442098584699687553f;      //  pi * 5
+    internal const float PI6       = 18.84955592153875943077586029967701730518301639625063f;      //  pi * 6
+    internal const float PI7       = 21.99114857512855266923850368295652018938018579562574f;      //  pi * 7
+    internal const float PI8       = 25.13274122871834590770114706623602307357735519500085f;      //  pi * 8
 
     internal const float PI_RCP    =  0.31830988618379067153776752674502872406891929148091f;      //  1 /  pi
     internal const float PI2_RCP   =  0.15915494309189533576888376337251436203445964574046f;      //  1 / 2pi
@@ -61,21 +63,21 @@ internal static partial class VEC {
     //##########################################################################################################################################################
     internal const float E         =  2.71828182845904523536028747135266249775724709369996f;      //  Euler's number.
 
-    internal const float NATLOG2   =  0.69314718055994530941723212145817656807550013436026f;      //  ln(2)
-    internal const float NATLOG10  =  2.30258509299404568401799145468436420760110148862877f;      //  ln(10)
+    internal const float LOG2      =  0.69314718055994530941723212145817656807550013436026f;      //  ln(2)
+    internal const float LOG10     =  2.30258509299404568401799145468436420760110148862877f;      //  ln(10)
 
-                                                                                                //  2^x  <--Inverse-->  log(2, 2^x)
-                                                                                                //  x^2  <--Inverse-->  sqrt(x^2)
+                                                                                                  //  2^x  <--Inverse-->  log(2, 2^x)
+                                                                                                  //  x^2  <--Inverse-->  sqrt(x^2)
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    internal const float PHI         =   1.61803398874989484820458683436563811772030917980576f;   //  (1+sqrt(5)) / 2                     Golden Ratio.
-    internal const float PHI_RCP     =   0.61803398874989484820458683436563811772030917980576f;   //   1 / PHI
+    internal const float PHI       =   1.61803398874989484820458683436563811772030917980576f;     //  (1+sqrt(5)) / 2                       Golden Ratio.
+    internal const float PHI_RCP   =   0.61803398874989484820458683436563811772030917980576f;     //   1 / PHI
 
-    internal const float PI2_PHI     =   3.88322207745093315469373125992539191526933978769210f;   //  2pi / PHI
+    internal const float PI2_PHI   =   3.88322207745093315469373125992539191526933978769210f;     //  2pi / PHI
 
-    internal const float PHI_RAD     =   2.39996322972865332223155550663361385312499901105812f;   //   pi * (3-sqrt(5))                   Golden Angle.
-    internal const float PHI_DEG     = 137.50776405003785464634873962837027762068869526992537f;   //  180 * (3-sqrt(5))
+    internal const float PHI_RAD   =   2.39996322972865332223155550663361385312499901105812f;     //   pi * (3-sqrt(5))                     Golden Angle.
+    internal const float PHI_DEG   = 137.50776405003785464634873962837027762068869526992537f;     //  180 * (3-sqrt(5))
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
@@ -86,52 +88,59 @@ internal static partial class VEC {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    internal static readonly vec2 ZERO2 = (0f, 0f);
-    internal static readonly vec2 ONE2  = (1f, 1f);
+    internal static readonly v2 ZERO2    = new v2(0f, 0f);
+    internal static readonly v2 ONE2     = new v2(1f, 1f);
 
-    internal static readonly vec2 AXIS2_X = (1f, 0f);
-    internal static readonly vec2 AXIS2_Y = (0f, 1f);
+    internal static readonly v2 AXIS2_X  = new v2(1f, 0f);
+    internal static readonly v2 AXIS2_Y  = new v2(0f, 1f);
 
-    internal static readonly vec2 AXIS2_XY = (SQRT2_RCP, SQRT2_RCP);
-
-    //==========================================================================================================================================================
-    internal static readonly vec3 ZERO3 = (0f, 0f, 0f);
-    internal static readonly vec3 ONE3  = (1f, 1f, 1f);
-
-    internal static readonly vec3 AXIS3_X = (1f, 0f, 0f);
-    internal static readonly vec3 AXIS3_Y = (0f, 1f, 0f);
-    internal static readonly vec3 AXIS3_Z = (0f, 0f, 1f);
-
-    internal static readonly vec3 AXIS3_XY = (SQRT2_RCP, SQRT2_RCP,        0f);
-    internal static readonly vec3 AXIS3_YZ = (       0f, SQRT2_RCP, SQRT2_RCP);
-    internal static readonly vec3 AXIS3_XZ = (SQRT2_RCP,        0f, SQRT2_RCP);
-
-    internal static readonly vec3 AXIS3_XYZ = (SQRT3_RCP, SQRT3_RCP, SQRT3_RCP);
+    internal static readonly v2 AXIS2_XY = new v2(SQRT2_RCP, SQRT2_RCP);
 
     //==========================================================================================================================================================
-    internal static readonly vec4 ZERO4 = (0f, 0f, 0f, 0f);
-    internal static readonly vec4 ONE4  = (1f, 1f, 1f, 1f);
+    internal static readonly v3 ZERO3     = new v3(0f, 0f, 0f);
+    internal static readonly v3 ONE3      = new v3(1f, 1f, 1f);
+
+    internal static readonly v3 AXIS3_X   = new v3(1f, 0f, 0f);
+    internal static readonly v3 AXIS3_Y   = new v3(0f, 1f, 0f);
+    internal static readonly v3 AXIS3_Z   = new v3(0f, 0f, 1f);
+
+    internal static readonly v3 AXIS3_XY  = new v3(SQRT2_RCP, SQRT2_RCP,        0f);
+    internal static readonly v3 AXIS3_YZ  = new v3(       0f, SQRT2_RCP, SQRT2_RCP);
+    internal static readonly v3 AXIS3_XZ  = new v3(SQRT2_RCP,        0f, SQRT2_RCP);
+
+    internal static readonly v3 AXIS3_XYZ = new v3(SQRT3_RCP, SQRT3_RCP, SQRT3_RCP);
+
+  //internal static readonly v3 LF = new v3(-1f,  0f,  0f); // Left
+  //internal static readonly v3 RT = new v3( 1f,  0f,  0f); // Right
+  //internal static readonly v3 DN = new v3( 0f, -1f,  0f); // Down
+  //internal static readonly v3 UP = new v3( 0f,  1f,  0f); // Up
+  //internal static readonly v3 BK = new v3( 0f,  0f, -1f); // Back   Far
+  //internal static readonly v3 FT = new v3( 0f,  0f,  1f); // Front  Near
+
+    //==========================================================================================================================================================
+    internal static readonly v4 ZERO4 = new v4(0f, 0f, 0f, 0f);
+    internal static readonly v4 ONE4  = new v4(1f, 1f, 1f, 1f);
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    //internal static readonly ivec4 CLR_Blk = (  0,   0,   0, 255);
-    //internal static readonly ivec4 CLR_Gry = (128, 128, 128, 255);    (0.5f, 0.5f, 0.5f, 1f)    0x808080FF    0xFF808080
-    //internal static readonly ivec4 CLR_Wht = (255, 255, 255, 255);
+    //internal static readonly bvec4 CLR_Blk   = 0x000000FFu; //new bvec4(  0,   0,   0, 255);      v4(0.0f, 0.0f, 0.0f, 1f);
+    //internal static readonly bvec4 CLR_Gry   = 0x808080FFu; //new bvec4(128, 128, 128, 255);      v4(0.5f, 0.5f, 0.5f, 1f);
+    //internal static readonly bvec4 CLR_Wht   = 0XFFFFFFFFu; //new bvec4(255, 255, 255, 255);      v4(1.0f, 1.0f, 1.0f, 1f);
 
     //==========================================================================================================================================================
-    //internal static readonly ivec4 CLR_Red = (255,   0,   0, 255);
-    //internal static readonly ivec4 CLR_Ylw = (255, 255,   0, 255);
-    //internal static readonly ivec4 CLR_Grn = (  0, 255,   0, 255);
-    //internal static readonly ivec4 CLR_Cyn = (  0, 255, 255, 255);
-    //internal static readonly ivec4 CLR_Blu = (  0,   0, 255, 255);
-    //internal static readonly ivec4 CLR_Vlt = (255,   0, 255, 255);
+    //internal static readonly bvec4 CLR_Red   = 0xFF0000FFu; //new bvec4(255,   0,   0, 255);      v4(1f, 0f, 0f, 1f);
+    //internal static readonly bvec4 CLR_Ylw   = 0xFFFF00FFu; //new bvec4(255, 255,   0, 255);      v4(1f, 1f, 0f, 1f);
+    //internal static readonly bvec4 CLR_Grn   = 0x00FF00FFu; //new bvec4(  0, 255,   0, 255);      v4(0f, 1f, 0f, 1f);
+    //internal static readonly bvec4 CLR_Cyn   = 0x00FFFFFFu; //new bvec4(  0, 255, 255, 255);      v4(0f, 1f, 1f, 1f);
+    //internal static readonly bvec4 CLR_Blu   = 0x0000FFFFu; //new bvec4(  0,   0, 255, 255);      v4(0f, 0f, 1f, 1f);
+    //internal static readonly bvec4 CLR_Vlt   = 0xFF00FFFFu; //new bvec4(255,   0, 255, 255);      v4(1f, 0f, 1f, 1f);
 
     //==========================================================================================================================================================
-    //internal static readonly ivec4 CLR_AxisX = (247,  31,   0, 255); //  Red-ish.
-    //internal static readonly ivec4 CLR_AxisY = (103, 255,   0, 255); //  Green-ish.
-    //internal static readonly ivec4 CLR_AxisZ = (  0, 128, 255, 255); //  Blue-ish.
+    //internal static readonly bvec4 CLR_AxisX = 0xF71F00FFu; //new bvec4(247,  31,   0, 255); //  Red-ish.
+    //internal static readonly bvec4 CLR_AxisY = 0x67FF00FFu; //new bvec4(103, 255,   0, 255); //  Green-ish.
+    //internal static readonly bvec4 CLR_AxisZ = 0x0080FFFFu; //new bvec4(  0, 128, 255, 255); //  Blue-ish.
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################

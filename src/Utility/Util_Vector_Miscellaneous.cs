@@ -1,28 +1,27 @@
-using System;
-using System.Runtime.CompilerServices;
+
 
 namespace Utility;
-internal static class VEC_Miscellaneous {
+internal static partial class VEC_Miscellaneous {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //                                                                    "Barycentric"
-    ///
-    /// https://www.desmos.com/calculator/8jfeiiyuap
-    ///
-    /// Returns 3 weights corresponding to a position relative to the 3 points of a triangle.
-    ///     Center = (1/3, 1/3, 1/3)
-    ///
-    internal static vec3 Barycentric(vec2 P, vec2 A, vec2 B, vec2 C) {
-        vec2 dAB = B-A;
-        vec2 dAC = C-A;
-        vec2 dAP = P-A;
+    //
+    //  https://www.desmos.com/calculator/9d31eb577f
+    //
+    //  Returns 3 weights corresponding to a position relative to the 3 points of a triangle.
+    //      Center == (1/3, 1/3, 1/3)
+    //
+    internal static vec3 Barycentric(vec2 P, vec2 Ta, vec2 Tb, vec2 Tc) {
+        vec2 dAB = Tb-Ta;
+        vec2 dAC = Tc-Ta;
+        vec2 dAP = P -Ta;
 
         float Scaler = 1f / (dAB.x*dAC.y - dAC.x*dAB.y);
 
-        float Bw = (dAP.x*dAC.y - dAC.x*dAP.y) * Scaler;
-        float Cw = (dAP.y*dAB.x - dAB.y*dAP.x) * Scaler;
+        float Bw = (dAP.x*dAC.y - dAP.y*dAC.x) * Scaler;
+        float Cw = (dAP.y*dAB.x - dAP.x*dAB.y) * Scaler;
         float Aw = 1f - Bw - Cw;
 
         return new vec3(Aw, Bw, Cw);
@@ -31,9 +30,9 @@ internal static class VEC_Miscellaneous {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //                                                                     "Delaunay"
-    ///
-    /// Test if a Point is inside of a Triangle's CircumCircle.
-    ///
+    //
+    //  Test if a Point is inside of a Triangle's CircumCircle.
+    //
     internal static bool Delaunay(vec2 P, vec2 Ta, vec2 Tb, vec2 Tc) {
         vec2 dAB = Tb-Ta;
         vec2 dBC = Tc-Tb;
@@ -55,8 +54,8 @@ internal static class VEC_Miscellaneous {
         } else {
             vec2 dAC = Tc-Ta;
 
-            float AB_AB = dot(dAB, Ta+Tb); //dAB.x*(Ta.x + Tb.x) + dAB.y*(Ta.y + Tb.y);
-            float AC_AC = dot(dAC, Ta+Tc); //dAC.x*(Ta.x + Tc.x) + dAC.y*(Ta.y + Tc.y);
+            float AB_AB = dot(dAB, Ta+Tb);
+            float AC_AC = dot(dAC, Ta+Tc);
 
             CCp = new vec2(
                 (dAC.y*AB_AB - dAB.y*AC_AC) / Determinant,
@@ -66,52 +65,65 @@ internal static class VEC_Miscellaneous {
             d = CCp - Ta;
         }
 
-        float CC_RdsSqrd = dot(d,d); //d.x*d.x + d.y*d.y;
+        float CC_RdsSqrd = dot(d);
 
         d = CCp - P;
 
-        return (dot(d,d) < CC_RdsSqrd);
+        return (dot(d) < CC_RdsSqrd);
     }
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    //                                                                    "Projection"
-    ///
-    /// Get Nearest-Point-On-Line from Point.
-    ///
-    ///     Project(  Point,  Line-Position,  Line-Normal  )
-    ///
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static vec2 Project(vec2 P, vec2 Lp, vec2 Ln) => Lp + Ln*dot(P-Lp, Ln);
+    //
+    //  AKA: HaversineDistance
+    //
+    //  Inputs are a Rotation-Vector (Pitch, Yaw) in radians.
+    //  Output is Distance in radians (0 to PI).
+    //
+    internal static float SphericalDistance(vec2 A, vec2 B) {
+        vec2 dAB = B-A;
+        dAB = sin(dAB * 0.5f);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static vec3 Project(vec3 P, vec3 Lp, vec3 Ln) => Lp + Ln*dot(P-Lp, Ln);
+        float D = dAB.x * dAB.x
+                + dAB.y * dAB.y * cos(A.x) * cos(B.x);
+
+        return 2f * asin( sqrt(D) );
+    }
 
     //==========================================================================================================================================================
-    ///
-    ///     Project_(  Point,  Line-Point-A,  Line-Point-B  )
-    ///
-    internal static vec2 Project_(vec2 P, vec2 La, vec2 Lb) {
-        vec2 dAB = Lb - La;
+    //
+    //  Inputs are a Unit-Pointing-Vector.
+    //  Output is Distance in radians (0 to PI).
+    //
+    internal static float SphericalDistance(vec3 A, vec3 B) => acos(dot(A,B));
 
-        //  Distance from LinePointA to NearestPointOnLine as multiple of dAB.Length:
-        float Scaler = dot(P-La, dAB) / dot(dAB, dAB);
+    internal static float SphericalDistance_(vec3 A, vec3 B) => atan2(cross(A,B).length, dot(A,B));
 
-        return La + (dAB * Scaler);
-    }
+    internal static float SphericalDistance__(vec3 A, vec3 B) {
+        // num = |A × B| = |A||B| sinθ
+        float cx = A.y*B.z - A.z*B.y;
+        float cy = A.z*B.x - A.x*B.z;
+        float cz = A.x*B.y - A.y*B.x;
+        float num = sqrt(cx*cx + cy*cy + cz*cz);
 
-    internal static vec3 Project_(vec3 P, vec3 La, vec3 Lb) {
-        vec3 dAB = Lb - La;
+        // den = A · B = |A||B| cosθ
+        float den = A.x*B.x + A.y*B.y + A.z*B.z;
 
-        //  Distance from LinePointA to NearestPointOnLine as multiple of dAB.Length:
-        float Scaler = dot(P-La, dAB) / dot(dAB, dAB);
-
-        return La + (dAB * Scaler);
+        // θ = atan2(|A×B|, A·B) — no clamps, no NaNs from tiny overshoots.
+        return atan2(num, den);
     }
 
     //##########################################################################################################################################################
+    /*##########################################################################################################################################################
+
+        Spherical Coordinate System
+
+            ( r,  θ,  φ )
+
+                X   Depth/Elevation     r               Radial Distance         Distance along the line connecting the point to a fixed point called the origin.
+                Y   Pitch               θ "theta"       Polar Angle             Angle between this radial line and a given polar axis.
+                Z   Yaw                 φ "phi"         Azimuthal Angle         Angle which is the angle of rotation of the radial line around the polar axis.
+
+    //########################################################################################################################################################*/
     //##########################################################################################################################################################
 }
-
-//  https://www.google.com/search?q=haversine+distance
-//  https://en.wikipedia.org/wiki/Haversine_formula

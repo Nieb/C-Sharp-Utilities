@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -14,23 +13,19 @@ internal static partial class STR {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //  Random is not ThreadSafe.
-    private static readonly Random Random     = new Random();
-    private static readonly object ThreadLock = new object();
+    private static readonly Random Random     = new();
+    private static readonly object ThreadLock = new();
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
     //  Generate String:
     //==========================================================================================================================================================
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static string DateTimeStamp() => DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffffff");
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static string DateStamp()     => DateTime.Now.ToString("yyyy-MM-dd");
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static string TimeStamp()     => DateTime.Now.ToString("HH:mm:ss.ffffff");
+    [Impl(AggressiveInlining|AggressiveOptimization)] internal static string DateTimeStamp() => DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffffff");
+    [Impl(AggressiveInlining|AggressiveOptimization)] internal static string DateStamp()     => DateTime.Now.ToString("yyyy-MM-dd");
+    [Impl(AggressiveInlining|AggressiveOptimization)] internal static string TimeStamp()     => DateTime.Now.ToString("HH:mm:ss.ffffff");
 
     //==========================================================================================================================================================
+    [Impl(AggressiveOptimization)]
     internal static string RandomDigits(int Count) {
         if (Count <= 0)
             return "";
@@ -50,6 +45,7 @@ internal static partial class STR {
     //##########################################################################################################################################################
     //  Convert FROM String:
     //==========================================================================================================================================================
+    [Impl(AggressiveInlining|AggressiveOptimization)]
     internal static bool ToBool(this string STR) {
         if (STR.IsVoid())
             return false;
@@ -63,6 +59,7 @@ internal static partial class STR {
     }
 
     //==========================================================================================================================================================
+    [Impl(AggressiveInlining|AggressiveOptimization)]
     internal static DateTime ToDateTime(this string STR) {
         if (STR.IsVoid())
             return DateTime.MinValue;
@@ -75,6 +72,7 @@ internal static partial class STR {
     }
 
     //==========================================================================================================================================================
+    [Impl(AggressiveInlining|AggressiveOptimization)]
     internal static IPAddress ToIpAddress(this string STR) {
         if (STR.IsVoid())
             return new IPAddress(0);
@@ -88,15 +86,16 @@ internal static partial class STR {
     }
 
     //==========================================================================================================================================================
-    ///
-    ///     var Blarg = "ABC=123, def=Xyz, G=456, H=1.414, i=0, ABC=789".ToNameValueCollection()
-    ///
-    ///     Blarg["ABC"] == "123,789"
-    ///     Blarg["def"] == "Xyz"
-    ///     Blarg["G"]   == "456"
-    ///     Blarg["H"]   == "1.414"
-    ///     Blarg["i"]   == "0"
-    ///
+    //
+    //      var Blarg = "ABC=123, def=Xyz, G=456, H=1.414, i=0, ABC=789".ToNameValueCollection()
+    //
+    //      Blarg["ABC"] == "123,789"
+    //      Blarg["def"] == "Xyz"
+    //      Blarg["G"]   == "456"
+    //      Blarg["H"]   == "1.414"
+    //      Blarg["i"]   == "0"
+    //
+    [Impl(AggressiveOptimization)]
     internal static NameValueCollection ToNameValueCollection(this string STR) {
         if (STR.IsVoid())
             return null;
@@ -119,9 +118,9 @@ internal static partial class STR {
     //##########################################################################################################################################################
     //  Convert TO String:
     //==========================================================================================================================================================
+    [Impl(AggressiveOptimization)]
     internal static string ByteArrayToString(byte[] ByteArr, int BytesPerLine = 16, string Delimiter = " ") {
-        if (ByteArr == null)
-            return "NULL";
+        if (ByteArr == null) return "NULL";
 
         string Result = "";
 
@@ -129,17 +128,18 @@ internal static partial class STR {
             for (int iX = 0; iX < BytesPerLine && iY + iX < ByteArr.Length; iX++) {
                 Result += $"{ByteArr[iY+iX]:X2}{Delimiter}";
             }
-            if (iY + BytesPerLine < ByteArr.Length)
+            if (iY + BytesPerLine < ByteArr.Length) {
                 Result += "\n";
+            }
         }
 
         return Result; //Regex.Replace(Result, @"\n$", "");
     }
 
     //==========================================================================================================================================================
-    internal static string EnumerableToString<T>(IEnumerable<T> Enmrbl, int ItemsPerLine = 0, int ItemPadding = 0, int LineIndent = 0, string LineDelimiter = "\n", string ItemDelimiter = ", ") {
-        if (Enmrbl == null)
-            return "";
+    [Impl(AggressiveOptimization)]
+    internal static string EnumerableToString<T>(IEnumerable<T> Enmrbl, int ItemsPerLine = 0, int ItemPadding = 0, int LineIndent = 0, string ItemDelimiter = ", ", string LineDelimiter = "\n") {
+        if (Enmrbl == null) return "";
 
         string Result = "";
 
@@ -147,17 +147,19 @@ internal static partial class STR {
             foreach (var item in Enmrbl) {
                 Result += (Result == "") ? $"{item}" : $"{ItemDelimiter}{item}";
             }
+
         } else {
             string Indent = new String(' ', LineIndent);
-            for (int iY = 0; iY < Enumerable.Count(Enmrbl); iY += ItemsPerLine) {
+            int EnumCount = Enumerable.Count(Enmrbl);
+            for (int iY = 0; iY < EnumCount; iY += ItemsPerLine) {
                 Result += Indent;
-                for (int iX = 0; (iX < ItemsPerLine) && (iY + iX < Enumerable.Count(Enmrbl)); iX++) {
+                for (int iX = 0; (iX < ItemsPerLine) && (iY+iX < EnumCount); iX++) {
 
                     Result += $"{Enmrbl.ElementAt(iY+iX)}".Pad(ItemPadding);
 
-                    Result += ((iX < ItemsPerLine) && (iY+iX+1 < Enumerable.Count(Enmrbl))) ? ItemDelimiter : "";
+                    Result += ((iX < ItemsPerLine) && (iY+iX+1 < EnumCount)) ? ItemDelimiter : "";
                 }
-                if (iY + ItemsPerLine < Enumerable.Count(Enmrbl))
+                if (iY + ItemsPerLine < EnumCount)
                     Result += LineDelimiter;
             }
         }
@@ -166,87 +168,103 @@ internal static partial class STR {
     }
 
     //==========================================================================================================================================================
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static string IntToBinaryString(byte   INT) =>               Convert.ToString(      INT, 2).PadLeft( 8,'0');
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static string IntToBinaryString(sbyte  INT) =>               Convert.ToString(      INT, 2).PadLeft( 8,'0');
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static string IntToBinaryString(short  INT) => Regex.Replace(Convert.ToString(      INT, 2).PadLeft(16,'0'), @".{8}(?!$)", @"$0_");
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static string IntToBinaryString(ushort INT) => Regex.Replace(Convert.ToString(      INT, 2).PadLeft(16,'0'), @".{8}(?!$)", @"$0_");
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static string IntToBinaryString(int    INT) => Regex.Replace(Convert.ToString(      INT, 2).PadLeft(32,'0'), @".{8}(?!$)", @"$0_");
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static string IntToBinaryString(uint   INT) => Regex.Replace(Convert.ToString(      INT, 2).PadLeft(32,'0'), @".{8}(?!$)", @"$0_");
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static string IntToBinaryString(long   INT) => Regex.Replace(Convert.ToString(      INT, 2).PadLeft(64,'0'), @".{8}(?!$)", @"$0_");
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static string IntToBinaryString(ulong  INT) => Regex.Replace(Convert.ToString((long)INT, 2).PadLeft(64,'0'), @".{8}(?!$)", @"$0_");
+    [Impl(AggressiveInlining|AggressiveOptimization)] internal static string IntToBinaryString(byte   INT) =>               Convert.ToString(      INT, 2).PadLeft( 8,'0');
+    [Impl(AggressiveInlining|AggressiveOptimization)] internal static string IntToBinaryString(sbyte  INT) =>               Convert.ToString(      INT, 2).PadLeft( 8,'0');
+    [Impl(AggressiveInlining|AggressiveOptimization)] internal static string IntToBinaryString(short  INT) => Regex.Replace(Convert.ToString(      INT, 2).PadLeft(16,'0'), @".{8}(?!$)", @"$0_");
+    [Impl(AggressiveInlining|AggressiveOptimization)] internal static string IntToBinaryString(ushort INT) => Regex.Replace(Convert.ToString(      INT, 2).PadLeft(16,'0'), @".{8}(?!$)", @"$0_");
+    [Impl(AggressiveInlining|AggressiveOptimization)] internal static string IntToBinaryString(int    INT) => Regex.Replace(Convert.ToString(      INT, 2).PadLeft(32,'0'), @".{8}(?!$)", @"$0_");
+    [Impl(AggressiveInlining|AggressiveOptimization)] internal static string IntToBinaryString(uint   INT) => Regex.Replace(Convert.ToString(      INT, 2).PadLeft(32,'0'), @".{8}(?!$)", @"$0_");
+    [Impl(AggressiveInlining|AggressiveOptimization)] internal static string IntToBinaryString(long   INT) => Regex.Replace(Convert.ToString(      INT, 2).PadLeft(64,'0'), @".{8}(?!$)", @"$0_");
+    [Impl(AggressiveInlining|AggressiveOptimization)] internal static string IntToBinaryString(ulong  INT) => Regex.Replace(Convert.ToString((long)INT, 2).PadLeft(64,'0'), @".{8}(?!$)", @"$0_");
+
+    //==========================================================================================================================================================
+    //[Impl(AggressiveInlining|AggressiveOptimization)] internal static string IntToHexString(byte   INT) => INT.ToString("X2");
+    //[Impl(AggressiveInlining|AggressiveOptimization)] internal static string IntToHexString(sbyte  INT) => ((byte)INT).ToString("X2");
+    //[Impl(AggressiveInlining|AggressiveOptimization)] internal static string IntToHexString(short  INT) => INT.ToString("X4");
+    //[Impl(AggressiveInlining|AggressiveOptimization)] internal static string IntToHexString(ushort INT) => INT.ToString("X4");
+    //[Impl(AggressiveInlining|AggressiveOptimization)] internal static string IntToHexString(int    INT) => Regex.Replace(INT.ToString( "X8"), @".{4}(?!$)", "$0_");
+    //[Impl(AggressiveInlining|AggressiveOptimization)] internal static string IntToHexString(uint   INT) => Regex.Replace(INT.ToString( "X8"), @".{4}(?!$)", "$0_");
+    //[Impl(AggressiveInlining|AggressiveOptimization)] internal static string IntToHexString(long   INT) => Regex.Replace(INT.ToString("X16"), @".{4}(?!$)", "$0_");
+    //[Impl(AggressiveInlining|AggressiveOptimization)] internal static string IntToHexString(ulong  INT) => Regex.Replace(INT.ToString("X16"), @".{4}(?!$)", "$0_");
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    //  String Is<Something>:
+    //  String Is <Something>:
     //==========================================================================================================================================================
-    internal static bool IsNumeric(this string STR, bool Signed = false, bool Decimal = false) {
+    [Impl(AggressiveOptimization)]
+    internal static bool IsNumeric(this string STR, bool Signed = false, bool Fractional = false) {
         if (STR.IsVoid())
             return false;
 
-        string Pattern = (Signed  ? @"^(\-)?"             : @"^"      )
-                       + (Decimal ? @"[0-9]*(\.)?[0-9]+$" : @"[0-9]+$");
+        string Pattern = (Signed     ? @"^(\-)?"             : @"^"      )
+                       + (Fractional ? @"[0-9]*(\.)?[0-9]+$" : @"[0-9]+$");
 
         return new Regex(Pattern).IsMatch(STR);
     }
 
     //==========================================================================================================================================================
-    ///
-    ///     "user@sub.domain.top".IsValidEmailAddress()                       == TRUE
-    ///     "user@sub.domain.top".IsValidEmailAddress("top", "domain", "sub") == TRUE
-    ///     "user@sub.domain.top".IsValidEmailAddress("blarg")                == FALSE
-    ///
+    //
+    //      "user@sub.domain.top".IsValidEmailAddress()                       == TRUE
+    //      "user@sub.domain.top".IsValidEmailAddress("top", "domain", "sub") == TRUE
+    //      "user@sub.domain.top".IsValidEmailAddress("blarg")                == FALSE
+    //
+    //    NOTE: An obvious yet easy-to-overlook thing to realize
+    //          is that specified domain strings are not validated.
+    //          Though, they are Regex.Escaped.
+    //
+    //    NOTE: While this has gone through some testing to check for false-positives and false-negatives.
+    //          A more rigorous test is still warranted.
+    //          Use at your own risk.
+    //
     internal static bool IsValidEmailAddress(this string STR, string DomainTop = "", string Domain = "", string DomainSub = "") {
-        if (STR.IsVoid())
-            return false;
-
         /* Validate Input: STR */{
-            STR = STR.Trim();
-
-            const int MaxLen_EmailAddress = 317;
+            const int MaxLen_EmailAddress = 317; //  253 + 63 = 316+1  for '@'
             const int MaxLen_Domain       = 253;
             const int MaxLen_Local        =  63;
+
+            if (STR.IsVoid())
+                return false;
+
+            STR = STR.Trim();
 
             if (STR.Length > MaxLen_EmailAddress)
                 return false;
 
             string[] STR_Split = STR.Split('@');
 
-            if (STR_Split.Length != 2 || STR_Split[0].Length > MaxLen_Local || STR_Split[1].Length > MaxLen_Domain)
+            if (STR_Split.Length != 2)
+                return false;
+
+            if (STR_Split[0].Length > MaxLen_Local || STR_Split[1].Length > MaxLen_Domain)
                 return false;
         }
 
         /* Regex: "<Local>@<Domain>" */{
             //  0-9  A-Z  a-z  +  -  _  ~  !  #  $  %  &  ‘  .  /  =  ^  '  {  }  |
-            string Ptrn_Local = @"^[0-9A-Za-z\+\-_~!#\$%\&'./=\^{}\|]+";
+            string Ptrn_Local = @"[0-9A-Za-z\+\-_~!#\$%\&'./=\^{}\|]+";
 
             //  0-9  A-Z  a-z  -  (cannot end with -)
-            string Ptrn_Domain  = (DomainSub.IsVoid() ? @"(?:[A-Za-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)?" : $"{Regex.Escape(DomainSub)}\\.");
-                   Ptrn_Domain += (Domain   .IsVoid() ? @"[A-Za-z0-9](?:[a-z0-9-]*[a-z0-9])?\."      : $"{Regex.Escape(Domain)   }\\.");
+            string Ptrn_Domain  = (DomainSub.IsVoid() ? @"(?:[A-Za-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)?" : $@"{Regex.Escape(DomainSub)}\.");
+
+                   Ptrn_Domain += (Domain   .IsVoid() ? @"[A-Za-z0-9](?:[a-z0-9-]*[a-z0-9])?\."      : $@"{Regex.Escape(Domain)   }\.");
 
             #if true
-                   Ptrn_Domain += (DomainTop.IsVoid() ? @"[A-Za-z]{2,}(\.[A-Za-z]{2,})*$"            : $"{Regex.Escape(DomainTop)}"   ); //  Multi-part, such as: "co.uk"
+                   Ptrn_Domain += (DomainTop.IsVoid() ? @"[A-Za-z]{2,}(\.[A-Za-z]{2,})*"             : $@"{Regex.Escape(DomainTop)}"   ); //  Multi-part, such as: "co.uk"
             #else
-                   Ptrn_Domain += (DomainTop.IsVoid() ? @"[A-Za-z]{2,}$"                             : $"{Regex.Escape(DomainTop)}"   );
+                   Ptrn_Domain += (DomainTop.IsVoid() ? @"[A-Za-z]{2,}"                              : $@"{Regex.Escape(DomainTop)}"   );
             #endif
 
-            return new Regex($"{Ptrn_Local}@{Ptrn_Domain}").IsMatch(STR);
+            return new Regex("^" + Ptrn_Local + "@" + Ptrn_Domain + "$").IsMatch(STR);
         }
     }
 
     //==========================================================================================================================================================
-    ///
-    ///     String.IsNullOrEmpty("blarg")  is stupid :P
-    ///
-    ///     "blarg".IsVoid()  much better.
-    ///
+    //
+    //      String.IsNullOrEmpty("blarg")  is stupid :P
+    //
+    //      "blarg".IsVoid()  much better.
+    //
+    [Impl(AggressiveInlining|AggressiveOptimization)]
     internal static bool IsVoid(this string STR) {
         if (STR == null)
             return true;
@@ -262,30 +280,32 @@ internal static partial class STR {
     //##########################################################################################################################################################
     //  String Operators:
     //==========================================================================================================================================================
-    ///
-    ///     "blarg".ContainsAny( {"ugh", "arg"} ) == TRUE
-    ///
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    //
+    //      "blarg".ContainsAny( {"ugh", "arg"} ) == TRUE
+    //
+    [Impl(AggressiveOptimization)]
     internal static bool ContainsAny(this string STR, string[] OfThese) {
         return OfThese.Any(x => STR.Contains(x));
     }
 
     //==========================================================================================================================================================
-    ///
-    ///     "blarg".ContainsAny_GetMatches( {"bla", "ugh", "arg"} ) == {"bla", "arg"}
-    ///
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    //
+    //      "blarg".ContainsAny_GetMatches( {"bla", "ugh", "arg"} ) == {"bla", "arg"}
+    //
+    [Impl(AggressiveOptimization)]
     internal static string[] ContainsAny_GetMatches(this string STR, string[] OfThese) {
         return OfThese.Where(x => STR.Contains(x))
                       .ToArray();
     }
 
     //==========================================================================================================================================================
-    ///
-    /// This works on strings that contain newline "\n" characters.
-    ///
-    ///     "blarg\nblarg\nblarg".Indent() == "    blarg\n    blarg\n    blarg"
-    ///
+    //
+    //  This works on strings that contain newline "\n" characters.
+    //  Though, does not explicitly check for or handle "\r\n" newlines.
+    //
+    //      "blarg\nblarg\nblarg".Indent() == "    blarg\n    blarg\n    blarg"
+    //
+    [Impl(AggressiveOptimization)]
     internal static string Indent(this string STR, int IndentSize = 4, char IndentWith = ' ') {
         string Indent = new String(IndentWith, IndentSize);
 
@@ -307,24 +327,27 @@ internal static partial class STR {
     }
 
     //==========================================================================================================================================================
-    ///
-    ///     "blargblargblarg".InsertEvery(5, ", ") == "blarg, blarg, blarg"
-    ///
+    //
+    //      "blargblargblarg".InsertEvery(5, ", ") == "blarg, blarg, blarg"
+    //
+    [Impl(AggressiveOptimization)]
     internal static string InsertEvery(this string STR, uint nChars, string InsertMe, bool NotAtEnd = true) {
         return Regex.Replace(
             STR,
-            $".{{{nChars}}}" + (NotAtEnd ? "(?!$)" : ""),
-            $"$0{InsertMe}"
+            ".{" + $"{nChars}" + "}" + (NotAtEnd ? "(?!$)" : ""),               //  $".{{{nChars}}}"    .{123}
+            "$0" + InsertMe
         );
     }
 
     //==========================================================================================================================================================
-    ///
-    /// This works on strings that contain newline "\n" characters.
-    ///
-    ///     "blarg".Pad(-10) == "     blarg"
-    ///     "blarg".Pad( 10) == "blarg     "
-    ///
+    //
+    //  This works on strings that contain newline "\n" characters.
+    //  Though, does not explicitly check for or handle "\r\n" newlines.
+    //
+    //      "blarg".Pad(-10) == "     blarg"
+    //      "blarg".Pad( 10) == "blarg     "
+    //
+    [Impl(AggressiveOptimization)]
     internal static string Pad(this string STR, int PadSize, char PadWith = ' ') {
         if (STR.IsVoid())
             return new String(PadWith, PadSize);
@@ -349,11 +372,13 @@ internal static partial class STR {
     }
 
     //==========================================================================================================================================================
-    ///
-    /// This works on strings that contain newline "\n" characters.
-    ///
-    ///     "blarg\nblarg\nblarg".Prepend(" ~~ ") == " ~~ blarg\n ~~ blarg\n ~~ blarg"
-    ///
+    //
+    //  This works on strings that contain newline "\n" characters.
+    //  Though, does not explicitly check for or handle "\r\n" newlines.
+    //
+    //      "blarg\nblarg\nblarg".Prepend(" ~~ ") == " ~~ blarg\n ~~ blarg\n ~~ blarg"
+    //
+    [Impl(AggressiveOptimization)]
     internal static string Prepend(this string STR, string PrependWith) {
         if (STR.IsVoid())
             return PrependWith;
@@ -373,20 +398,21 @@ internal static partial class STR {
     }
 
     //==========================================================================================================================================================
-    ///
-    ///     "blarg".Repeat(3) == "blargblargblarg"
-    ///
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    //
+    //      "blarg".Repeat(3) == "blargblargblarg"
+    //
+    [Impl(AggressiveOptimization)]
     internal static string Repeat(this string STR, int Count) {
         return (Count <= 0 || STR == null || STR == "") ? ""
              : (Count == 1)                             ? STR
-             : new StringBuilder(STR.Length * Count).Insert(0, STR, Count).ToString();
+                                                        : new StringBuilder(STR.Length * Count).Insert(0, STR, Count).ToString();
     }
 
     //==========================================================================================================================================================
-    ///
-    ///     "blarg BLARG bLaRg".ToTitleCase() == "Blarg Blarg Blarg"
-    ///
+    //
+    //      "blarg BLARG bLaRg".ToTitleCase() == "Blarg Blarg Blarg"
+    //
+    [Impl(AggressiveOptimization)]
     internal static string ToTitleCase(this string STR) {
         if (STR.IsVoid())
             return "";
@@ -405,6 +431,12 @@ internal static partial class STR {
 
         return new string(Result);
     }
+
+    [Impl(AggressiveInlining|AggressiveOptimization)]
+    internal static string ToLowerCase(this string STR) => STR.ToLower();
+
+    [Impl(AggressiveInlining|AggressiveOptimization)]
+    internal static string ToUpperCase(this string STR) => STR.ToUpper();
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
