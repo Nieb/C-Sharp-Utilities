@@ -4,20 +4,26 @@ namespace UtilityTest;
 internal static partial class Program {
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    private const string BAR = "################################################################################################################################################################";
+    internal const string BAR = "################################################################################################################################################################";
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    private static void PRINT(string PrintMe, bool NewLine = true) {
-        if (NewLine)
-            System.Console.WriteLine(PrintMe);
-        else
-            System.Console.Write(PrintMe);
-    }
+    //internal static void PRINT(string PrintMe, bool NewLine = true) {
+    //    if (NewLine)
+    //        System.Console.WriteLine(PrintMe);
+    //    else
+    //        System.Console.Write(PrintMe);
+    //}
+
+    internal static void PRINT (string PrintMe) => System.Console.WriteLine(PrintMe);
+    internal static void PRINTC(string PrintMe) => System.Console.Write    (PrintMe);
+
+    //private static Func<string> PRINT = UtilityTest.Program.PRINT;
+    //private static Action<string> PRINT = msg => UtilityTest.Program.PRINT(msg);
 
     //##########################################################################################################################################################
     //##########################################################################################################################################################
-    private static void RESULT(string TestLabel, bool Result) {
+    internal static void RESULT(string TestLabel, bool Result) {
         #if false
             System.Console.WriteLine(
                 $"{TestLabel,32}: " + (Result ? "Pass" : "FAIL")
